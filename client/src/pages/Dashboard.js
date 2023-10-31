@@ -115,7 +115,7 @@ const Dashboard = () => {
                       </ul>
                     </div>
                   </div> */}
-                  <div className="card-body">
+                  {/* <div className="card-body">
                     <div className="tab-content p-0">
                       <div
                         className="chart tab-pane active"
@@ -140,7 +140,7 @@ const Dashboard = () => {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 {/* <div className="card direct-chat direct-chat-primary">
                   <div className="card-header">
@@ -660,7 +660,7 @@ const Dashboard = () => {
                       </button>
                     </div>
                   </div> */}
-                  <div className="card-body">
+                  {/* <div className="card-body">
                     <canvas
                       className="chart"
                       id="line-chart"
@@ -711,7 +711,7 @@ const Dashboard = () => {
                         <div className="text-white">In-Store</div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 {/* <div className="card bg-gradient-success">
                   <div className="card-header border-0">

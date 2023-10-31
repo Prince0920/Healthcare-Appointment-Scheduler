@@ -112,7 +112,7 @@ const Register = () => {
       <div className="register-logo">
         <a href="#">
           <img
-            src="dist/img/AdminLTELogo.png"
+            src="asserts/logo/health.png"
             alt="AdminLTE Logo"
             className="brand-image img-circle elevation-3"
             style={{ opacity: "1" }}
