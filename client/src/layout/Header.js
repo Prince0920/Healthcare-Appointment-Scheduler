@@ -167,12 +167,17 @@ console.log(user)
                 </div>
               </li> */}
               {/* Menu Footer*/}
-              <li className="user-footer">
-                {/* <div className="pull-left">
-                  <a href="#" className="btn btn-default btn-flat">
+              <li className="user-footer d-flex">
+                
+                <div className="pull-left">
+                {
+                  (user && user.usertype=='patient')  &&
+                  <Link to='/patient/profile' className="btn btn-default btn-flat">
                     Profile
-                  </a>
-                </div> */}
+                  </Link>
+                }
+                  
+                </div>
                 <div className="pull-right" onClick={handelLogout}>
                   <Link to="" className="btn btn-default btn-flat">
                     Sign out
