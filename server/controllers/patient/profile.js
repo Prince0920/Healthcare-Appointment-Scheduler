@@ -1,39 +1,22 @@
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const PatientProfile = require('../../models/patientProfile');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-//Patient Profile managment
-const patientProfileController = async (req, res) => {
+//Patient Profile create
+const createPatientProfileController = async (req, res) => {
   try {
-    // const existingUser = await userModel.findOne({ email: req.body.email });
-    // if (existingUser) {
-    //   return res.status(200).send({
-    //     success: false,
-    //     message: "User already exists",
-    //   });
-    // }
-    console.log("Req.body", req.body);
     const profileData = await PatientProfile.findOneAndUpdate(
-      { userId: (req.body.userId) },
+      { userId: req.body.userId },
       req.body,
       {
         upsert: true,
       }
     );
-    console.log("profileData", profileData)
-    // const password = req.body.password;
-    // const salt = await bcrypt.genSalt(10);
-    // const hashedPassword = await bcrypt.hash(password, salt);
-    // req.body.password = hashedPassword;
-    // // delete req.body.confirm_password;
-
-    // const newUser = new userModel(req.body);
-    // await newUser.save();
-
+    console.log('profileData', profileData);
     return res.send({
       success: true,
-      message: 'Profile Created!',
+      message: 'Profile Updated Successfully!',
     });
   } catch (error) {
     //console.log(error);
@@ -44,4 +27,21 @@ const patientProfileController = async (req, res) => {
   }
 };
 
-module.exports = { patientProfileController };
+//Patient Profile get
+const getPatientProfileController = async (req, res) => {
+  try {
+    const profileData = await PatientProfile.findOne({ userId: req.body.userId });
+    console.log('profileData', profileData);
+    return res.send({
+      success: true,
+      data: profileData,
+    });
+  } catch (error) {
+    //console.log(error);
+    return res.status(200).send({
+      success: false,
+      message: `Register ${error.message}`,
+    });
+  }
+};
+module.exports = { createPatientProfileController, getPatientProfileController };

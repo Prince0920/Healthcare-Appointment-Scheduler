@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Layouts from '../../components/Layouts';
 import ContentHeader from '../../components/ContentHeader';
 import InputText from '../../components/forms/InputText';
 import { DatePicker } from 'antd';
 import { SERVER_BASE_URL } from '../../config/config.local';
+import { toast } from 'react-toastify';
 
 // ... other imports and code ...
 
@@ -28,6 +29,7 @@ export const PatientProfile = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [medicalHistoryErrors, setMedicalHistoryErrors] = useState([]);
 
   const addMedicalHistory = () => {
     setMedicalHistory([...medicalHistory, { condition: '', diagnosisDate: '', treatment: '' }]);
@@ -61,6 +63,61 @@ export const PatientProfile = () => {
     });
   };
 
+  useEffect(() => {
+    getPatientProfile();
+  }, []);
+
+  const getPatientProfile = () => {
+    // Define the URL of your server endpoint
+    const serverUrl = SERVER_BASE_URL + '/api/v1/patient/profile'; // Replace with your server URL
+
+    // Send a GET request to the server using Axios to fetch the existing patient profile data
+    axios
+      .get(serverUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then(response => {
+        // Handle the response from the server as needed
+        console.log('Get Patient Profile Data: ', response.data.data);
+
+        // Populate the form fields with the retrieved data
+        const profileData = response.data.data;
+        // Format the dateOfBirth
+        const dateOfBirth = profileData.dateOfBirth
+          ? new Date(profileData.dateOfBirth).toISOString().split('T')[0]
+          : '';
+        setFormData({
+          dateOfBirth,
+          gender: profileData.gender,
+          contactNumber: profileData.contactNumber,
+        });
+
+        setAddress({
+          street: profileData.address.street,
+          city: profileData.address.city,
+          state: profileData.address.state,
+          postalCode: profileData.address.postalCode,
+          country: profileData.address.country,
+        });
+
+        // Format the dates in the medical history array
+        const formattedMedicalHistory = profileData.medicalHistory.map(history => ({
+          ...history,
+          diagnosisDate: history.diagnosisDate
+            ? new Date(history.diagnosisDate).toISOString().split('T')[0]
+            : '',
+        }));
+
+        setMedicalHistory(formattedMedicalHistory);
+      })
+      .catch(error => {
+        // Handle errors, e.g., display an error message to the user
+        console.error('Error:', error);
+      });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     // Add validation here and set errors if validation fails
@@ -68,9 +125,55 @@ export const PatientProfile = () => {
     if (!formData.dateOfBirth) {
       newErrors.dateOfBirth = 'Date of Birth is required';
     }
-    // Add more validation rules as needed
+    // Validate Contact Number
+    if (!formData.contactNumber) {
+      newErrors.contactNumber = 'Contact Number is required';
+    }
 
-    if (Object.keys(newErrors).length === 0) {
+    // Validate Street Address
+    if (!address.street) {
+      newErrors.street = 'Street Address is required';
+    }
+
+    // Validate City
+    if (!address.city) {
+      newErrors.city = 'City is required';
+    }
+
+    // Validate State
+    if (!address.state) {
+      newErrors.state = 'State is required';
+    }
+
+    // Validate Postal Code
+    if (!address.postalCode) {
+      newErrors.postalCode = 'Postal Code is required';
+    }
+
+    // Validate Country
+    if (!address.country) {
+      newErrors.country = 'Country is required';
+    }
+
+    // Validate Medical History
+    const medicalHistoryErrors = [];
+    medicalHistory.forEach((history, index) => {
+      const historyErrors = {};
+      if (!history.condition) {
+        historyErrors.condition = 'Medical Condition is required';
+      }
+      if (!history.diagnosisDate) {
+        historyErrors.diagnosisDate = 'Diagnosis Date is required';
+      }
+      if (!history.treatment) {
+        historyErrors.treatment = 'Treatment is required';
+      }
+      if (Object.keys(historyErrors).length > 0) {
+        medicalHistoryErrors[index] = historyErrors;
+      }
+    });
+    console.log('historyErrorshistoryErrors', medicalHistoryErrors);
+    if (Object.keys(newErrors).length === 0 && medicalHistoryErrors.length === 0) {
       // If there are no errors, proceed with form submission
 
       // Define the URL of your server endpoint
@@ -82,7 +185,7 @@ export const PatientProfile = () => {
         address,
         medicalHistory,
       };
-
+      console.log('dataToSend:::', dataToSend);
       // Send a PUT request to the server using Axios
       axios
         .put(serverUrl, dataToSend, {
@@ -93,6 +196,9 @@ export const PatientProfile = () => {
         .then(response => {
           // Handle the response from the server as needed
           console.log('Server Response:', response.data);
+          if (response.data.success) {
+            toast.success(response.data.message);
+          }
         })
         .catch(error => {
           // Handle errors, e.g., display an error message to the user
@@ -101,9 +207,10 @@ export const PatientProfile = () => {
     } else {
       // If there are errors, update the errors state
       setErrors(newErrors);
+      setMedicalHistoryErrors(medicalHistoryErrors);
     }
   };
-
+  console.log('medicalHistoryErrorsmedicalHistoryErrors', medicalHistoryErrors);
   return (
     <Layouts>
       <div className='content-wrapper'>
@@ -161,6 +268,9 @@ export const PatientProfile = () => {
                           handleInputChange={handleFormChange}
                           name={'contactNumber'}
                         />
+                        {errors.contactNumber && (
+                          <span className='error-text'>{errors.contactNumber}</span>
+                        )}
                       </div>
                       <div className='col'>
                         <InputText
@@ -169,6 +279,7 @@ export const PatientProfile = () => {
                           handleInputChange={handleAddressChange}
                           name={'street'}
                         />
+                        {errors.street && <span className='error-text'>{errors.street}</span>}
                       </div>
                     </div>
                   </div>
@@ -181,6 +292,7 @@ export const PatientProfile = () => {
                           handleInputChange={handleAddressChange}
                           name='city'
                         />
+                        {errors.city && <span className='error-text'>{errors.city}</span>}
                       </div>
                       <div className='col'>
                         <InputText
@@ -189,6 +301,7 @@ export const PatientProfile = () => {
                           handleInputChange={handleAddressChange}
                           name='state'
                         />
+                        {errors.state && <span className='error-text'>{errors.state}</span>}
                       </div>
                     </div>
                   </div>
@@ -201,6 +314,9 @@ export const PatientProfile = () => {
                           handleInputChange={handleAddressChange}
                           name={'postalCode'}
                         />
+                        {errors.postalCode && (
+                          <span className='error-text'>{errors.postalCode}</span>
+                        )}
                       </div>
                       <div className='col'>
                         <InputText
@@ -209,6 +325,7 @@ export const PatientProfile = () => {
                           handleInputChange={handleAddressChange}
                           name={'country'}
                         />
+                        {errors.country && <span className='error-text'>{errors.country}</span>}
                       </div>
                     </div>
                   </div>
@@ -233,6 +350,12 @@ export const PatientProfile = () => {
                               }
                               placeholder='Medical Condition'
                             />
+                            {medicalHistoryErrors[index] &&
+                              medicalHistoryErrors[index].condition && (
+                                <span className='error-text'>
+                                  {medicalHistoryErrors[index].condition}
+                                </span>
+                              )}
                           </div>
                         </div>
                         <div className='col'>
@@ -249,6 +372,12 @@ export const PatientProfile = () => {
                               }
                               placeholder='Diagnosis Date'
                             />
+                            {medicalHistoryErrors[index] &&
+                              medicalHistoryErrors[index].diagnosisDate && (
+                                <span className='error-text'>
+                                  {medicalHistoryErrors[index].diagnosisDate}
+                                </span>
+                              )}
                           </div>
                         </div>
                       </div>
@@ -264,6 +393,11 @@ export const PatientProfile = () => {
                           onChange={e =>
                             handleMedicalHistoryChange(index, 'treatment', e.target.value)
                           }></textarea>
+                        {medicalHistoryErrors[index] && medicalHistoryErrors[index].treatment && (
+                          <span className='error-text'>
+                            {medicalHistoryErrors[index].treatment}
+                          </span>
+                        )}
                       </div>
                       <button
                         type='button'
@@ -283,7 +417,9 @@ export const PatientProfile = () => {
                   </div>
                 </div>
                 <div className='card-footer'>
-                  <button className='btn btn-primary' onClick={handleSubmit}>
+                  <button
+                    className='btn btn-primary'
+                    onClick={handleSubmit}>
                     Submit
                   </button>
                 </div>
@@ -295,4 +431,3 @@ export const PatientProfile = () => {
     </Layouts>
   );
 };
-
