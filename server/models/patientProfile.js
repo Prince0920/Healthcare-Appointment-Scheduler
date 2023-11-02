@@ -32,7 +32,14 @@ const patientProfileSchema = new mongoose.Schema({
       treatment: String,
     },
   ],
+
+  status: {
+    type: String,
+    default: 'pending', // Default value of "pending"
+  },
   // You can add more fields as needed
+}, {
+  timestamps: true, // This will add createdAt and updatedAt fields to your schema
 });
 
 const PatientProfile = mongoose.model('PatientProfile', patientProfileSchema);
