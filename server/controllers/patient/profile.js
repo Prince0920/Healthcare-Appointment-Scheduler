@@ -1,9 +1,22 @@
 const PatientProfile = require('../../models/patientProfile');
+const userModel = require('../../models/userModels');
 
 // Patient Profile create
 const createPatientProfileController = async (req, res) => {
   try {
     const { userId } = req.body;
+
+    // Check if user's data is already exists
+    let userData = await userModel.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+    userData.set({ fullName: req.body.fullName });
+    await userData.save();
 
     // Check if the user's profile already exists
     let profileData = await PatientProfile.findOne({ userId });
@@ -37,6 +50,15 @@ const getPatientProfileController = async (req, res) => {
   try {
     const { userId } = req.body;
 
+    let userData = await userModel.findOne({ _id: userId });
+
+    if (!userData) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
     const profileData = await PatientProfile.findOne({ userId });
 
     if (!profileData) {
@@ -46,9 +68,13 @@ const getPatientProfileController = async (req, res) => {
       });
     }
 
+    let response = {
+      ...profileData.toObject(),
+      fullName: userData.fullname
+    }
     return res.status(200).json({
       success: true,
-      data: profileData,
+      data: response,
     });
   } catch (error) {
     console.error('Error getting patient profile:', error);

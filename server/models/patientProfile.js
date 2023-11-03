@@ -20,6 +20,7 @@ const patientProfileSchema = new mongoose.Schema({
   },
   address: {
     street: String,
+    landmark: String,
     city: String,
     state: String,
     postalCode: String,

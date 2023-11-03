@@ -121,9 +121,11 @@ export const PatientProfile = () => {
           dateOfBirth,
           gender: profileData.gender,
           contactNumber: profileData.contactNumber,
+          fullName: profileData.fullName,
         });
 
         setAddress({
+          landmark: profileData.address.landmark,
           street: profileData.address.street,
           city: profileData.address.city,
           state: profileData.address.state,
