@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import MedicalHistory from './MedicalHistory';
 import AddressDetails from './AddressDetails';
 import PersonalDetails from './PersonalDetails';
+import SubmitButton from '../../components/buttons/SubmitButton';
 
 // ... other imports and code ...
 
@@ -33,6 +34,7 @@ export const PatientProfile = () => {
     country: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [medicalHistoryErrors, setMedicalHistoryErrors] = useState([]);
 
@@ -149,7 +151,7 @@ export const PatientProfile = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     const { newErrors, medicalHistoryErrors } = validateForm(formData, address, medicalHistory);
 
     if (Object.keys(newErrors).length === 0 && medicalHistoryErrors.length === 0) {
@@ -169,13 +171,22 @@ export const PatientProfile = () => {
           if (response.data.success) {
             toast.success(response.data.message);
           }
+          // Reset isSubmitting to false after successful submission
+          setIsSubmitting(false);
         })
         .catch(error => {
           console.error('Error:', error);
+          // Reset isSubmitting to false after submission error
+          setIsSubmitting(false);
         });
     } else {
       setErrors(newErrors);
       setMedicalHistoryErrors(medicalHistoryErrors);
+      // Reset isSubmitting to false after validation error
+      setIsSubmitting(false);
+
+      // Show a toast message for validation errors
+      toast.error('Please fill in all required fields.');
     }
   };
 
@@ -239,8 +250,6 @@ export const PatientProfile = () => {
                     errors={errors}
                     handleAddressChange={handleAddressChange}
                   />
-
-                  <hr />
                   <MedicalHistory
                     medicalHistory={medicalHistory}
                     medicalHistoryErrors={medicalHistoryErrors}
@@ -250,11 +259,11 @@ export const PatientProfile = () => {
                   />
                 </div>
                 <div className='card-footer'>
-                  <button
-                    className='btn btn-primary'
-                    onClick={handleSubmit}>
-                    Submit
-                  </button>
+                <SubmitButton
+                    onClick={handleSubmit}
+                    isSubmitting={isSubmitting}
+                    buttonText='Submit'
+                  />
                 </div>
               </form>
             </div>
