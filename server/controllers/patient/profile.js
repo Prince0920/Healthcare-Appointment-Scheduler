@@ -15,7 +15,7 @@ const createPatientProfileController = async (req, res) => {
         message: 'User not found.',
       });
     }
-    userData.set({ fullName: req.body.fullName });
+    userData.set({ fullname: req.body.fullName });
     await userData.save();
 
     // Check if the user's profile already exists
