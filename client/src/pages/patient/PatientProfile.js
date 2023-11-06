@@ -229,7 +229,7 @@ export const PatientProfile = () => {
     <Layouts>
       <div className='content-wrapper'>
         <ContentHeader
-          heading='Profile Management'
+          heading='Patient Profile'
           bredCumName='Patient Profile'
         />
         <section className='content'>
