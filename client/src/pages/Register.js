@@ -66,7 +66,7 @@ const Register = () => {
       try {
         dispatch(showLoading());
         const res = await axios.post(
-          SERVER_BASE_URL + 'api/v1/user/register',
+          SERVER_BASE_URL + '/api/v1/user/register',
           JSON.stringify(registerData),
           { headers: { 'content-type': 'application/json' } }
         );

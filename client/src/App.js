@@ -1,21 +1,24 @@
-import logo from "./logo.svg";
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
-import Leftsidebar from "./layout/Leftsidebar";
-import DashboardUser from "./user/DashboardUser";
-import Login from "./pages/Login";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import "./assets/css/style.css";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
-import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector";
-import Spinner from "./components/Spinner";
+import logo from './logo.svg';
+import Header from './layout/Header';
+import Footer from './layout/Footer';
+import Leftsidebar from './layout/Leftsidebar';
+import DashboardUser from './user/DashboardUser';
+import Login from './pages/Login';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import './assets/css/style.css';
+import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
+import { UseSelector, useSelector } from 'react-redux/es/hooks/useSelector';
+import Spinner from './components/Spinner';
+import { PatientProfile } from './pages/patient/PatientProfile';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
 import HospitalProfile from "./pages/hospital/HospitalProfile";
 
 function App() {
-  const { loading } = useSelector((state) => state.alerts);
+  const { loading } = useSelector(state => state.alerts);
   return (
     <>
       <BrowserRouter>
@@ -24,7 +27,7 @@ function App() {
         ) : (
           <Routes>
             <Route
-              path="/"
+              path='/'
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -42,7 +45,15 @@ function App() {
             />
 
             <Route
-              path="/login"
+              path='/patient/profile'
+              element={
+                <ProtectedRoute>
+                  <PatientProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/login'
               element={
                 <PublicRoute>
                   <Login />
@@ -50,11 +61,23 @@ function App() {
               }
             />
             <Route
-              path="/register"
+              path='/register'
               element={
                 <PublicRoute>
                   <Register />
                 </PublicRoute>
+              }
+            />
+            <Route
+              path='/about-us'
+              element={
+                  <AboutUs />
+              }
+            />
+            <Route
+              path='/contact'
+              element={
+                  <ContactUs />
               }
             />
           </Routes>
