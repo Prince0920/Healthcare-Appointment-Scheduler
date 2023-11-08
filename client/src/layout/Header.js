@@ -16,7 +16,6 @@ const Header = () => {
   const [isHospital, setIsHospital] = useState(false);
 
   const loadIntial = () => {
-
     if (user && user.usertype == 'doctor') {
       setIsDoctor(true);
     }
@@ -42,6 +41,7 @@ const Header = () => {
     navigate('/login');
   };
 
+  console.log("userrrrrrr", user)
   return (
     <div>
       <div className='preloader flex-column justify-content-center align-items-center'>
@@ -149,12 +149,10 @@ const Header = () => {
                   alt='User Image'
                 />
                 <p>
-
                   <b> {user ? user.fullname : ''}</b> - Registered as {user ? user.usertype : ''}
                   <small>
                     Member since{' '}
                     {user ? <Moment format='Do MMM, YYYY, h:mm: a'>{user.date}</Moment> : ''}
-
                   </small>
                 </p>
               </li>
@@ -178,6 +176,14 @@ const Header = () => {
                   {user && user.usertype == 'patient' && (
                     <Link
                       to='/patient/profile'
+                      className='btn btn-default btn-flat'>
+                      Profile
+                    </Link>
+                  )}
+
+                  {user && user.usertype == 'hospital' && (
+                    <Link
+                      to='/hospital/profile'
                       className='btn btn-default btn-flat'>
                       Profile
                     </Link>
