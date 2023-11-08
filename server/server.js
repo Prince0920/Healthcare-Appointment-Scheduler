@@ -26,14 +26,14 @@ app.get("/", (req, res) => {
 });
 
 const userRoutes = require("./routes/userRoutes");
+const hospitalRoutes = require("./routes/hospitalRoutes");
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/hospital", hospitalRoutes);
 
 //port
 const port = process.env.PORT || 8080;
 //listen port
 app.listen(port, () => {
-  console.log(
-    `server is running ${process.env.DEV_MODE} mode on port ${port}`
-  );
+  console.log(`server is running ${process.env.DEV_MODE} mode on port ${port}`);
 });

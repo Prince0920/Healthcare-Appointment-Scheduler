@@ -1,50 +1,42 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Moment from "react-moment";
 const Header = () => {
+  const { user } = useSelector((state) => state.user);
 
-const {user} = useSelector(state=>state.user);
-
-console.log(user)
+  console.log(user);
 
   const navigate = useNavigate();
 
-  const [isDoctor, setIsDoctor]     = useState(false);
-  const [isAdmin, setIsAdmin]       = useState(false);
-  const [isPatient, setIsPatient]   = useState(false);
-  const [isClinic, setIsClinic]     = useState(false);
+  const [isDoctor, setIsDoctor] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPatient, setIsPatient] = useState(false);
+  const [isClinic, setIsClinic] = useState(false);
   const [isHospital, setIsHospital] = useState(false);
 
+  const loadIntial = () => {
+    if (user && user.usertype == "doctor") {
+      setIsDoctor(true);
+    }
+    if (user && user.usertype == "clinic") {
+      setIsClinic(true);
+    }
+    if (user && user.usertype == "hospital") {
+      setIsHospital(true);
+    }
+    if (user && user.usertype == "patient") {
+      setIsPatient(true);
+    }
+  };
 
+  useEffect(() => {
+    if (!user) {
+      loadIntial();
+    }
+  }, [user]);
 
-  const loadIntial = ()=>{
-
-  if(user && user.usertype=='doctor'){
-    setIsDoctor(true);
-  }
-  if(user && user.usertype=='clinic'){
-    setIsClinic(true);
-  }
-  if(user && user.usertype=='hospital'){
-    setIsHospital(true);
-  }
-  if(user && user.usertype=='patient'){
-    setIsPatient(true);
-  }
-
-  }
-
-  useEffect(()=>{
-   if(!user){
-    loadIntial();
-   }
-    
-  },[user])
-
-  
   const handelLogout = () => {
-   
     localStorage.clear();
     navigate("/login");
   };
@@ -131,12 +123,12 @@ console.log(user)
                 alt="user image"
               />
               <span className="hidden-xs">
-                {user && user.usertype=='doctor'   ? 'Hello, Dr.' : ''}
-                {user && user.usertype=='patient'  ? 'Hi, '       : ''}
-                {user && user.usertype=='clinic'   ? 'Welcome, '  : ''}
-                {user && user.usertype=='hospital' ? 'Welcome, '  : ''}
-                {user ? user.fullname: ''}
-                </span>
+                {user && user.usertype == "doctor" ? "Hello, Dr." : ""}
+                {user && user.usertype == "patient" ? "Hi, " : ""}
+                {user && user.usertype == "clinic" ? "Welcome, " : ""}
+                {user && user.usertype == "hospital" ? "Welcome, " : ""}
+                {user ? user.fullname : ""}
+              </span>
             </a>
             <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
               {/* User image */}
@@ -147,9 +139,18 @@ console.log(user)
                   alt="User Image"
                 />
                 <p>
-               <b> {user ? user.fullname: ''}</b> - Registered as {user ? user.usertype:''}
-                  <small>Member since {user ?  <Moment format="Do MMM, YYYY, h:mm: a">{user.date}</Moment>: ''}</small>
-                  
+                  <b> {user ? user.fullname : ""}</b> - Registered as{" "}
+                  {user ? user.usertype : ""}
+                  <small>
+                    Member since{" "}
+                    {user ? (
+                      <Moment format="Do MMM, YYYY, h:mm: a">
+                        {user.date}
+                      </Moment>
+                    ) : (
+                      ""
+                    )}
+                  </small>
                 </p>
               </li>
               {/* Menu Body */}
@@ -168,11 +169,14 @@ console.log(user)
               </li> */}
               {/* Menu Footer*/}
               <li className="user-footer">
-                {/* <div className="pull-left">
-                  <a href="#" className="btn btn-default btn-flat">
+                <div className="pull-left">
+                  <Link
+                    to="hospital/profile"
+                    className="btn btn-default btn-flat"
+                  >
                     Profile
-                  </a>
-                </div> */}
+                  </Link>
+                </div>
                 <div className="pull-right" onClick={handelLogout}>
                   <Link to="" className="btn btn-default btn-flat">
                     Sign out
