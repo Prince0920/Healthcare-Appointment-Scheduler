@@ -16,6 +16,7 @@ const Header = () => {
   const [isHospital, setIsHospital] = useState(false);
 
   const loadIntial = () => {
+
     if (user && user.usertype == 'doctor') {
       setIsDoctor(true);
     }
@@ -148,10 +149,12 @@ const Header = () => {
                   alt='User Image'
                 />
                 <p>
+
                   <b> {user ? user.fullname : ''}</b> - Registered as {user ? user.usertype : ''}
                   <small>
                     Member since{' '}
                     {user ? <Moment format='Do MMM, YYYY, h:mm: a'>{user.date}</Moment> : ''}
+
                   </small>
                 </p>
               </li>
