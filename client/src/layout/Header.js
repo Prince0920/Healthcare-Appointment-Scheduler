@@ -1,89 +1,91 @@
-import React, {  useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {  useSelector } from "react-redux";
-import Moment from "react-moment";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Moment from 'react-moment';
 const Header = () => {
+  const { user } = useSelector(state => state.user);
 
-const {user} = useSelector(state=>state.user);
-
-console.log(user)
+  console.log(user);
 
   const navigate = useNavigate();
 
-  const [isDoctor, setIsDoctor]     = useState(false);
-  const [isAdmin, setIsAdmin]       = useState(false);
-  const [isPatient, setIsPatient]   = useState(false);
-  const [isClinic, setIsClinic]     = useState(false);
+  const [isDoctor, setIsDoctor] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPatient, setIsPatient] = useState(false);
+  const [isClinic, setIsClinic] = useState(false);
   const [isHospital, setIsHospital] = useState(false);
 
+  const loadIntial = () => {
+    if (user && user.usertype == 'doctor') {
+      setIsDoctor(true);
+    }
+    if (user && user.usertype == 'clinic') {
+      setIsClinic(true);
+    }
+    if (user && user.usertype == 'hospital') {
+      setIsHospital(true);
+    }
+    if (user && user.usertype == 'patient') {
+      setIsPatient(true);
+    }
+  };
 
+  useEffect(() => {
+    if (!user) {
+      loadIntial();
+    }
+  }, [user]);
 
-  const loadIntial = ()=>{
-
-  if(user && user.usertype=='doctor'){
-    setIsDoctor(true);
-  }
-  if(user && user.usertype=='clinic'){
-    setIsClinic(true);
-  }
-  if(user && user.usertype=='hospital'){
-    setIsHospital(true);
-  }
-  if(user && user.usertype=='patient'){
-    setIsPatient(true);
-  }
-
-  }
-
-  useEffect(()=>{
-   if(!user){
-    loadIntial();
-   }
-    
-  },[user])
-
-  
   const handelLogout = () => {
-   
     localStorage.clear();
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
     <div>
-      <div className="preloader flex-column justify-content-center align-items-center">
+      <div className='preloader flex-column justify-content-center align-items-center'>
         <img
-          className="animation__shake"
-          src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png"
-          alt="AdminLTELogo"
+          className='animation__shake'
+          src='https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png'
+          alt='AdminLTELogo'
           height={60}
           width={60}
         />
       </div>
-      <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul className="navbar-nav">
-          <li className="nav-item">
+      <nav className='main-header navbar navbar-expand navbar-white navbar-light'>
+        <ul className='navbar-nav'>
+          <li className='nav-item'>
             <a
-              className="nav-link"
-              data-widget="pushmenu"
-              href="#"
-              role="button"
-            >
-              <i className="fas fa-bars" />
+              className='nav-link'
+              data-widget='pushmenu'
+              href='#'
+              role='button'>
+              <i className='fas fa-bars' />
             </a>
           </li>
-          {/* <li className="nav-item d-none d-sm-inline-block">
-            <a href="index3.html" className="nav-link">
+          <li className='nav-item d-none d-sm-inline-block'>
+            <Link
+              to='/'
+              className='nav-link'>
               Home
-            </a>
+            </Link>
           </li>
-          <li className="nav-item d-none d-sm-inline-block">
-            <a href="#" className="nav-link">
-              Contact
-            </a>
-          </li> */}
+          <li className='nav-item d-none d-sm-inline-block'>
+            <Link
+              to='/about-us'
+              className='nav-link'>
+              About
+            </Link>
+          </li>
+          <li className='nav-item d-none d-sm-inline-block'>
+            <Link
+              to='/contact'
+              className='nav-link'>
+              Contact Us
+            </Link>
+          </li>
         </ul>
-        <ul className="navbar-nav ml-auto">
+        <ul className='navbar-nav ml-auto'>
           {/* <li className="nav-item">
             <a
               className="nav-link"
@@ -119,37 +121,38 @@ console.log(user)
             </div>
           </li> */}
 
-          <li className="nav-item dropdown user user-menu">
+          <li className='nav-item dropdown user user-menu'>
             <a
-              href="#"
-              className="nav-link dropdown-toggle"
-              data-toggle="dropdown"
-            >
+              href='#'
+              className='nav-link dropdown-toggle'
+              data-toggle='dropdown'>
               <img
-                src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg"
-                className="user-image img-circle elevation-2"
-                alt="user image"
+                src='https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'
+                className='user-image img-circle elevation-2'
+                alt='user image'
               />
-              <span className="hidden-xs">
-                {user && user.usertype=='doctor'   ? 'Hello, Dr.' : ''}
-                {user && user.usertype=='patient'  ? 'Hi, '       : ''}
-                {user && user.usertype=='clinic'   ? 'Welcome, '  : ''}
-                {user && user.usertype=='hospital' ? 'Welcome, '  : ''}
-                {user ? user.fullname: ''}
-                </span>
+              <span className='hidden-xs'>
+                {user && user.usertype == 'doctor' ? 'Hello, Dr.' : ''}
+                {user && user.usertype == 'patient' ? 'Hi, ' : ''}
+                {user && user.usertype == 'clinic' ? 'Welcome, ' : ''}
+                {user && user.usertype == 'hospital' ? 'Welcome, ' : ''}
+                {user ? user.fullname : ''}
+              </span>
             </a>
-            <ul className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <ul className='dropdown-menu dropdown-menu-lg dropdown-menu-right'>
               {/* User image */}
-              <li className="user-header bg-primary">
+              <li className='user-header bg-primary'>
                 <img
-                  src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg"
-                  className="img-circle elevation-2"
-                  alt="User Image"
+                  src='https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg'
+                  className='img-circle elevation-2'
+                  alt='User Image'
                 />
                 <p>
-               <b> {user ? user.fullname: ''}</b> - Registered as {user ? user.usertype:''}
-                  <small>Member since {user ?  <Moment format="Do MMM, YYYY, h:mm: a">{user.date}</Moment>: ''}</small>
-                  
+                  <b> {user ? user.fullname : ''}</b> - Registered as {user ? user.usertype : ''}
+                  <small>
+                    Member since{' '}
+                    {user ? <Moment format='Do MMM, YYYY, h:mm: a'>{user.date}</Moment> : ''}
+                  </small>
                 </p>
               </li>
               {/* Menu Body */}
@@ -167,14 +170,22 @@ console.log(user)
                 </div>
               </li> */}
               {/* Menu Footer*/}
-              <li className="user-footer">
-                {/* <div className="pull-left">
-                  <a href="#" className="btn btn-default btn-flat">
-                    Profile
-                  </a>
-                </div> */}
-                <div className="pull-right" onClick={handelLogout}>
-                  <Link to="" className="btn btn-default btn-flat">
+              <li className='user-footer d-flex'>
+                <div className='pull-left'>
+                  {user && user.usertype == 'patient' && (
+                    <Link
+                      to='/patient/profile'
+                      className='btn btn-default btn-flat'>
+                      Profile
+                    </Link>
+                  )}
+                </div>
+                <div
+                  className='pull-right'
+                  onClick={handelLogout}>
+                  <Link
+                    to=''
+                    className='btn btn-default btn-flat'>
                     Sign out
                   </Link>
                 </div>
@@ -289,14 +300,13 @@ console.log(user)
               </a>
             </div>
           </li> */}
-          <li className="nav-item">
+          <li className='nav-item'>
             <a
-              className="nav-link"
-              data-widget="fullscreen"
-              href="#"
-              role="button"
-            >
-              <i className="fas fa-expand-arrows-alt" />
+              className='nav-link'
+              data-widget='fullscreen'
+              href='#'
+              role='button'>
+              <i className='fas fa-expand-arrows-alt' />
             </a>
           </li>
           {/* <li className="nav-item">

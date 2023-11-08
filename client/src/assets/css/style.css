@@ -51,3 +51,24 @@
     background-color: #c7e7c6;
    
 }
+
+/* CSS - You can include this in your stylesheets */
+.medical-history-entry {
+  position: relative;
+}
+
+.mh-delete-button {
+  position: absolute;
+  top: 5px; /* Adjust top position as needed */
+  right: 5px; /* Adjust right position as needed */
+  background-color: #ff5252; /* Red background color */
+  color: #fff; /* White text color */
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.mh-delete-button:hover {
+  background-color: #ff0000; /* Darker red on hover */
+}

@@ -26,8 +26,10 @@ app.get("/", (req, res) => {
 });
 
 const userRoutes = require("./routes/userRoutes");
+const patientProfileRoute = require("./routes/patient/profile");
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/patient", patientProfileRoute);
 
 //port
 const port = process.env.PORT || 8080;
