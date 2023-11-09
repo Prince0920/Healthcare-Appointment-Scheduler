@@ -41,7 +41,7 @@ const Header = () => {
     navigate('/login');
   };
 
-  console.log("userrrrrrr", user)
+  console.log('userrrrrrr', user);
   return (
     <div>
       <div className='preloader flex-column justify-content-center align-items-center'>
@@ -184,6 +184,14 @@ const Header = () => {
                   {user && user.usertype == 'hospital' && (
                     <Link
                       to='/hospital/profile'
+                      className='btn btn-default btn-flat'>
+                      Profile
+                    </Link>
+                  )}
+
+                  {user && user.usertype == 'doctor' && (
+                    <Link
+                      to='/doctor/profile'
                       className='btn btn-default btn-flat'>
                       Profile
                     </Link>

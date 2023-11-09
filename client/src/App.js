@@ -15,7 +15,8 @@ import Spinner from './components/Spinner';
 import { PatientProfile } from './pages/patient/PatientProfile';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
-import HospitalProfile from "./pages/hospital/HospitalProfile";
+import HospitalProfile from './pages/hospital/HospitalProfile';
+import Doctor from './pages/doctor/Doctor';
 
 function App() {
   const { loading } = useSelector(state => state.alerts);
@@ -36,7 +37,7 @@ function App() {
             />
 
             <Route
-              path="hospital/profile"
+              path='hospital/profile'
               element={
                 <ProtectedRoute>
                   <HospitalProfile />
@@ -49,6 +50,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PatientProfile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path='/doctor/profile'
+              element={
+                <ProtectedRoute>
+                  <Doctor />
                 </ProtectedRoute>
               }
             />
@@ -70,15 +80,11 @@ function App() {
             />
             <Route
               path='/about-us'
-              element={
-                  <AboutUs />
-              }
+              element={<AboutUs />}
             />
             <Route
               path='/contact'
-              element={
-                  <ContactUs />
-              }
+              element={<ContactUs />}
             />
           </Routes>
         )}
