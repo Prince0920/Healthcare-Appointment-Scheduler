@@ -8,6 +8,8 @@ import BasicDetail from './BasicDetail';
 import AddressDetails from './AddressDetails';
 import AdditionalDetails from './AdditionalDetails';
 import WorkingHours from './WorkingHours';
+import { SERVER_BASE_URL } from '../../config/config.local';
+import { toast } from 'react-toastify';
 
 const { Step } = Steps; // Destructure the Step component
 
@@ -16,8 +18,11 @@ export const Doctor = () => {
   const [currentStage, setCurrentStage] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Define constants
+  const API_URL = SERVER_BASE_URL + '/api/v1/doctor/profile';
+
   const [basicData, setBasicData] = useState({
-    fullname: '',
+    fullName: '',
     gender: '',
     dateOfBirth: '',
     phone: '',
@@ -139,7 +144,7 @@ export const Doctor = () => {
   // Validation rules (customize these according to your requirements)
   const validateBasicData = () => {
     const errors = {};
-    if (!basicData.fullname) {
+    if (!basicData.fullName) {
       errors.fullname = 'Fullname is required';
     }
     if (!basicData.gender) {
@@ -220,23 +225,84 @@ export const Doctor = () => {
     return Object.keys(errors).length === 0;
   };
 
+  // Function to fetch patient profile
+  const getDoctorProfile = () => {
+    axios
+      .get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then(response => {
+        let doctorProfile = response.data.data;
+        console.log('doctor get profile', doctorProfile);
+        const dateOfBirth = doctorProfile.dateOfBirth
+          ? new Date(doctorProfile.dateOfBirth).toISOString().split('T')[0]
+          : '';
+        setBasicData({
+          fullName: doctorProfile.fullName,
+          gender: doctorProfile.gender,
+          dateOfBirth: dateOfBirth,
+          phone: doctorProfile.phone,
+        });
+        setAddress(doctorProfile.address);
+        setAdditionalDetails({
+          education: doctorProfile.education,
+          experience: doctorProfile.experience,
+          medicalSpecialty: doctorProfile.medicalSpecialty,
+          certifications: doctorProfile.certifications,
+          about: doctorProfile.about,
+          telemedicine: doctorProfile.telemedicine,
+        });
+        setWorkingHours(doctorProfile.workingHours);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+  useEffect(() => {
+    getDoctorProfile();
+  }, []);
   const handleSubmit = async e => {
     e.preventDefault();
     setIsSubmitting(true);
+    const validateAdditionalError = validateAdditionalDetails();
+    const validateAddressError = validateAddress();
+    const validateBasicError = validateBasicData();
 
-    try {
-      console.log('basic ', basicData);
-      console.log('additional Data ', additionalDetails);
-      console.log('working hours ', workingHours);
-      console.log('address ', address);
-      // Make an HTTP POST request to update the doctor's data
-      // await axios.post('/api/update-doctor', doctorData);
-      // Handle success or display a success message
-      // You can also redirect the user to another page
-    } catch (error) {
-      // Handle and display error messages
-    } finally {
-      setIsSubmitting(false);
+    console.log('validateAdditionalError', validateAdditionalError);
+    console.log('validateAddressError', validateAddressError);
+    console.log('validateBasicError', validateBasicError);
+    if (validateAdditionalError && validateAddressError && validateBasicError) {
+      try {
+        const dataToSend = {
+          ...basicData,
+          address,
+          ...additionalDetails,
+          workingHours,
+        };
+
+        axios
+          .put(API_URL, dataToSend, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          })
+          .then(response => {
+            if (response.data.success) {
+              toast.success(response.data.message);
+            }
+            // Reset isSubmitting to false after successful submission
+            setIsSubmitting(false);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            // Reset isSubmitting to false after submission error
+            setIsSubmitting(false);
+          });
+      } catch (error) {
+        // Handle and display error messages
+      }
     }
   };
   const steps = [

@@ -8,8 +8,8 @@ const BasicDetail = ({ doctorData, handleInputChange, basicDataErrors }) => {
           <label>Fullname</label>
           <input
             type='text'
-            name='fullname'
-            value={doctorData.fullname}
+            name='fullName'
+            value={doctorData.fullName}
             onChange={handleInputChange}
             placeholder='Enter Full Name'
             className='form-control'
