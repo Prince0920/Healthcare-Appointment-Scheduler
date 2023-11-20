@@ -1,10 +1,26 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Moment from 'react-moment';
+import { Link, useNavigate } from 'react-router-dom';
+import { SERVER_BASE_URL } from '../config/config.local';
 const Header = () => {
-  const { user } = useSelector(state => state.user);
+  const [user, setUser] = useState(null);
+  const getUserInfo = async () => {
+    const res = await axios.post(
+      SERVER_BASE_URL + '/api/v1/user/getUserData',
+      { token: localStorage.getItem('token') },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    );
+    setUser(res.data.data);
+  };
 
+  useEffect(() => {
+    getUserInfo();
+  }, []);
   console.log(user);
 
   const navigate = useNavigate();

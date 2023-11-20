@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
 import { SERVER_BASE_URL } from '../config/config.local';
+import Spinner from '../components/Spinner';
 
 const Register = () => {
   const [fullname, setFullname] = useState('');
@@ -17,6 +18,7 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const validateForm = (fullname, email, password, confirm_password, usertype, agreeTerms) => {
     const errors = {};
@@ -64,7 +66,8 @@ const Register = () => {
         password: password,
       };
       try {
-        dispatch(showLoading());
+        // dispatch(showLoading());
+        setLoading(true);
         const res = await axios.post(
           SERVER_BASE_URL + '/api/v1/user/register',
           JSON.stringify(registerData),
@@ -72,7 +75,8 @@ const Register = () => {
         );
 
         if (res.data.success) {
-          dispatch(hideLoading());
+          // dispatch(hideLoading());
+          setLoading(false);
           toast.success(res.data.message);
           setFullname('');
           setEmail('');
@@ -83,7 +87,8 @@ const Register = () => {
         }
         //alert(res.data.message);
         if (!res.data.success) {
-          dispatch(hideLoading());
+          // dispatch(hideLoading());
+          setLoading(false);
           toast.error(res.data.message ? res.data.message : '');
         }
       } catch (error) {
@@ -93,141 +98,144 @@ const Register = () => {
     }
   };
 
-  return (
-    <div className='container register-box mt-3'>
-      <div className='card row justify-content-center'>
-        <div className='card-body register-card-body'>
-          <div className='register-logo'>
-            <a href='#'>
-              <img
-                src='asserts/logo/health.png'
-                alt='AdminLTE Logo'
-                className='brand-image img-circle elevation-3'
-                style={{ opacity: '1' }}
-                height='150'
-                width='150'
-              />
-              {/* <b>Admin</b>LTE */}
-            </a>
-          </div>
-          <p className='login-box-msg'>Register here</p>
-          <form onSubmit={handelRegForm}>
-            <span className='error-text'>{errors.usertype}</span>
-            <div className='input-group mb-3'>
-              <select
-                className='form-control'
-                name='usertype'
-                value={usertype}
-                onChange={e => setUsertype(e.target.value)}>
-                <option value=''>--Select Type--</option>
-                <option value='patient'>Patient</option>
-                <option value='doctor'>Doctor</option>
-                <option value='clinic'>Clinic</option>
-                <option value='hospital'>Hospital</option>
-              </select>
+  if (loading) {
+    return <Spinner />;
+  } else
+    return (
+      <div className='container register-box mt-3'>
+        <div className='card row justify-content-center'>
+          <div className='card-body register-card-body'>
+            <div className='register-logo'>
+              <a href='#'>
+                <img
+                  src='asserts/logo/health.png'
+                  alt='AdminLTE Logo'
+                  className='brand-image img-circle elevation-3'
+                  style={{ opacity: '1' }}
+                  height='150'
+                  width='150'
+                />
+                {/* <b>Admin</b>LTE */}
+              </a>
+            </div>
+            <p className='login-box-msg'>Register here</p>
+            <form onSubmit={handelRegForm}>
+              <span className='error-text'>{errors.usertype}</span>
+              <div className='input-group mb-3'>
+                <select
+                  className='form-control'
+                  name='usertype'
+                  value={usertype}
+                  onChange={e => setUsertype(e.target.value)}>
+                  <option value=''>--Select Type--</option>
+                  <option value='patient'>Patient</option>
+                  <option value='doctor'>Doctor</option>
+                  <option value='clinic'>Clinic</option>
+                  <option value='hospital'>Hospital</option>
+                </select>
 
-              <div className='input-group-append'>
-                <div className='input-group-text'>
-                  <span className='fas fa-briefcase-medical' />
+                <div className='input-group-append'>
+                  <div className='input-group-text'>
+                    <span className='fas fa-briefcase-medical' />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <span className='error-text'>{errors.fullname}</span>
-            <div className='input-group mb-3'>
-              <input
-                type='text'
-                className='form-control'
-                name='fullname'
-                value={fullname}
-                placeholder='Full name'
-                onChange={e => setFullname(e.target.value)}
-              />
-              <div className='input-group-append'>
-                <div className='input-group-text'>
-                  <span className='fas fa-user' />
+              <span className='error-text'>{errors.fullname}</span>
+              <div className='input-group mb-3'>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='fullname'
+                  value={fullname}
+                  placeholder='Full name'
+                  onChange={e => setFullname(e.target.value)}
+                />
+                <div className='input-group-append'>
+                  <div className='input-group-text'>
+                    <span className='fas fa-user' />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <span className='error-text'>{errors.email ? errors.email : ''}</span>
-            <div className='input-group mb-3'>
-              <input
-                type='email'
-                className='form-control'
-                name='email'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder='Email'
-              />
-              <div className='input-group-append'>
-                <div className='input-group-text'>
-                  <span className='fas fa-envelope' />
+              <span className='error-text'>{errors.email ? errors.email : ''}</span>
+              <div className='input-group mb-3'>
+                <input
+                  type='email'
+                  className='form-control'
+                  name='email'
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder='Email'
+                />
+                <div className='input-group-append'>
+                  <div className='input-group-text'>
+                    <span className='fas fa-envelope' />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <span className='error-text'>{errors.password}</span>
-            <div className='input-group mb-3'>
-              <input
-                type='password'
-                className='form-control'
-                name='password'
-                value={password}
-                placeholder='Password'
-                onChange={e => setPassword(e.target.value)}
-              />
-              <div className='input-group-append'>
-                <div className='input-group-text'>
-                  <span className='fas fa-lock' />
+              <span className='error-text'>{errors.password}</span>
+              <div className='input-group mb-3'>
+                <input
+                  type='password'
+                  className='form-control'
+                  name='password'
+                  value={password}
+                  placeholder='Password'
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <div className='input-group-append'>
+                  <div className='input-group-text'>
+                    <span className='fas fa-lock' />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <span className='error-text'>{errors.confirm_password}</span>
-            <div className='input-group mb-3'>
-              <input
-                type='password'
-                className='form-control'
-                name='confirm_password'
-                value={confirm_password}
-                placeholder='Retype password'
-                onChange={e => setConfirm_password(e.target.value)}
-              />
-              <div className='input-group-append'>
-                <div className='input-group-text'>
-                  <span className='fas fa-lock' />
+              <span className='error-text'>{errors.confirm_password}</span>
+              <div className='input-group mb-3'>
+                <input
+                  type='password'
+                  className='form-control'
+                  name='confirm_password'
+                  value={confirm_password}
+                  placeholder='Retype password'
+                  onChange={e => setConfirm_password(e.target.value)}
+                />
+                <div className='input-group-append'>
+                  <div className='input-group-text'>
+                    <span className='fas fa-lock' />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className='row'>
-              <span className='error-text'>{errors.agreeTerms}</span>
-              <div className='col-8'>
-                <div className='icheck-primary'>
-                  <input
-                    type='checkbox'
-                    checked={agreeTerms}
-                    id='agreeTerms'
-                    name='agreeTerms'
-                    value={agreeTerms}
-                    onChange={handleCheckboxChange}
-                  />
-                  <label htmlFor='agreeTerms'>
-                    I agree to the <a href='#'>terms</a>
-                  </label>
+              <div className='row'>
+                <span className='error-text'>{errors.agreeTerms}</span>
+                <div className='col-8'>
+                  <div className='icheck-primary'>
+                    <input
+                      type='checkbox'
+                      checked={agreeTerms}
+                      id='agreeTerms'
+                      name='agreeTerms'
+                      value={agreeTerms}
+                      onChange={handleCheckboxChange}
+                    />
+                    <label htmlFor='agreeTerms'>
+                      I agree to the <a href='#'>terms</a>
+                    </label>
+                  </div>
+                </div>
+                <div className='col-4'>
+                  <button
+                    type='submit'
+                    className='btn btn-primary btn-block'>
+                    Register
+                  </button>
                 </div>
               </div>
-              <div className='col-4'>
-                <button
-                  type='submit'
-                  className='btn btn-primary btn-block'>
-                  Register
-                </button>
-              </div>
-            </div>
-          </form>
-          {/* <div className="social-auth-links text-center">
+            </form>
+            {/* <div className="social-auth-links text-center">
             <p>- OR -</p>
             <a href="#" className="btn btn-block btn-primary">
               <i className="fab fa-facebook mr-2" />
@@ -238,15 +246,15 @@ const Register = () => {
               Sign up using Google+
             </a>
           </div> */}
-          <Link
-            className='text-center'
-            to='/login'>
-            I already have registered
-          </Link>
+            <Link
+              className='text-center'
+              to='/login'>
+              I already have registered
+            </Link>
+          </div>
         </div>
+        <ToastContainer />
       </div>
-      <ToastContainer />
-    </div>
-  );
+    );
 };
 export default Register;

@@ -19,13 +19,13 @@ import HospitalProfile from './pages/hospital/HospitalProfile';
 import Doctor from './pages/doctor/Doctor';
 
 function App() {
-  const { loading } = useSelector(state => state.alerts);
+  // const { loading } = useSelector(state => state.alerts);
   return (
     <>
       <BrowserRouter>
-        {loading ? (
+        {/* {loading ? (
           <Spinner />
-        ) : (
+        ) : ( */}
           <Routes>
             <Route
               path='/'
@@ -37,7 +37,7 @@ function App() {
             />
 
             <Route
-              path='hospital/profile'
+              path='/hospital/profile'
               element={
                 <ProtectedRoute>
                   <HospitalProfile />
@@ -87,7 +87,7 @@ function App() {
               element={<ContactUs />}
             />
           </Routes>
-        )}
+        {/* )} */}
       </BrowserRouter>
     </>
     // <div className="wrapper">
