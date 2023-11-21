@@ -17,6 +17,7 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import HospitalProfile from './pages/hospital/HospitalProfile';
 import Doctor from './pages/doctor/Doctor';
+import AppointmentBooking from './pages/AppointmentBooking';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -26,67 +27,76 @@ function App() {
         {/* {loading ? (
           <Spinner />
         ) : ( */}
-          <Routes>
-            <Route
-              path='/'
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path='/hospital/profile'
-              element={
-                <ProtectedRoute>
-                  <HospitalProfile />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path='/hospital/profile'
+            element={
+              <ProtectedRoute>
+                <HospitalProfile />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path='/patient/profile'
-              element={
-                <ProtectedRoute>
-                  <PatientProfile />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path='/patient/profile'
+            element={
+              <ProtectedRoute>
+                <PatientProfile />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path='/doctor/profile'
-              element={
-                <ProtectedRoute>
-                  <Doctor />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/login'
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path='/register'
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path='/about-us'
-              element={<AboutUs />}
-            />
-            <Route
-              path='/contact'
-              element={<ContactUs />}
-            />
-          </Routes>
+          <Route
+            path='/doctor/profile'
+            element={
+              <ProtectedRoute>
+                <Doctor />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/appointment-booking'
+            element={
+              <ProtectedRoute>
+                <AppointmentBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/login'
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/about-us'
+            element={<AboutUs />}
+          />
+          <Route
+            path='/contact'
+            element={<ContactUs />}
+          />
+        </Routes>
         {/* )} */}
       </BrowserRouter>
     </>
