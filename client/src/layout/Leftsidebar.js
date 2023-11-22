@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-export default class extends Component {
+export default class Sidebar extends Component {
   render() {
     return (
       <div>
@@ -35,7 +35,7 @@ export default class extends Component {
                   <NavLink
                     to='/appointment-booking'
                     className='nav-link'>
-                    <i className='nav-icon fas fa-tachometer-alt' />
+                    <i className='nav-icon fas fa-calendar-check' />
                     <p>Appointment Booking</p>
                   </NavLink>
                 </li>
