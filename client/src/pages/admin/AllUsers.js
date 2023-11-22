@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { SERVER_BASE_URL } from "../../config/config.local";
-import Layouts from "../../components/Layouts";
-import axios from "axios";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
+import { SERVER_BASE_URL } from '../../config/config.local';
+import Layouts from '../../components/Layouts';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 const AllUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
 
   const getAllUsers = async () => {
     try {
-      let fetchApiUrl = SERVER_BASE_URL + "/api/v1/admin/allUsers";
+      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/admin/allUsers';
       const res = await axios.get(fetchApiUrl, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -19,7 +19,7 @@ const AllUsers = () => {
         console.log(res.data.success);
         setAllUsers(res.data.data);
       } else {
-        console.log("something went wrong");
+        console.log('something went wrong');
       }
     } catch (error) {
       console.log(error);
@@ -32,13 +32,14 @@ const AllUsers = () => {
 
   const handleAccountStatus = async (record, status) => {
     try {
+      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/admin/changeAccountStatus';
       const res = await axios.post(
-        "/api/v1/admin/changeAccountStatus",
+        fetchApiUrl,
         { recordUserId: record._id, status: status },
         {
           headers: {
-            authorization: "Bearer " + localStorage.getItem("token"),
-            "content-type": "application/json",
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+            'content-type': 'application/json',
           },
         }
       );
@@ -46,10 +47,11 @@ const AllUsers = () => {
       if (res.data.success) {
         console.log(res.data.data);
         toast.success(res.data.message);
+        getAllUsers();
       }
     } catch (error) {
       console.log(error);
-      toast.info("Something went wrong");
+      toast.info('Something went wrong');
     }
   };
 
@@ -110,11 +112,11 @@ const AllUsers = () => {
                                   record.usertype.slice(1)}
                               </td>
                               <td>
-                                {record.status == "pending" ? (
+                                {record.status == 'pending' ? (
                                   <button
                                     className="btn btn-success"
                                     onClick={() =>
-                                      handleAccountStatus(record, "approved")
+                                      handleAccountStatus(record, 'approved')
                                     }
                                   >
                                     Approve
@@ -123,7 +125,7 @@ const AllUsers = () => {
                                   <button
                                     className="btn btn-danger"
                                     onClick={() =>
-                                      handleAccountStatus(record, "pending")
+                                      handleAccountStatus(record, 'pending')
                                     }
                                   >
                                     Reject

@@ -1,28 +1,32 @@
-const express = require("express");
+const express = require('express');
 
 //router object
 const router = express.Router();
-const adminController = require("../../controllers/adminCtrl/adminCtrl");
-const authMiddleware = require("../../config/middlewares/authMiddleware");
+const adminController = require('../../controllers/adminCtrl/adminCtrl');
+const authMiddleware = require('../../config/middlewares/authMiddleware');
 
 //get admin profile info
 router.get(
-  "/adminProfileInfo",
+  '/adminProfileInfo',
   authMiddleware,
   adminController.getadminProfileInfo
 );
 
 router.post(
-  "/adminUpdateProfile",
+  '/adminUpdateProfile',
   authMiddleware,
   adminController.adminUpdateProfile
 );
 
-router.get("/allUsers", authMiddleware, adminController.getallUsers);
-// router.post(
-//   "/changeAccountStatus",
-//   authMiddleware,
-//   adminController.changeAccountStatus
-// );
+router.get('/allUsers', authMiddleware, adminController.getallUsers);
+router.post(
+  '/changeAccountStatus',
+  authMiddleware,
+  adminController.changeAccountStatus
+);
+
+// router.post('/changeAccountStatus', (req, res) => {
+//   res.send('yes reached till here');
+// });
 
 module.exports = router;

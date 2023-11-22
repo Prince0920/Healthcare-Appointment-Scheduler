@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
-import Layouts from "../../components/Layouts";
-import SubmitButton from "../../components/buttons/SubmitButton";
-import { SERVER_BASE_URL } from "../../config/config.local";
-import axios from "axios";
-import AdminPrimaryInfo from "./AdminPrimaryinfo";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
+import Layouts from '../../components/Layouts';
+import SubmitButton from '../../components/buttons/SubmitButton';
+import { SERVER_BASE_URL } from '../../config/config.local';
+import axios from 'axios';
+import AdminPrimaryInfo from './AdminPrimaryinfo';
+import { toast } from 'react-toastify';
 
 const AdminProfile = () => {
   const handleSubmit = () => {};
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [primaryInfo, setPrimaryInfo] = useState({ fullname: "", email: "" });
+  const [primaryInfo, setPrimaryInfo] = useState({ fullname: '', email: '' });
 
   const fetchAdminProfile = async () => {
     try {
-      let fetchApiUrl = SERVER_BASE_URL + "/api/v1/admin/adminProfileInfo";
+      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/admin/adminProfileInfo';
       const res = await axios.get(fetchApiUrl, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -24,7 +24,7 @@ const AdminProfile = () => {
         console.log(res.data.data);
         setPrimaryInfo(res.data.data);
       } else {
-        console.log("something went wrong");
+        console.log('something went wrong');
       }
     } catch (error) {
       console.log(error);
@@ -55,12 +55,12 @@ const AdminProfile = () => {
     // console.log(hospitalProfileData);
     try {
       const res = await axios.post(
-        SERVER_BASE_URL + "/api/v1/admin/adminUpdateProfile",
+        SERVER_BASE_URL + '/api/v1/admin/adminUpdateProfile',
         JSON.stringify(adminProfileData),
         {
           headers: {
-            authorization: "Bearer " + localStorage.getItem("token"),
-            "content-type": "application/json",
+            authorization: 'Bearer ' + localStorage.getItem('token'),
+            'content-type': 'application/json',
           },
         }
       );
