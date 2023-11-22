@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class extends Component {
   render() {
@@ -14,7 +15,7 @@ export default class extends Component {
             />
             <span className="brand-text font-weight-light">HealthCare</span>
           </a>
-          {/* <div className="sidebar">  
+          <div className="sidebar">
             <nav className="mt-2">
               <ul
                 className="nav nav-pills nav-sidebar flex-column"
@@ -22,7 +23,88 @@ export default class extends Component {
                 role="menu"
                 data-accordion="false"
               >
-                <li className="nav-item menu-open">
+                <li className="nav-item">
+                  <a href="#" className="nav-link">
+                    <i className="nav-icon fas fa-copy" />
+                    <p>
+                      Users
+                      <i className="fas fa-angle-left right" />
+                      <span className="badge badge-info right">6</span>
+                    </p>
+                  </a>
+                  <ul className="nav nav-treeview">
+                    <li className="nav-item">
+                      <Link to="admin/all-users" className="nav-link">
+                        <i className="far fa-circle nav-icon" />
+                        <p>All Users</p>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/top-nav-sidebar.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>Top Navigation + Sidebar</p>
+                      </a>
+                    </li>
+                    {/* <li className="nav-item">
+                      <a href="pages/layout/boxed.html" className="nav-link">
+                        <i className="far fa-circle nav-icon" />
+                        <p>Boxed</p>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/fixed-sidebar.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>Fixed Sidebar</p>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/fixed-sidebar-custom.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>
+                          Fixed Sidebar <small>+ Custom Area</small>
+                        </p>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/fixed-topnav.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>Fixed Navbar</p>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/fixed-footer.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>Fixed Footer</p>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        href="pages/layout/collapsed-sidebar.html"
+                        className="nav-link"
+                      >
+                        <i className="far fa-circle nav-icon" />
+                        <p>Collapsed Sidebar</p>
+                      </a>
+                    </li> */}
+                  </ul>
+                </li>
+
+                {/* <li className="nav-item menu-open">
                   <a href="#" className="nav-link active">
                     <i className="nav-icon fas fa-tachometer-alt" />
                     <p>
@@ -734,10 +816,10 @@ export default class extends Component {
                     <i className="nav-icon far fa-circle text-info" />
                     <p>Informational</p>
                   </a>
-                </li>
+                </li> */}
               </ul>
             </nav>
-          </div> */}
+          </div>
         </aside>
       </div>
     );

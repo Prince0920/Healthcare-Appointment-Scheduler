@@ -8,8 +8,11 @@ import HospitalAbout from "./HospitalAbout";
 import HospitalMedicin from "./HospitalMedicin";
 import HospitalHmresource from "./HospitalHmresource";
 import HospitalInfrastructure from "./HospitalInfrastructure";
+import { toast } from "react-toastify";
+import SubmitButton from "../../components/buttons/SubmitButton";
 
 const HospitalProfile = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [hospitalData, setHospitalData] = useState({
     establishmentDetails: {
       hospitalName: "",
@@ -131,6 +134,8 @@ const HospitalProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsSubmitting(true);
+
     const hospitalProfileData = {
       establishmentDetails: establishmentDetails,
       address: address,
@@ -139,7 +144,7 @@ const HospitalProfile = () => {
       infrastructureDetails: infrastructureDetails,
     };
 
-    console.log(hospitalProfileData);
+    // console.log(hospitalProfileData);
 
     try {
       const res = await axios.post(
@@ -152,12 +157,45 @@ const HospitalProfile = () => {
           },
         }
       );
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsSubmitting(false);
+    }
+
+    //console.log("Yes submitted");
+  };
+
+  const fetchHospitalProfile = async () => {
+    try {
+      let fetchApiUrl = SERVER_BASE_URL + "/api/v1/hospital/hosProfileInfo";
+      const res = await axios.get(fetchApiUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data.success) {
+        console.log(res.data.data);
+        setAddress(res.data.data.address);
+        setEstablishmentDetails(res.data.data.establishmentDetails);
+        setAbout(res.data.data.about);
+        setHumanRecource(res.data.data.humanResources);
+        setInfrastructureDetails(res.data.data.infrastructureDetails);
+      } else {
+        console.log("something went wrong");
+      }
     } catch (error) {
       console.log(error);
     }
-
-    console.log("Yes submitted");
   };
+
+  useEffect(() => {
+    fetchHospitalProfile();
+  }, []);
 
   return (
     <Layouts>
@@ -171,7 +209,7 @@ const HospitalProfile = () => {
                     <h3 class="card-title">Hospital Profile</h3>
                   </div>
                   <div className="card-body">
-                    <form onSubmit={handleSubmit}>
+                    <form>
                       {/* Establishment Details */}
                       <HospitalPrimaryinfo
                         establishmentDetails={establishmentDetails}
@@ -245,9 +283,11 @@ const HospitalProfile = () => {
                       />
 
                       {/* Submit Button */}
-                      <button type="submit" className="btn btn-primary">
-                        Update Hospital
-                      </button>
+                      <SubmitButton
+                        onClick={handleSubmit}
+                        isSubmitting={isSubmitting}
+                        buttonText="Update Hospital"
+                      />
                     </form>
                   </div>
                 </div>
