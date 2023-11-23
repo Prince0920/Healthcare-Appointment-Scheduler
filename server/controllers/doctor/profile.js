@@ -92,18 +92,35 @@ const getDoctorProfileController = async (req, res) => {
 // Get all doctors
 const getAllDoctorController = async (req, res) => {
   try {
-    const doctorData = await DoctorProfile.find({});
-    console.log('doctorData', doctorData);
+    let doctorData = await DoctorProfile.find({}).populate('userId');
     if (!doctorData) {
       return res.status(404).json({
         success: false,
         message: 'Patient profile not found.',
       });
     }
+    const formattedDoctorData = doctorData.map(doctor => {
+      const { userId } = doctor;
+
+      return {
+        fullName: userId.fullname,
+        email: userId.email,
+        usertype: userId.usertype,
+        address: doctor.address,
+        gender: doctor.gender,
+        education: doctor.education,
+        phone: doctor.phone,
+        experience: doctor.experience,
+        medicalSpecialty: doctor.medicalSpecialty,
+        workingHours: doctor.workingHours,
+        about: doctor.about,
+        review: doctor.review,
+      };
+    });
 
     return res.status(200).json({
       success: true,
-      data: doctorData,
+      data: formattedDoctorData,
     });
   } catch (error) {
     console.error('Error getting :', error);
