@@ -89,4 +89,34 @@ const getDoctorProfileController = async (req, res) => {
   }
 };
 
-module.exports = { createDoctorProfileController, getDoctorProfileController };
+// Get all doctors
+const getAllDoctorController = async (req, res) => {
+  try {
+    const doctorData = await DoctorProfile.find({});
+    console.log('doctorData', doctorData);
+    if (!doctorData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Patient profile not found.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: doctorData,
+    });
+  } catch (error) {
+    console.error('Error getting :', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get patient profile.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createDoctorProfileController,
+  getDoctorProfileController,
+  getAllDoctorController,
+};

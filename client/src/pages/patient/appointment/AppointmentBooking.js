@@ -3,13 +3,20 @@ import Layouts from '../../../components/Layouts';
 import ContentHeader from '../../../components/ContentHeader';
 import Filter from './Filter';
 import FilterResult from './FilterResult';
+import { SERVER_BASE_URL } from '../../../config/config.local';
+import axios from 'axios';
 
 const AppointmentBooking = () => {
+  const [doctorData, setDoctorData] = useState([]);
+  const [hospitalData, setHospitalData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
   const [bookedAppointment, setBookedAppointment] = useState(null);
   const [isBookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  // Define constants
+  const API_URL = SERVER_BASE_URL;
 
   const dummySearchResults = [
     {
@@ -98,6 +105,27 @@ const AppointmentBooking = () => {
     setSearchResults(dummySearchResults);
   };
 
+  const getAllProviders = async () => {
+    const doctorData = await axios.get(API_URL + '/api/v1/doctor', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    const hospitalData = await axios.get(API_URL + '/api/v1/hospital', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    setDoctorData(doctorData.data.data);
+    setHospitalData(hospitalData.data.data);
+  };
+
+  useEffect(() => {
+    getAllProviders();
+  }, []);
+
   const handleBookAppointment = async (provider, selectedDate) => {
     try {
       // Show loading animation while booking
@@ -141,6 +169,8 @@ const AppointmentBooking = () => {
                 <h3 className='mb-3'>Results</h3>
                 <FilterResult
                   searchResults={searchResults}
+                  doctorData={doctorData}
+                  hospitalData={hospitalData}
                   handleBookAppointment={handleBookAppointment}
                 />
               </div>

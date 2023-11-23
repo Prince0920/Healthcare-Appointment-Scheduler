@@ -11,4 +11,7 @@ router.put('/profile', authMiddleware, doctorProfile.createDoctorProfileControll
 // getting profile || get
 router.get('/profile', authMiddleware, doctorProfile.getDoctorProfileController);
 
+// getting all doctors || get
+router.get('/', authMiddleware, doctorProfile.getAllDoctorController);
+
 module.exports = router;

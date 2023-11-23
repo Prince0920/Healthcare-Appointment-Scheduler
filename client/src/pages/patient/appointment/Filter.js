@@ -15,9 +15,10 @@ const Filter = ({ fetchProviders }) => {
     }));
   };
 
-  useEffect(() => {
-    fetchProviders(searchCriteria);
-  }, [searchCriteria]);
+//   useEffect(() => {
+//     fetchProviders(searchCriteria);
+//   }, [searchCriteria]);
+
   return (
     <div
       className='card'

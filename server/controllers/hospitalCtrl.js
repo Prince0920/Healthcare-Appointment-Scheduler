@@ -82,4 +82,30 @@ const hosProfileInfo = async (req, res) => {
   }
 };
 
-module.exports = { hospitalUpdateProfile, hosProfileInfo };
+// Getting all hospital data
+const getAllHospitals = async (req, res) => {
+  try {
+    const hosData = await hospitalModel.find({});
+
+    if (!hosData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Hospital data not found.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: hosData,
+    });
+  } catch (error) {
+    console.error('Error getting hospital list:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get hospital list.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { hospitalUpdateProfile, hosProfileInfo, getAllHospitals };
