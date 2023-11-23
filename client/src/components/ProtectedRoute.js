@@ -1,61 +1,67 @@
-import React, { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import {useSelector,useDispatch} from "react-redux"
-import { hideLoading, showLoading } from "../redux/features/alertSlice";
-import axios from "axios";
-import { setUser } from "../redux/features/userSlice";
-import { SERVER_BASE_URL } from "../config/config.local";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { SERVER_BASE_URL } from '../config/config.local';
+import Spinner from './Spinner';
 
 const ProtectedRoute = ({ children }) => {
-  const navigate = useNavigate();
+  //   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const {user} = useSelector(state=>state.user);
+  //   const dispatch = useDispatch();
+  //   const {user} = useSelector(state=>state.user);
 
-  //get user 
-  const getuser  = async ()=>{
+  const [user, setUser] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  //get user
+  const getuser = async () => {
     //console.log('Hello '+user)
 
     try {
-
-        dispatch(showLoading())
-        const res = await axios.post(SERVER_BASE_URL+
-          "/api/v1/user/getUserData",
-          { token: localStorage.getItem("token") },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        dispatch(hideLoading());
-
-        if(res.data.success){
-          dispatch(setUser(res.data.data))
-        }else{
-          //alert();
-          <Navigate to="/login" />;
-          localStorage.clear();
+      // dispatch(showLoading())
+      setLoading(true);
+      const res = await axios.post(
+        SERVER_BASE_URL + '/api/v1/user/getUserData',
+        { token: localStorage.getItem('token') },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         }
+      );
 
-    } catch (error) {
-        dispatch(hideLoading());
-      console.log(error); 
-    }
+      // dispatch(hideLoading());
+      setLoading(false);
 
-  }
-
-  useEffect(()=>{
-      if(!user){
-        getuser();
+      if (res.data.success) {
+        //   dispatch(setUser(res.data.data))
+        setUser(res.data.data);
+      } else {
+        //alert();
+        <Navigate to='/login' />;
+        localStorage.clear();
       }
-  },[user])
+    } catch (error) {
+      // dispatch(hideLoading());
+      setLoading(false);
 
-  if (localStorage.getItem("token")) {
-    return children;
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getuser();
+  }, []);
+  
+  if (!loading) {
+    if (localStorage.getItem('token')) {
+      return children;
+    } else {
+      return <Navigate to='/login' />;
+    }
   } else {
-    return <Navigate to="/login" />;
+    return <Spinner />;
   }
 };
 

@@ -48,4 +48,38 @@ const hospitalUpdateProfile = async (req, res) => {
   }
 };
 
-module.exports = { hospitalUpdateProfile };
+//get hospital profile info
+const hosProfileInfo = async (req, res) => {
+  try {
+    let userId = req.body.userId;
+
+    let userData = await userModel.findOne({ _id: userId });
+
+    if (!userData) {
+      res.status(400).send({
+        success: false,
+        message: "Hospital does not exists",
+      });
+    }
+
+    let hosInfo = await hospitalModel.findOne({ userId: userId });
+
+    if (hosInfo) {
+      //console.log("Hospital exists");
+      res.status(200).send({
+        success: true,
+        data: hosInfo,
+      });
+    } else {
+      console.log("Hospital not available");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: `${error.message}`,
+    });
+  }
+};
+
+module.exports = { hospitalUpdateProfile, hosProfileInfo };

@@ -16,4 +16,7 @@ router.post(
   hospitalCtrl.hospitalUpdateProfile
 );
 
+//get hospital info
+router.get("/hosProfileInfo", authMiddleware, hospitalCtrl.hosProfileInfo);
+
 module.exports = router;

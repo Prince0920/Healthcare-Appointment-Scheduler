@@ -15,73 +15,102 @@ import Spinner from './components/Spinner';
 import { PatientProfile } from './pages/patient/PatientProfile';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
-import HospitalProfile from "./pages/hospital/HospitalProfile";
+import HospitalProfile from './pages/hospital/HospitalProfile';
+import Doctor from './pages/doctor/Doctor';
+import AppointmentBooking from './pages/AppointmentBooking';
+import AdminProfile from './pages/admin/AdminProfile';
+import AllUsers from './pages/admin/AllUsers';
 
 function App() {
-  const { loading } = useSelector(state => state.alerts);
+  // const { loading } = useSelector(state => state.alerts);
   return (
     <>
       <BrowserRouter>
-        {loading ? (
-          <Spinner />
-        ) : (
-          <Routes>
-            <Route
-              path='/'
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="hospital/profile"
-              element={
-                <ProtectedRoute>
-                  <HospitalProfile />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path='/hospital/profile'
+            element={
+              <ProtectedRoute>
+                <HospitalProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/patient/profile'
+            element={
+              <ProtectedRoute>
+                <PatientProfile />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path='/patient/profile'
+          <Route
+            path='/doctor/profile'
+            element={
+              <ProtectedRoute>
+                <Doctor />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/appointment-booking'
+            element={
+              <ProtectedRoute>
+                <AppointmentBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/login'
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/about-us'
+            element={<AboutUs />}
+          />
+          <Route
+            path='/contact'
+            element={<ContactUs />}
+          />
+           <Route
+              path="/admin/profile"
               element={
                 <ProtectedRoute>
-                  <PatientProfile />
+                  <AdminProfile />
                 </ProtectedRoute>
               }
             />
             <Route
-              path='/login'
+              path="/admin/all-users"
               element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
+                <ProtectedRoute>
+                  <AllUsers />
+                </ProtectedRoute>
               }
             />
-            <Route
-              path='/register'
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path='/about-us'
-              element={
-                  <AboutUs />
-              }
-            />
-            <Route
-              path='/contact'
-              element={
-                  <ContactUs />
-              }
-            />
-          </Routes>
-        )}
+        </Routes>
       </BrowserRouter>
     </>
     // <div className="wrapper">

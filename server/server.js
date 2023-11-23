@@ -1,9 +1,9 @@
-const express = require("express");
-const colors = require("colors");
-const morgan = require("morgan");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-const cors = require("cors");
+const express = require('express');
+const colors = require('colors');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const cors = require('cors');
 
 //res object
 const app = express();
@@ -19,21 +19,25 @@ app.use(cors());
 
 //middleware
 app.use(express.json());
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
-app.get("/", (req, res) => {
-  res.send("Server working ...........");
+app.get('/', (req, res) => {
+  res.send('Server working ...........');
 });
 
-const userRoutes = require("./routes/userRoutes");
-const hospitalRoutes = require("./routes/hospitalRoutes");
+const userRoutes = require('./routes/userRoutes');
+const hospitalRoutes = require('./routes/hospitalRoutes');
+const patientProfileRoute = require('./routes/patient/profile');
+const doctorProfileRoute = require('./routes/doctor/doctor');
+const adminRoute = require('./routes/admin/adminRoutes');
 
-app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/hospital", hospitalRoutes);
-const patientProfileRoute = require("./routes/patient/profile");
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/hospital', hospitalRoutes);
 
-app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/patient", patientProfileRoute);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/patient', patientProfileRoute);
+app.use('/api/v1/doctor', doctorProfileRoute);
+app.use('/api/v1/admin', adminRoute);
 
 //port
 const port = process.env.PORT || 8080;
