@@ -17,7 +17,7 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import HospitalProfile from './pages/hospital/HospitalProfile';
 import Doctor from './pages/doctor/Doctor';
-import AppointmentBooking from './pages/AppointmentBooking';
+import AppointmentBooking from './pages/patient/appointment/AppointmentBooking';
 import AdminProfile from './pages/admin/AdminProfile';
 import AllUsers from './pages/admin/AllUsers';
 
