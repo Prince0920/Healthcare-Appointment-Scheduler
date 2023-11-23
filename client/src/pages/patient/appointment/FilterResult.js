@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FilterResult = ({ searchResults, doctorData, hospitalData, handleBookAppointment }) => {
+const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
@@ -23,9 +23,9 @@ const FilterResult = ({ searchResults, doctorData, hospitalData, handleBookAppoi
   return (
     <>
       <div className='row'>
-        {doctorData.map(provider => (
+        {doctorData.map((provider, index) => (
           <div
-            key={provider.id}
+            key={index}
             className='col-md-4 mb-3'>
             <div
               className='card cursor-pointer'
@@ -54,13 +54,20 @@ const FilterResult = ({ searchResults, doctorData, hospitalData, handleBookAppoi
                 <h5
                   className='card-title mb-2'
                   style={{ fontSize: '1.5rem' }}>
-                  {provider.name}
+                  {provider.fullName}
                 </h5>
                 <p className='card-text'>
-                  <strong>Specialization:</strong> {provider.specialization}
+                  <strong>Specialization:</strong> {provider.medicalSpecialty}
                 </p>
                 <p className='card-text'>
-                  <strong>Location:</strong> {provider.location}
+                  <strong>Location:</strong>{' '}
+                  {provider.address.landmark +
+                    ', ' +
+                    provider.address.street +
+                    ', ' +
+                    provider.address.city +
+                    ', ' +
+                    provider.address.state}
                 </p>
                 {/* Add View Button  */}
                 <div className='row mb-3'>
@@ -89,9 +96,9 @@ const FilterResult = ({ searchResults, doctorData, hospitalData, handleBookAppoi
           </div>
         ))}
 
-        {hospitalData.map(provider => (
+        {hospitalData.map((provider, index) => (
           <div
-            key={provider.id}
+            key={index}
             className='col-md-4 mb-3'>
             <div
               className='card cursor-pointer'
@@ -120,13 +127,20 @@ const FilterResult = ({ searchResults, doctorData, hospitalData, handleBookAppoi
                 <h5
                   className='card-title mb-2'
                   style={{ fontSize: '1.5rem' }}>
-                  {provider.name}
+                  {provider.establishmentDetails.hospitalName + ' Hospital'}
                 </h5>
                 <p className='card-text'>
-                  <strong>Specialization:</strong> {provider.specialization}
+                  <strong>Total Doctors:</strong> {provider.humanResources.totalDoctors}
                 </p>
                 <p className='card-text'>
-                  <strong>Location:</strong> {provider.location}
+                  <strong>Location:</strong>{' '}
+                  {provider.address.addressLineOne +
+                    ', ' +
+                    provider.address.village +
+                    ', ' +
+                    provider.address.district +
+                    ', ' +
+                    provider.address.state}
                 </p>
                 {/* Add View Button  */}
                 <div className='row mb-3'>
