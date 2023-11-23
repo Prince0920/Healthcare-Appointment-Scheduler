@@ -29,16 +29,15 @@ const userRoutes = require('./routes/userRoutes');
 const hospitalRoutes = require('./routes/hospitalRoutes');
 const patientProfileRoute = require('./routes/patient/profile');
 const doctorProfileRoute = require('./routes/doctor/doctor');
+const adminRoute = require('./routes/admin/adminRoutes');
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/hospital', hospitalRoutes);
-const patientProfileRoute = require("./routes/patient/profile");
-const adminRoute = require("./routes/admin/adminRoutes");
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/patient', patientProfileRoute);
 app.use('/api/v1/doctor', doctorProfileRoute);
-app.use("/api/v1/admin", adminRoute);
+app.use('/api/v1/admin', adminRoute);
 
 //port
 const port = process.env.PORT || 8080;

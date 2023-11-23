@@ -38,34 +38,13 @@ export default class Sidebar extends Component {
                     <i className='nav-icon fas fa-calendar-check' />
                     <p>Appointment Booking</p>
                   </NavLink>
-                  <a
-                    href='#'
+                  
+                  <NavLink
+                    to='/admin/all-users'
                     className='nav-link'>
-                    <i className='nav-icon fas fa-copy' />
-                    <p>
-                      Users
-                      <i className='fas fa-angle-left right' />
-                      <span className='badge badge-info right'>6</span>
-                    </p>
-                  </a>
-                  <ul className='nav nav-treeview'>
-                    <li className='nav-item'>
-                      <Link
-                        to='admin/all-users'
-                        className='nav-link'>
-                        <i className='far fa-circle nav-icon' />
-                        <p>All Users</p>
-                      </Link>
-                    </li>
-                    <li className='nav-item'>
-                      <a
-                        href='pages/layout/top-nav-sidebar.html'
-                        className='nav-link'>
-                        <i className='far fa-circle nav-icon' />
-                        <p>Top Navigation + Sidebar</p>
-                      </a>
-                    </li>
-                  </ul>
+                     <i className='far fa-circle nav-icon' />
+                    <p>All Users</p>
+                  </NavLink>
                 </li>
               </ul>
             </nav>
