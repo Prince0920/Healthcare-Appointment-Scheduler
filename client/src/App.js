@@ -18,15 +18,14 @@ import ContactUs from './pages/ContactUs';
 import HospitalProfile from './pages/hospital/HospitalProfile';
 import Doctor from './pages/doctor/Doctor';
 import AppointmentBooking from './pages/AppointmentBooking';
+import AdminProfile from './pages/admin/AdminProfile';
+import AllUsers from './pages/admin/AllUsers';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
   return (
     <>
       <BrowserRouter>
-        {/* {loading ? (
-          <Spinner />
-        ) : ( */}
         <Routes>
           <Route
             path='/'
@@ -45,7 +44,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path='/patient/profile'
             element={
@@ -96,8 +94,23 @@ function App() {
             path='/contact'
             element={<ContactUs />}
           />
+           <Route
+              path="/admin/profile"
+              element={
+                <ProtectedRoute>
+                  <AdminProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/all-users"
+              element={
+                <ProtectedRoute>
+                  <AllUsers />
+                </ProtectedRoute>
+              }
+            />
         </Routes>
-        {/* )} */}
       </BrowserRouter>
     </>
     // <div className="wrapper">
