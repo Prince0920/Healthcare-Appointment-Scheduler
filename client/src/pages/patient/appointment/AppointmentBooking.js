@@ -104,6 +104,12 @@ const AppointmentBooking = () => {
     // For now, use dummy data. Replace this with an actual API call.
     console.log('_searchCriteria_searchCriteria', _searchCriteria);
     setSearchResults(dummySearchResults);
+    await axios
+    .put(API_URL+ '/api/v1/doctor/search', _searchCriteria ,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
   };
 
   const getAllProviders = async () => {

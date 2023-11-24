@@ -41,7 +41,26 @@ const bookAppointmentWithDoctor = async (req, res) => {
   }
 };
 
+const searchDoctor = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    console.log("req.body", req.body)
+    return res.status(201).json({
+      success: true,
+      message: 'Searching doctor!',
+    });
+  } catch (error) {
+    console.error('Error creating/updating patient profile:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create/update patient profile.',
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   bookAppointmentWithDoctor,
+  searchDoctor
 };
