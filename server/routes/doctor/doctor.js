@@ -14,7 +14,5 @@ router.get('/profile', authMiddleware, doctorProfile.getDoctorProfileController)
 // getting all doctors || get
 router.get('/', authMiddleware, doctorProfile.getAllDoctorController);
 
-// Book appointment with doctor
-router.post('/book-appointment', authMiddleware, doctorProfile.bookAppointmentWithDoctor);
 
 module.exports = router;
