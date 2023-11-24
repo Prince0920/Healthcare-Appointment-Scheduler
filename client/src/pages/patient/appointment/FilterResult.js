@@ -19,7 +19,7 @@ const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
   const handleCloseDetailsModal = () => {
     setShowDetailsModal(false);
   };
-  console.log('selected provider', selectedProvider);
+  console.log('Doctor Data', doctorData);
   return (
     <>
       <div className='row'>

@@ -5,6 +5,7 @@ import Filter from './Filter';
 import FilterResult from './FilterResult';
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AppointmentBooking = () => {
   const [doctorData, setDoctorData] = useState([]);
@@ -133,17 +134,34 @@ const AppointmentBooking = () => {
 
       // Simulate API call for booking (replace with actual API call)
 
-      // Booking successful
-      setBookingSuccess(true);
-
-      // Set the booked appointment details
-      setBookedAppointment({
-        provider: provider,
+      const dataToSend = {
+        doctorProfileId: provider.doctorProfileId,
         date: selectedDate,
+      };
+
+      const response = await axios.post(API_URL + '/api/v1/doctor/book-appointment', dataToSend, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
+
+      if (response.data.success) {
+        // Booking successful
+        setBookingSuccess(true);
+        // Set the booked appointment details
+        setBookedAppointment({
+          provider: provider,
+          date: selectedDate,
+        });
+        toast.success(response.data.message);
+      } else {
+        // Booking failed
+        toast.info(response.data.message);
+      }
     } catch (error) {
       // Handle booking error
-      console.error('Booking failed:', error);
+      toast.error('Booking failed. Please try again.');
+      console.error('Booking failed:', error.message);
     } finally {
       // Hide loading animation
       setBookingLoading(false);
@@ -208,14 +226,11 @@ const AppointmentBooking = () => {
                         {bookedAppointment && (
                           <>
                             <p>
-                              <strong>Name:</strong> {bookedAppointment.provider.name}
+                              <strong>Name:</strong> {bookedAppointment.provider.fullName}
                             </p>
                             <p>
                               <strong>Specialization:</strong>{' '}
-                              {bookedAppointment.provider.specialization}
-                            </p>
-                            <p>
-                              <strong>Location:</strong> {bookedAppointment.provider.location}
+                              {bookedAppointment.provider.medicalSpecialty}
                             </p>
                             <p>
                               <strong>Date:</strong> {bookedAppointment.date}
@@ -223,8 +238,6 @@ const AppointmentBooking = () => {
                             {/* Add more details as needed  */}
                           </>
                         )}
-                        {/* Add right arrow icon here */}
-                        <i className='fas fa-arrow-right'></i>
                       </div>
                     </div>
                   </div>
