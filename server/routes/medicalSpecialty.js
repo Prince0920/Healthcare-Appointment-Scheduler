@@ -11,8 +11,8 @@ const medicalSpecialtyController = require("../controllers/medicalSpecialty");
 
 
 //get all hospitals
-router.get("/", medicalSpecialtyController.getAllMedicalSpecialties);
+router.get("/", authMiddleware, medicalSpecialtyController.getAllMedicalSpecialties);
 
-router.post("/", medicalSpecialtyController.createMedicalSpecialty);
+router.post("/", authMiddleware, medicalSpecialtyController.createMedicalSpecialty);
 
 module.exports = router;
