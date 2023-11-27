@@ -20,6 +20,7 @@ import Doctor from './pages/doctor/Doctor';
 import AppointmentBooking from './pages/patient/appointment/AppointmentBooking';
 import AdminProfile from './pages/admin/AdminProfile';
 import AllUsers from './pages/admin/AllUsers';
+import MyBookings from './pages/patient/my-bookings/MyBookings';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -67,6 +68,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AppointmentBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/bookings'
+            element={
+              <ProtectedRoute>
+                <MyBookings />
               </ProtectedRoute>
             }
           />
