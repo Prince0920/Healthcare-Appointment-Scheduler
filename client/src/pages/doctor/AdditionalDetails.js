@@ -71,7 +71,7 @@ const AdditionalDetails = ({
             </option>
             {medicalSpec.map(spec => (
               <option
-                key={spec.id}
+                key={spec._id}
                 value={spec.name}>
                 {spec.name}
               </option>
