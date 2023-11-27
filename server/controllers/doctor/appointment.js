@@ -16,7 +16,8 @@ const bookAppointmentWithDoctor = async (req, res) => {
     if (existingAppointment) {
       return res.status(200).json({
         success: false,
-        message: 'Cannot book a new appointment. There is a pending appointment with the same doctor.',
+        message:
+          'Cannot book a new appointment. There is a pending appointment with the same doctor.',
       });
     }
 
@@ -43,18 +44,45 @@ const bookAppointmentWithDoctor = async (req, res) => {
 
 const searchDoctor = async (req, res) => {
   try {
-    const { userId } = req.body;
+    let doctorData = await DoctorProfile.find({
+      medicalSpecialty: req.body.medicalSpecialty,
+    }).populate('userId');
 
-    console.log("req.body", req.body)
-    return res.status(201).json({
+    if (!doctorData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Not avaliable.',
+      });
+    }
+    const formattedDoctorData = doctorData.map(doctor => {
+      const { userId } = doctor;
+
+      return {
+        doctorProfileId: doctor._id,
+        fullName: userId.fullname,
+        email: userId.email,
+        usertype: userId.usertype,
+        address: doctor.address,
+        gender: doctor.gender,
+        education: doctor.education,
+        phone: doctor.phone,
+        experience: doctor.experience,
+        medicalSpecialty: doctor.medicalSpecialty,
+        workingHours: doctor.workingHours,
+        about: doctor.about,
+        review: doctor.review,
+      };
+    });
+
+    return res.status(200).json({
       success: true,
-      message: 'Searching doctor!',
+      data: formattedDoctorData,
     });
   } catch (error) {
-    console.error('Error creating/updating patient profile:', error);
+    console.error('Error getting :', error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to create/update patient profile.',
+      message: 'Failed to get doctors search result.',
       error: error.message,
     });
   }
@@ -62,5 +90,5 @@ const searchDoctor = async (req, res) => {
 
 module.exports = {
   bookAppointmentWithDoctor,
-  searchDoctor
+  searchDoctor,
 };

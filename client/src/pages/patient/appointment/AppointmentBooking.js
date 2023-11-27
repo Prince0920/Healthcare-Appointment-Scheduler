@@ -10,6 +10,10 @@ import { toast } from 'react-toastify';
 const AppointmentBooking = () => {
   const [doctorData, setDoctorData] = useState([]);
   const [isLoading, setIsloading] = useState(false);
+  const [searchCriteria, setSearchCriteria] = useState({
+    medicalSpecialty: '',
+  });
+  const [medicalSpec, setMedicalSpecility] = useState([]);
 
   const [hospitalData, setHospitalData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -23,14 +27,42 @@ const AppointmentBooking = () => {
 
   // Assume you have a function to fetch available providers based on search criteria
   const fetchProviders = async _searchCriteria => {
-    // For now, use dummy data. Replace this with an actual API call.
-    console.log('_searchCriteria_searchCriteria', _searchCriteria);
-    await axios.put(API_URL + '/api/v1/doctor/search', _searchCriteria, {
+    setIsloading(true);
+    try {
+      const res = await axios.put(API_URL + '/api/v1/doctor/search', _searchCriteria, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setIsloading(false);
+      setDoctorData(res.data.data);
+      // setHospitalData(hospitalData.data.data);
+    } catch (error) {
+      setIsloading(false);
+      toast.error('Something went wrong!!');
+      console.log('error: ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProviders(searchCriteria);
+  }, [searchCriteria]);
+
+  const getAllMedicalSpec = async () => {
+    const url = SERVER_BASE_URL + '/api/v1/medical-speciality';
+    const res = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
+
+    setMedicalSpecility(res.data.data);
   };
+
+  useEffect(() => {
+    getAllMedicalSpec();
+  }, []);
 
   const getAllProviders = async () => {
     setIsloading(true);
@@ -62,9 +94,8 @@ const AppointmentBooking = () => {
 
   const handleBookAppointment = async (provider, selectedDate) => {
     try {
-
-      if(!selectedDate){
-        toast.error("Please select appointment date.")
+      if (!selectedDate) {
+        toast.error('Please select appointment date.');
         return;
       }
       // Simulate API call for booking (replace with actual API call)
@@ -102,7 +133,14 @@ const AppointmentBooking = () => {
       setBookingLoading(false);
     }
   };
-
+  
+  const handleSearchChange = e => {
+    const { name, value } = e.target;
+    setSearchCriteria(prevSearchCriteria => ({
+      ...prevSearchCriteria,
+      [name]: value,
+    }));
+  };
   return (
     <Layouts>
       <div className='content-wrapper'>
@@ -119,7 +157,30 @@ const AppointmentBooking = () => {
 
               {/* Search Results section  */}
               <div className='col-md-12'>
-                <h3 className='mb-3'>Results</h3>
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h3 className='mb-0'>Results</h3>
+                  <div className='col-3'>
+                    {/* <label>Medical Specialty</label> */}
+                    <select
+                      name='medicalSpecialty'
+                      value={searchCriteria.medicalSpecialty}
+                      onChange={handleSearchChange}
+                      className='form-control'>
+                      <option
+                        value=''
+                        disabled>
+                        Select Medical Specialty
+                      </option>
+                      {medicalSpec.map(spec => (
+                        <option
+                          key={spec._id}
+                          value={spec.name}>
+                          {spec.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
                 {isLoading ? (
                   <p>Loading results...</p>
                 ) : (

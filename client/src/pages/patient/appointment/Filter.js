@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { SERVER_BASE_URL } from '../../../config/config.local';
+import axios from 'axios';
 
 const Filter = ({ fetchProviders }) => {
   const [searchCriteria, setSearchCriteria] = useState({
-    location: '',
-    specialization: '',
-    date: '',
+    medicalSpecialty: '',
   });
 
   const handleSearchChange = e => {
@@ -15,9 +15,26 @@ const Filter = ({ fetchProviders }) => {
     }));
   };
 
-//   useEffect(() => {
-//     fetchProviders(searchCriteria);
-//   }, [searchCriteria]);
+  //   useEffect(() => {
+  //     fetchProviders(searchCriteria);
+  //   }, [searchCriteria]);
+
+  const [medicalSpec, setMedicalSpecility] = useState([]);
+
+  const getAllMedicalSpec = async () => {
+    const url = SERVER_BASE_URL + '/api/v1/medical-speciality';
+    const res = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    setMedicalSpecility(res.data.data);
+  };
+
+  useEffect(() => {
+    getAllMedicalSpec();
+  }, []);
 
   return (
     <div
@@ -32,36 +49,25 @@ const Filter = ({ fetchProviders }) => {
             {/* Changed the class to col-md-12 to make it full width  */}
             <div className='row'>
               <div className='col-12 mb-3'>
-                {' '}
-                {/* Placed the filter on the left side  */}
-                <label className='form-label'>Location</label>
-                <input
-                  type='text'
-                  name='location'
-                  value={searchCriteria.location}
+                <label>Medical Specialty</label>
+                <select
+                  name='medicalSpecialty'
+                  value={searchCriteria.medicalSpecialty}
                   onChange={handleSearchChange}
-                  className='form-control'
-                />
-              </div>
-              <div className='col-12 mb-3'>
-                <label className='form-label'>Specialization</label>
-                <input
-                  type='text'
-                  name='specialization'
-                  value={searchCriteria.specialization}
-                  onChange={handleSearchChange}
-                  className='form-control'
-                />
-              </div>
-              <div className='col-12 mb-3'>
-                <label className='form-label'>Date</label>
-                <input
-                  type='date'
-                  name='date'
-                  value={searchCriteria.date}
-                  onChange={handleSearchChange}
-                  className='form-control'
-                />
+                  className='form-control'>
+                  <option
+                    value=''
+                    disabled>
+                    Select Medical Specialty
+                  </option>
+                  {medicalSpec.map(spec => (
+                    <option
+                      key={spec._id}
+                      value={spec.name}>
+                      {spec.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
