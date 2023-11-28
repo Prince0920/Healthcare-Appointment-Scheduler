@@ -20,6 +20,7 @@ import Doctor from './pages/doctor/Doctor';
 import AppointmentBooking from './pages/AppointmentBooking';
 import AdminProfile from './pages/admin/AdminProfile';
 import AllUsers from './pages/admin/AllUsers';
+import DoctorAppointments from './pages/doctor/appointments/DoctorAppointments';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -28,7 +29,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path='/'
+            path="/"
             element={
               <ProtectedRoute>
                 <Dashboard />
@@ -37,7 +38,7 @@ function App() {
           />
 
           <Route
-            path='/hospital/profile'
+            path="/hospital/profile"
             element={
               <ProtectedRoute>
                 <HospitalProfile />
@@ -45,7 +46,7 @@ function App() {
             }
           />
           <Route
-            path='/patient/profile'
+            path="/patient/profile"
             element={
               <ProtectedRoute>
                 <PatientProfile />
@@ -54,7 +55,7 @@ function App() {
           />
 
           <Route
-            path='/doctor/profile'
+            path="/doctor/profile"
             element={
               <ProtectedRoute>
                 <Doctor />
@@ -63,7 +64,7 @@ function App() {
           />
 
           <Route
-            path='/appointment-booking'
+            path="/appointment-booking"
             element={
               <ProtectedRoute>
                 <AppointmentBooking />
@@ -71,7 +72,7 @@ function App() {
             }
           />
           <Route
-            path='/login'
+            path="/login"
             element={
               <PublicRoute>
                 <Login />
@@ -79,37 +80,39 @@ function App() {
             }
           />
           <Route
-            path='/register'
+            path="/register"
             element={
               <PublicRoute>
                 <Register />
               </PublicRoute>
             }
           />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route
-            path='/about-us'
-            element={<AboutUs />}
+            path="/admin/profile"
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
+              </ProtectedRoute>
+            }
           />
           <Route
-            path='/contact'
-            element={<ContactUs />}
+            path="/admin/all-users"
+            element={
+              <ProtectedRoute>
+                <AllUsers />
+              </ProtectedRoute>
+            }
           />
-           <Route
-              path="/admin/profile"
-              element={
-                <ProtectedRoute>
-                  <AdminProfile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/all-users"
-              element={
-                <ProtectedRoute>
-                  <AllUsers />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/doctor/appointments"
+            element={
+              <ProtectedRoute>
+                <DoctorAppointments />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
