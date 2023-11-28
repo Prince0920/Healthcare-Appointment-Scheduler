@@ -54,7 +54,7 @@ const getDoctorAppointments = async (req, res) => {
         } else {
           res.status(200).send({
             success: true,
-            message: 'No record available',
+            message: 'No record available' , 
           });
         }
       }

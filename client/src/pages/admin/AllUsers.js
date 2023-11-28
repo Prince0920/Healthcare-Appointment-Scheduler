@@ -45,7 +45,7 @@ const AllUsers = () => {
       );
 
       if (res.data.success) {
-        console.log(res.data.data);
+       // console.log(res.data.data);
         toast.success(res.data.message);
         getAllUsers();
       }
