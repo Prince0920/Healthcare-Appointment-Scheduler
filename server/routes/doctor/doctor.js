@@ -27,6 +27,13 @@ router.get(
   doctorAppointments.getDoctorAppointments
 );
 
+//update pointment status by current doctor
+router.post(
+  '/docUpdateAppoStatus',
+  authMiddleware,
+  doctorAppointments.docUpdateAppoStatusCtrl
+);
+
 // router.get('/doctorAppointments', (req, res) => {
 //   res.send('yes reached till here');
 // });

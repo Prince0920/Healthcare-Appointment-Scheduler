@@ -73,4 +73,22 @@ const getDoctorAppointments = async (req, res) => {
   }
 };
 
-module.exports = { getDoctorAppointments };
+//update appointment status by doctor
+const docUpdateAppoStatusCtrl = (req, res) => {
+  const { userId, status, comment } = req.body;
+  console.log(status);
+  try {
+    res.status(200).send({
+      success: true,
+      //getstatus: status,
+      message: 'Status updated successfully',
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: `Appointment fetch error ${error}`,
+    });
+  }
+};
+
+module.exports = { getDoctorAppointments, docUpdateAppoStatusCtrl };
