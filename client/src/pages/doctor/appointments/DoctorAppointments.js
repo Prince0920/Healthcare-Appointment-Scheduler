@@ -63,7 +63,7 @@ const DoctorAppointments = () => {
   const handleAppoSubmit = async (e) => {
     e.preventDefault();
     //console.log('Yes click for form submit');
-    const colappUpdateData = { appoUpdateStInfo: appoUpdateStInfo };
+    const colappUpdateData = { appoUpdateStInfo: appoUpdateStInfo,appoId: selectedAppoId};
 
     try {
       setIsSubmitting(true);
@@ -71,6 +71,7 @@ const DoctorAppointments = () => {
       const res = await axios.post(ApiUrl, JSON.stringify(colappUpdateData), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
         },
       });
 

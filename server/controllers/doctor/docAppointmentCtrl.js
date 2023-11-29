@@ -9,7 +9,7 @@ const getDoctorAppointments = async (req, res) => {
 
     const doctorProfile = await doctorProfileModel.findOne({ userId: userId });
 
-    console.log('doctor profile  ' + doctorProfile);
+    //console.log('doctor profile  ' + doctorProfile);
     if (doctorProfile) {
       const docProfileId = doctorProfile._id;
       // console.log('doctor profile id is ' + docProfileId);
@@ -43,7 +43,7 @@ const getDoctorAppointments = async (req, res) => {
           })
         );
 
-        console.log('alldocAppointmets', appointmentsWithInfo);
+       // console.log('alldocAppointmets', appointmentsWithInfo);
         //console.log('doctor data ' + alldocAppointmets);
         if (appointmentsWithInfo) {
           res.status(200).send({
@@ -75,8 +75,14 @@ const getDoctorAppointments = async (req, res) => {
 
 //update appointment status by doctor
 const docUpdateAppoStatusCtrl = (req, res) => {
-  const { userId, status, comment } = req.body;
-  console.log(status);
+  const { userId} = req.body;
+  console.log('user id is ',userId);
+  //const { status, comment } = req.body.appoUpdateStInfo;
+  console.log('received info is',req.body.appoUpdateStInfo);
+  console.log('appointment id is ',req.body.appoId);
+
+  
+  
   try {
     res.status(200).send({
       success: true,
