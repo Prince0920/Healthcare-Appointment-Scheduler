@@ -43,7 +43,7 @@ const getDoctorAppointments = async (req, res) => {
           })
         );
 
-       // console.log('alldocAppointmets', appointmentsWithInfo);
+        // console.log('alldocAppointmets', appointmentsWithInfo);
         //console.log('doctor data ' + alldocAppointmets);
         if (appointmentsWithInfo) {
           res.status(200).send({
@@ -54,7 +54,7 @@ const getDoctorAppointments = async (req, res) => {
         } else {
           res.status(200).send({
             success: true,
-            message: 'No record available' , 
+            message: 'No record available',
           });
         }
       }
@@ -74,21 +74,37 @@ const getDoctorAppointments = async (req, res) => {
 };
 
 //update appointment status by doctor
-const docUpdateAppoStatusCtrl = (req, res) => {
-  const { userId} = req.body;
-  console.log('user id is ',userId);
+const docUpdateAppoStatusCtrl = async (req, res) => {
+  const { userId } = req.body;
+  console.log('user id is ', userId);
   //const { status, comment } = req.body.appoUpdateStInfo;
-  console.log('received info is',req.body.appoUpdateStInfo);
-  console.log('appointment id is ',req.body.appoId);
+  console.log('received info is', req.body.appoUpdateStInfo);
+  console.log('appointment id is ', req.body.appoId);
 
-  
-  
   try {
-    res.status(200).send({
-      success: true,
-      //getstatus: status,
-      message: 'Status updated successfully',
+    const appoInfo = await doctorAppoinmentModel.findOne({
+      _id: req.body.appoId,
     });
+
+    console.log('appointment info', appoInfo);
+
+    if (appoInfo) {
+      appoInfo.set({
+        status: req.body.appoUpdateStInfo.status,
+        message: req.body.appoUpdateStInfo.comment,
+      });
+      await appoInfo.save();
+      res.status(200).send({
+        success: true,
+        data: appoInfo,
+        message: 'Status updated successfully',
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: `Appointment info not available`,
+      });
+    }
   } catch (error) {
     res.status(500).send({
       success: false,

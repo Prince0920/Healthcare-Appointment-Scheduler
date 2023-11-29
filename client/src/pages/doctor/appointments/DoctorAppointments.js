@@ -4,6 +4,7 @@ import { SERVER_BASE_URL } from '../../../config/config.local';
 import axios from 'axios';
 import Moment from 'react-moment';
 import SubmitButton from '../../../components/buttons/SubmitButton';
+import { toast } from 'react-toastify';
 
 const DoctorAppointments = () => {
   const [docAppointments, setDocAppointments] = useState([]);
@@ -47,11 +48,18 @@ const DoctorAppointments = () => {
   }, []); // Empty dependency array to run only once on mount
 
   const handleAppointmentStatus = (docAppointment) => {
+    setAppoUpdateStInfo({
+      status: '',
+      comment: '',
+    });
     setShowModal(true);
-    console.log('appointment data for model', docAppointment);
     const getSelectedAppoId = docAppointment._id;
-    console.log('Selected appointment id', getSelectedAppoId);
     setSelectedAppoId(getSelectedAppoId);
+    setAppoUpdateStInfo({
+      status: docAppointment.status,
+      comment: docAppointment.message ? docAppointment.message : '',
+      patientName: docAppointment.patientInfo.fullname,
+    });
   };
 
   const handelAppoStatusChange = (e) => {
@@ -62,8 +70,10 @@ const DoctorAppointments = () => {
 
   const handleAppoSubmit = async (e) => {
     e.preventDefault();
-    //console.log('Yes click for form submit');
-    const colappUpdateData = { appoUpdateStInfo: appoUpdateStInfo,appoId: selectedAppoId};
+    const colappUpdateData = {
+      appoUpdateStInfo: appoUpdateStInfo,
+      appoId: selectedAppoId,
+    };
 
     try {
       setIsSubmitting(true);
@@ -76,7 +86,14 @@ const DoctorAppointments = () => {
       });
 
       if (res.data.success) {
+        setIsSubmitting(false);
+        toast.success(res.data.message);
         console.log(res.data.data);
+        // setAppoUpdateStInfo({
+        //   status: res.data.data.status,
+        //   comment: res.data.data.message,
+        // });
+        loadDoctorAppointments();
       } else {
         console.log('something went wrong');
       }
@@ -129,6 +146,7 @@ const DoctorAppointments = () => {
                           <th>E-mail</th>
                           <th>Time</th>
                           <th>Status</th>
+                          <th>Comment</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -144,12 +162,20 @@ const DoctorAppointments = () => {
                                   {docAppointment.date}
                                 </Moment>
                               </td>
-                              <td>
-                                {docAppointment.patientInfo.status
-                                  .charAt(0)
-                                  .toUpperCase() +
-                                  docAppointment.patientInfo.status.slice(1)}
+                              <td
+                                style={{
+                                  color:
+                                    docAppointment.status == 'approved'
+                                      ? 'green'
+                                      : docAppointment.status == 'rejected'
+                                      ? 'red'
+                                      : '#9f5848',
+                                }}
+                              >
+                                {docAppointment.status.charAt(0).toUpperCase() +
+                                  docAppointment.status.slice(1)}
                               </td>
+                              <td>{docAppointment.message}</td>
                               <td>
                                 <button
                                   className="btn btn-primary"
@@ -177,6 +203,7 @@ const DoctorAppointments = () => {
                           <th>E-mail</th>
                           <th>Time</th>
                           <th>Status</th>
+                          <th>Comment</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -202,7 +229,9 @@ const DoctorAppointments = () => {
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Appointment For </h5>
+              <h5 className="modal-title">
+                Appointment For {appoUpdateStInfo.patientName}
+              </h5>
               <button
                 type="button"
                 className="close"
@@ -228,8 +257,8 @@ const DoctorAppointments = () => {
                       value={appoUpdateStInfo.status}
                     >
                       <option value="">Select Status</option>
-                      <option value="Approve">Approve</option>
-                      <option value="Reject">Reject</option>
+                      <option value="approved">Approve</option>
+                      <option value="rejected">Reject</option>
                     </select>
                   </div>
                   <div className="form-group">
