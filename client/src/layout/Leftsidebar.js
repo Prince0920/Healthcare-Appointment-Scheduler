@@ -63,10 +63,42 @@ const Leftsidebar = () => {
                 )}
 
                 {user && user.usertype == 'admin' && (
-                  <NavLink to="/admin/all-users" className="nav-link">
-                    <i className="far fa-circle nav-icon" />
-                    <p>All Users</p>
-                  </NavLink>
+                  <>
+                    <NavLink to="/admin/all-users" className="nav-link">
+                      <i className="far fa-circle nav-icon" />
+                      <p>All Users</p>
+                    </NavLink>
+
+                    <li className="nav-item">
+                      <NavLink to="#" className="nav-link">
+                        <i class="nav-icon fas fa-columns"></i>
+                        <p>
+                          Specialists
+                          <i className="right fas fa-angle-left" />
+                        </p>
+                      </NavLink>
+                      <ul className="nav nav-treeview">
+                        <li className="nav-item">
+                          <NavLink
+                            to="admin/manage-speciality-group"
+                            className="nav-link"
+                          >
+                            <i className="far fa-circle nav-icon" />
+                            <p>Speciality group</p>
+                          </NavLink>
+                        </li>
+                        <li className="nav-item">
+                          <NavLink
+                            to="admin/manage-speciality"
+                            className="nav-link"
+                          >
+                            <i className="far fa-circle nav-icon" />
+                            <p>Speciality</p>
+                          </NavLink>
+                        </li>
+                      </ul>
+                    </li>
+                  </>
                 )}
                 {user && user.usertype == 'doctor' && (
                   <NavLink to="/doctor/appointments" className="nav-link">
