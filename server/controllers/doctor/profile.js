@@ -1,3 +1,4 @@
+const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
@@ -89,4 +90,52 @@ const getDoctorProfileController = async (req, res) => {
   }
 };
 
-module.exports = { createDoctorProfileController, getDoctorProfileController };
+// Get all doctors
+const getAllDoctorController = async (req, res) => {
+  try {
+    let doctorData = await DoctorProfile.find({}).populate('userId');
+    if (!doctorData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Patient profile not found.',
+      });
+    }
+    const formattedDoctorData = doctorData.map(doctor => {
+      const { userId } = doctor;
+
+      return {
+        doctorProfileId: doctor._id,
+        fullName: userId.fullname,
+        email: userId.email,
+        usertype: userId.usertype,
+        address: doctor.address,
+        gender: doctor.gender,
+        education: doctor.education,
+        phone: doctor.phone,
+        experience: doctor.experience,
+        medicalSpecialty: doctor.medicalSpecialty,
+        workingHours: doctor.workingHours,
+        about: doctor.about,
+        review: doctor.review,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: formattedDoctorData,
+    });
+  } catch (error) {
+    console.error('Error getting :', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get patient profile.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createDoctorProfileController,
+  getDoctorProfileController,
+  getAllDoctorController
+};

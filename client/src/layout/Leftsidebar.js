@@ -47,11 +47,19 @@ const Leftsidebar = () => {
                   <i className="nav-icon fas fa-tachometer-alt" />
                   <p>Dashboard</p>
                 </NavLink>
+
                 {user && user.usertype == 'patient' && (
-                  <NavLink to="/appointment-booking" className="nav-link">
-                    <i className="nav-icon fas fa-calendar-check" />
-                    <p>Appointment Booking</p>
-                  </NavLink>
+                  <>
+                    <NavLink to="/appointment-booking" className="nav-link">
+                      <i className="nav-icon fas fa-calendar-check" />
+                      <p>Appointment Booking</p>
+                    </NavLink>
+
+                    <NavLink to="/bookings" className="nav-link">
+                      <i className="nav-icon fas fa-calendar-alt" />
+                      <p>My Bookings</p>
+                    </NavLink>
+                  </>
                 )}
 
                 {user && user.usertype == 'admin' && (

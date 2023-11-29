@@ -19,4 +19,7 @@ router.post(
 //get hospital info
 router.get("/hosProfileInfo", authMiddleware, hospitalCtrl.hosProfileInfo);
 
+//get all hospitals
+router.get("/", authMiddleware, hospitalCtrl.getAllHospitals);
+
 module.exports = router;

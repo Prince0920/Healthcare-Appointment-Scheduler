@@ -38,4 +38,8 @@ router.post(
 //   res.send('yes reached till here');
 // });
 
+// getting all doctors || get
+router.get('/', authMiddleware, doctorProfile.getAllDoctorController);
+
+
 module.exports = router;

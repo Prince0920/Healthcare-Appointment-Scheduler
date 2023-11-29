@@ -1,5 +1,5 @@
-const hospitalModel = require("../models/hospitalModels");
-const userModel = require("../models/userModels");
+const hospitalModel = require('../models/hospitalModels');
+const userModel = require('../models/userModels');
 
 const hospitalUpdateProfile = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ const hospitalUpdateProfile = async (req, res) => {
     if (!userData) {
       res.status(400).send({
         success: false,
-        message: "User not available",
+        message: 'User not available',
       });
     }
 
@@ -38,7 +38,7 @@ const hospitalUpdateProfile = async (req, res) => {
 
     res.status(201).send({
       success: true,
-      message: "Hospital profile updated successfully ",
+      message: 'Hospital profile updated successfully ',
     });
   } catch (error) {
     res.status(500).send({
@@ -58,7 +58,7 @@ const hosProfileInfo = async (req, res) => {
     if (!userData) {
       res.status(400).send({
         success: false,
-        message: "Hospital does not exists",
+        message: 'Hospital does not exists',
       });
     }
 
@@ -71,7 +71,7 @@ const hosProfileInfo = async (req, res) => {
         data: hosInfo,
       });
     } else {
-      console.log("Hospital not available");
+      console.log('Hospital not available');
     }
   } catch (error) {
     console.log(error);
@@ -82,4 +82,43 @@ const hosProfileInfo = async (req, res) => {
   }
 };
 
-module.exports = { hospitalUpdateProfile, hosProfileInfo };
+// Getting all hospital data
+const getAllHospitals = async (req, res) => {
+  try {
+    const hosData = await hospitalModel.find({}).populate('userId');
+
+    if (!hosData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Hospital data not found.',
+      });
+    }
+
+    const formattedHospitaData = hosData.map(hospital => {
+      const { userId } = hospital;
+
+      return {
+        establishmentDetails: hospital.establishmentDetails,
+        address: hospital.address,
+        about: hospital.about,
+        humanResources: hospital.humanResources,
+        infrastructureDetails: hospital.infrastructureDetails,
+        userType: userId.userType,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: formattedHospitaData,
+    });
+  } catch (error) {
+    console.error('Error getting hospital list:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get hospital list.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { hospitalUpdateProfile, hosProfileInfo, getAllHospitals };
