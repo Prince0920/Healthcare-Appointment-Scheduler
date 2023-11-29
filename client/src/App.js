@@ -22,6 +22,8 @@ import AdminProfile from './pages/admin/AdminProfile';
 import AllUsers from './pages/admin/AllUsers';
 import DoctorAppointments from './pages/doctor/appointments/DoctorAppointments';
 import MyBookings from './pages/patient/my-bookings/MyBookings';
+import SpecialityGroup from './pages/admin/specialityViews/SpecialityGroup';
+import Speciality from './pages/admin/specialityViews/Speciality';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -114,6 +116,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/manage-speciality-group"
+            element={
+              <ProtectedRoute>
+                <SpecialityGroup />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/manage-speciality"
+            element={
+              <ProtectedRoute>
+                <Speciality />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/doctor/appointments"
             element={

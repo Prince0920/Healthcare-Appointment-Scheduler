@@ -69,7 +69,7 @@ const Leftsidebar = () => {
                       <p>All Users</p>
                     </NavLink>
 
-                    <li className="nav-item">
+                    <li className="nav-item menu-open">
                       <NavLink to="#" className="nav-link">
                         <i class="nav-icon fas fa-columns"></i>
                         <p>
@@ -78,9 +78,9 @@ const Leftsidebar = () => {
                         </p>
                       </NavLink>
                       <ul className="nav nav-treeview">
-                        <li className="nav-item">
+                        <li className="nav-item menu-open">
                           <NavLink
-                            to="admin/manage-speciality-group"
+                            to="/admin/manage-speciality-group"
                             className="nav-link"
                           >
                             <i className="far fa-circle nav-icon" />
@@ -89,7 +89,7 @@ const Leftsidebar = () => {
                         </li>
                         <li className="nav-item">
                           <NavLink
-                            to="admin/manage-speciality"
+                            to="/admin/manage-speciality"
                             className="nav-link"
                           >
                             <i className="far fa-circle nav-icon" />
