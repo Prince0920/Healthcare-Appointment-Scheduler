@@ -29,7 +29,10 @@ const userRoutes = require('./routes/userRoutes');
 const hospitalRoutes = require('./routes/hospitalRoutes');
 const patientProfileRoute = require('./routes/patient/profile');
 const doctorProfileRoute = require('./routes/doctor/doctor');
+const doctorAppointmentRoute = require('./routes/doctor/appointment');
+const medicalSpecialtyRoute = require('./routes/medicalSpecialty');
 const adminRoute = require('./routes/admin/adminRoutes');
+const MyBookingRoute = require('./routes/patient/myBookingRoute');
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/hospital', hospitalRoutes);
@@ -37,7 +40,10 @@ app.use('/api/v1/hospital', hospitalRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/patient', patientProfileRoute);
 app.use('/api/v1/doctor', doctorProfileRoute);
+app.use('/api/v1/doctor', doctorAppointmentRoute);
+app.use('/api/v1/medical-speciality', medicalSpecialtyRoute);
 app.use('/api/v1/admin', adminRoute);
+app.use('/api/v1/my-bookings', MyBookingRoute);
 
 //port
 const port = process.env.PORT || 8080;
