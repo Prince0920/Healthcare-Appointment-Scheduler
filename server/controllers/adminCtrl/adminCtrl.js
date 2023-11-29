@@ -83,11 +83,7 @@ const changeAccountStatus = async (req, res) => {
     const { recordUserId, status } = req.body;
     console.log(status);
     const user = await userModel.findOne({ _id: recordUserId });
-<<<<<<< HEAD
-    //user.status = status === 'approved' ? true : 'approved';
-=======
     //user.status = status === 'approved' ? true : false;
->>>>>>> bcd5aad100ae2d581bc16750702ea8e5a5946a3d
     user.status = status;
     await user.save();
 
