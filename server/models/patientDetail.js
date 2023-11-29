@@ -11,12 +11,12 @@ const patientDetailSchema = new mongoose.Schema({
     required: true,
   },
   age: {
-    type: String,
+    type: Number,
     required: true,
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['male', 'female', 'Other'],
   },
   medicalHistory: [
     {

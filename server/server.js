@@ -33,6 +33,7 @@ const doctorAppointmentRoute = require('./routes/doctor/appointment');
 const medicalSpecialtyRoute = require('./routes/medicalSpecialty');
 const adminRoute = require('./routes/admin/adminRoutes');
 const MyBookingRoute = require('./routes/patient/myBookingRoute');
+const PatientDetailRoute = require('./routes/patient/patientDetailRoute');
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/hospital', hospitalRoutes);
@@ -44,6 +45,7 @@ app.use('/api/v1/doctor', doctorAppointmentRoute);
 app.use('/api/v1/medical-speciality', medicalSpecialtyRoute);
 app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/my-bookings', MyBookingRoute);
+app.use('/api/v1/patient', PatientDetailRoute);
 
 //port
 const port = process.env.PORT || 8080;

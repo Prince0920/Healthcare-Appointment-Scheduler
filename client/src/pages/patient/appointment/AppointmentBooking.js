@@ -114,47 +114,21 @@ const AppointmentBooking = () => {
   }, []);
 
   const handleBookAppointment = async (provider, appointmentData) => {
-    console.log('appointmentDataappointmentDataappointmentData', appointmentData);
-    setShowBookAppointmentModel(false);
-    // try {
-    //   if (!selectedDate) {
-    //     toast.error('Please select appointment date.');
-    //     return;
-    //   }
-    //   // Simulate API call for booking (replace with actual API call)
-
-    //   const dataToSend = {
-    //     doctorProfileId: provider.doctorProfileId,
-    //     date: selectedDate,
-    //   };
-
-    //   const response = await axios.post(API_URL + '/api/v1/doctor/book-appointment', dataToSend, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem('token')}`,
-    //     },
-    //   });
-
-    //   if (response.data.success) {
-    //     // Booking successful
-    //     setBookingSuccess(true);
-    //     // Set the booked appointment details
-    //     setBookedAppointment({
-    //       provider: provider,
-    //       date: selectedDate,
-    //     });
-    //     toast.success(response.data.message);
-    //   } else {
-    //     // Booking failed
-    //     toast.info(response.data.message);
-    //   }
-    // } catch (error) {
-    //   // Handle booking error
-    //   toast.error('Booking failed. Please try again.');
-    //   console.error('Booking failed:', error.message);
-    // } finally {
-    //   // Hide loading animation
-    //   setBookingLoading(false);
-    // }
+    // console.log('appointmentDataappointmentDataappointmentData', appointmentData);
+    // setShowBookAppointmentModel(false);
+    try {
+      const response = await axios.post(API_URL + '/api/v1/patient/add', appointmentData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+    } catch (error) {
+      toast.error('Booking failed. Please try again.');
+      console.error('Booking failed:', error.message);
+    } finally {
+      // Hide loading animation
+      setBookingLoading(false);
+    }
   };
 
   const handleSearchChange = e => {
