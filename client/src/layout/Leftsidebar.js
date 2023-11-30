@@ -80,11 +80,11 @@ const Leftsidebar = () => {
                       <ul className="nav nav-treeview">
                         <li className="nav-item menu-open">
                           <NavLink
-                            to="/admin/manage-speciality-group"
+                            to="/admin/manage-speciality-area"
                             className="nav-link"
                           >
                             <i className="far fa-circle nav-icon" />
-                            <p>Speciality group</p>
+                            <p>Speciality Area</p>
                           </NavLink>
                         </li>
                         <li className="nav-item">
