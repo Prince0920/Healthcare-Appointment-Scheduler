@@ -3,13 +3,14 @@ import Layouts from '../../../components/Layouts';
 import SubmitButton from '../../../components/buttons/SubmitButton';
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Speciality = () => {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [speciality, setSpeciality] = useState({
-    speciality_type: '',
-    speciality: '',
+    speciality_area: '',
+    name: '',
   });
 
   const [allSpeciality, setAllSpeciality] = useState([]);
@@ -54,9 +55,30 @@ const Speciality = () => {
     setSpeciality({ ...speciality, [name]: value });
   };
 
-  const handleSpeciSubmit = (e) => {
+  const handleSpeciSubmit = async (e) => {
     e.preventDefault();
-    alert();
+    const collectData = { speciality: speciality };
+    try {
+      const specialityAddApiurl =
+        SERVER_BASE_URL + '/api/v1/admin/SpecialityAdd';
+
+      res = await axios.post(specialityAddApiurl, JSON.stringify(collectData), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
+        },
+      });
+
+      if (res.data.success) {
+        toast.success('Speciality added successfully');
+        setSpeciality({
+          speciality_area: '',
+          name: '',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -117,13 +139,13 @@ const Speciality = () => {
                   </label>
                   <select
                     className="form-control"
-                    name="status"
+                    name="speciality_area"
                     onChange={onchSpecialty}
-                    value={speciality.speciality_type}
+                    value={speciality.speciality_area}
                   >
                     <option value="">Select Speciality Area</option>
                     {allSpeciality.map((Speciality, i) => (
-                      <option key={i} value="approved">
+                      <option key={i} value={Speciality._id}>
                         {Speciality.name}
                       </option>
                     ))}
@@ -137,7 +159,7 @@ const Speciality = () => {
                     className="form-control"
                     type="text"
                     name="speciality"
-                    value={speciality.speciality}
+                    value={speciality.name}
                     onChange={onchSpecialty}
                     required
                   />

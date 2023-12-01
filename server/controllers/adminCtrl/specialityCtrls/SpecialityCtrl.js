@@ -1,12 +1,13 @@
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const SpecialityAreaModel = require('../../../models/specialityarea');
+const SpecialityModel = require('../../../models/SpecialityModel');
 
 //add speciality type
 const addSpecialityTypeCtrl = async (req, res) => {
   const specialityTypeName = req.body.specialityArea.name;
   try {
-    console.log(specialityTypeName);
+    // console.log(specialityTypeName);
     if (specialityTypeName) {
       const newSpecialityArea = new SpecialityAreaModel({
         name: specialityTypeName,
@@ -50,7 +51,32 @@ const getSpecialityTypeCtrl = async (req, res) => {
   }
 };
 
+//add speciality
+const addSpecialityCtrl = async (req, res) => {
+  try {
+    const newSpeciality = new SpecialityModel({
+      specialityArea: req.body.speciality.speciality_area,
+      name: req.body.speciality.name,
+    });
+
+    await newSpeciality.save();
+
+    res.status(200).send({
+      success: true,
+      message: 'Speciality  added successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error in add speciality :' + error,
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   addSpecialityTypeCtrl,
   getSpecialityTypeCtrl,
+  addSpecialityCtrl,
 };
