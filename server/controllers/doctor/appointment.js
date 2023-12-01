@@ -8,20 +8,6 @@ const bookAppointmentWithDoctor = async (req, res) => {
   try {
     console.log("req.body",req.body)
     const { patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } = req.body;
-    // const existingAppointment = await DoctorAppointment.findOne({
-    //   patientProfileId: userId,
-    //   doctorProfileId: req.body.doctorProfileId,
-    //   status: 'scheduled',
-    // });
-
-    // if (existingAppointment) {
-    //   return res.status(200).json({
-    //     success: false,
-    //     message:
-    //       'Cannot book a new appointment. There is a pending appointment with the same doctor.',
-    //   });
-    // }
-
     const data = await DoctorAppointment({
       patientDetailId,
       doctorProfileId,
