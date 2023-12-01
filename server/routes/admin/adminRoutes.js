@@ -2,8 +2,9 @@ const express = require('express');
 
 //router object
 const router = express.Router();
-const adminController = require('../../controllers/adminCtrl/adminCtrl');
 const authMiddleware = require('../../config/middlewares/authMiddleware');
+const adminController = require('../../controllers/adminCtrl/adminCtrl');
+const specialityController = require('../../controllers/adminCtrl/specialityCtrls/SpecialityCtrl');
 
 //get admin profile info
 router.get(
@@ -28,7 +29,13 @@ router.post(
 router.post(
   '/addSpecialityArea',
   authMiddleware,
-  adminController.addSpecialityTypeCtrl
+  specialityController.addSpecialityTypeCtrl
+);
+
+router.get(
+  '/getSpecialityAreas',
+  authMiddleware,
+  specialityController.getSpecialityTypeCtrl
 );
 
 // router.post('/addSpecialityArea', (req, res) => {

@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layouts from '../../../components/Layouts';
 import SubmitButton from '../../../components/buttons/SubmitButton';
+import { SERVER_BASE_URL } from '../../../config/config.local';
+import axios from 'axios';
+
 const Speciality = () => {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -9,9 +12,38 @@ const Speciality = () => {
     speciality: '',
   });
 
+  const [allSpeciality, setAllSpeciality] = useState([]);
+
+  const getSpecialityAreas = async () => {
+    try {
+      const specAreaApiurl =
+        SERVER_BASE_URL + '/api/v1/admin/getSpecialityAreas';
+      const res = await axios.get(specAreaApiurl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (res.data.success) {
+        // console.log(res.data.data);
+        setAllSpeciality(res.data.data);
+      } else {
+        console.log('Something went wrong');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSpecialityAreas();
+    // console.log('all speciality', allSpeciality);
+  }, []);
+
   const openPopUp = () => {
     setShowModal(true);
   };
+
   const handleCloseModel = () => {
     setShowModal(false);
   };
@@ -35,8 +67,8 @@ const Speciality = () => {
             <div className="row">
               <div className="col-md-12">
                 <div className="card  card-primary">
-                  <div class="card-header" bis_skin_checked="1">
-                    <h3 class="card-title">Manage Specialities</h3>
+                  <div className="card-header" bis_skin_checked="1">
+                    <h3 className="card-title">Manage Specialities</h3>
                     <div style={{ float: 'right' }}>
                       <button className="btn btn-info" onClick={openPopUp}>
                         Add Speciality
@@ -53,7 +85,7 @@ const Speciality = () => {
         </section>
       </div>
 
-      {/* {/ show speciality subcategoyr  /} */}
+      {/* Show speciality subcategory */}
       <div
         className={`modal ${showModal ? 'show fade' : ''}`}
         tabIndex="-1"
@@ -78,39 +110,39 @@ const Speciality = () => {
               </button>
             </div>
             <div className="modal-body">
-              <div className="modal-body">
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="recipient-name" className="col-form-label">
-                      Speciality Area:
-                    </label>
-
-                    <select
-                      className="form-control"
-                      name="status"
-                      onChange={onchSpecialty}
-                      value={speciality.speciality_type}
-                    >
-                      <option value="">Select Speciality Area</option>
-                      <option value="approved">Nerologist</option>
-                      <option value="rejected">Pedriotic</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="recipient-name" className="col-form-label">
-                      Speciality:
-                    </label>
-                    <input
-                      className="form-control"
-                      type="text"
-                      name="speciality"
-                      value={speciality.speciality}
-                      onChange={onchSpecialty}
-                      required
-                    />
-                  </div>
-                </form>
-              </div>
+              <form>
+                <div className="form-group">
+                  <label htmlFor="recipient-name" className="col-form-label">
+                    Speciality Area:
+                  </label>
+                  <select
+                    className="form-control"
+                    name="status"
+                    onChange={onchSpecialty}
+                    value={speciality.speciality_type}
+                  >
+                    <option value="">Select Speciality Area</option>
+                    {allSpeciality.map((Speciality, i) => (
+                      <option key={i} value="approved">
+                        {Speciality.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="recipient-name" className="col-form-label">
+                    Speciality:
+                  </label>
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="speciality"
+                    value={speciality.speciality}
+                    onChange={onchSpecialty}
+                    required
+                  />
+                </div>
+              </form>
             </div>
             <div className="modal-footer">
               <button
@@ -130,7 +162,7 @@ const Speciality = () => {
           </div>
         </div>
       </div>
-      {/* {/ Book Appointment Modal  /} */}
+      {/* Book Appointment Modal */}
     </Layouts>
   );
 };

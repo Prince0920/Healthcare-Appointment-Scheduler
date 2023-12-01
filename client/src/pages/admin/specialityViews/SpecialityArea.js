@@ -61,12 +61,12 @@ const SpecialityArea = () => {
                     <h3 class="card-title">Speciality Area</h3>
                     <div style={{ float: 'right' }}>
                       <button className="btn btn-info" onClick={openPopUp}>
-                        Add Speciality Area
+                        Add Speciality Areas
                       </button>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p>Speciality Area</p>
+                    <p>Speciality Areas</p>
                   </div>
                 </div>
               </div>
@@ -88,7 +88,7 @@ const SpecialityArea = () => {
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Add speciality</h5>
+              <h5 className="modal-title">Add speciality area</h5>
               <button
                 type="button"
                 className="close"
@@ -104,7 +104,7 @@ const SpecialityArea = () => {
                 <form>
                   <div className="form-group">
                     <label htmlFor="recipient-name" className="col-form-label">
-                      Speciality:
+                      Speciality area:
                     </label>
                     <input
                       className="form-control"
