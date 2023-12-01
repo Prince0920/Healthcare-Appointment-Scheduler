@@ -20,7 +20,7 @@ const AppointmentBooking = () => {
   const [appointmentData, setAppointmentData] = useState({
     patientName: '',
     age: '',
-    gender: '',
+    gender: 'male',
     appointmentDate: '',
     reason: '',
   });
@@ -115,19 +115,26 @@ const AppointmentBooking = () => {
 
   const handleBookAppointment = async (provider, appointmentData) => {
     // console.log('appointmentDataappointmentDataappointmentData', appointmentData);
-    // setShowBookAppointmentModel(false);
+    //
     try {
-      const response = await axios.post(API_URL + '/api/v1/patient/add', appointmentData, {
+      const patientData = {
+        patientName: appointmentData.patientName,
+        age: appointmentData.age,
+        gender: appointmentData.gender,
+      };
+      const response = await axios.post(API_URL + '/api/v1/patient/add', patientData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
+      if (response.data.success == true) {
+        setShowBookAppointmentModel(false);
+        toast.success('Booking successfull!!');
+      }
     } catch (error) {
       toast.error('Booking failed. Please try again.');
       console.error('Booking failed:', error.message);
-    } finally {
-      // Hide loading animation
-      setBookingLoading(false);
+      setShowBookAppointmentModel(false);
     }
   };
 
@@ -352,7 +359,6 @@ const AppointmentBooking = () => {
                       style={{ background: '#4CAF50', color: 'white' }}
                       onClick={() => {
                         handleBookAppointment(selectedProvider, appointmentData);
-                        
                       }}>
                       Book Now
                     </button>
