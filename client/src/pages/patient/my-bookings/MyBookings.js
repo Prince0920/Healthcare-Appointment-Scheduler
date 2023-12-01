@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layouts from '../../../components/Layouts';
 import ContentHeader from '../../../components/ContentHeader';
 import axios from 'axios';
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import Spinner from '../../../components/Spinner';
 import { SERVER_BASE_URL } from '../../../config/config.local';
 
@@ -31,21 +31,6 @@ const MyBookings = () => {
     getAllBookings();
   }, []);
 
-  //   const dataSource = [
-  //     {
-  //       key: '1',
-  //       name: 'Mike',
-  //       age: 32,
-  //       address: '10 Downing Street',
-  //     },
-  //     {
-  //       key: '2',
-  //       name: 'John',
-  //       age: 42,
-  //       address: '10 Downing Street',
-  //     },
-  //   ];
-
   const columns = [
     {
       title: 'Patient Name',
@@ -67,8 +52,24 @@ const MyBookings = () => {
       dataIndex: 'status',
       key: 'status',
     },
+    // {
+    //   title: 'Action',
+    //   key: 'action',
+    //   render: (text, record) => (
+    //     <Button
+    //       type="danger"
+    //       style={{ background: 'red', color: 'white' }}
+    //       onClick={() => handleCancelAppointment(record._id)}
+    //     >
+    //       Cancel
+    //     </Button>
+    //   ),
+    // }
   ];
 
+  const handleCancelAppointment = (recordId)=>{
+    alert(recordId)
+  }
   return (
     <Layouts>
       <div className='content-wrapper'>
