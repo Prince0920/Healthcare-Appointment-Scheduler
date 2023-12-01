@@ -6,9 +6,9 @@ const userModel = require('../../models/userModels');
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
-    console.log("req.body",req.body)
-    const { patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } = req.body;
+    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } = req.body;
     const data = await DoctorAppointment({
+      userId,
       patientDetailId,
       doctorProfileId,
       appointmentDate,

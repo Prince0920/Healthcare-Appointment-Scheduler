@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const doctorAppointmentSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to the user who owns this profile
+    required: true,
+  },
   patientDetailId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'PatientDetail',
