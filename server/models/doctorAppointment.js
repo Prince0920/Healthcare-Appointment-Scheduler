@@ -22,7 +22,7 @@ const doctorAppointmentSchema = new mongoose.Schema({
   message: {
     type: String,
   },
-  reason: {
+  reasonOfAppointment: {
     type: String,
   },
   // Add other relevant fields for the appointment

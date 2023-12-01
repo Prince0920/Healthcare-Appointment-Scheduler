@@ -122,14 +122,34 @@ const AppointmentBooking = () => {
         age: appointmentData.age,
         gender: appointmentData.gender,
       };
-      const response = await axios.post(API_URL + '/api/v1/patient/add', patientData, {
+      const patientDetaiRresponse = await axios.post(API_URL + '/api/v1/patient/add', patientData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      if (response.data.success == true) {
-        setShowBookAppointmentModel(false);
-        toast.success('Booking successfull!!');
+      if (patientDetaiRresponse.data.success == true) {
+        console.log("Started appointment")
+        const appData = {
+          doctorProfileId: provider.doctorProfileId,
+          patientDetailId: patientDetaiRresponse.data.data._id,
+          appointmentDate: appointmentData.appointmentDate,
+          reasonOfAppointment: appointmentData.reason,
+          status: 'scheduled',
+        };
+
+        const appointmentResponse = await axios.post(
+          API_URL + '/api/v1/doctor/book-appointment',
+          appData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+        if (appointmentResponse.data.success == true) {
+          setShowBookAppointmentModel(false);
+          toast.success('Booking successfull!!');
+        }
       }
     } catch (error) {
       toast.error('Booking failed. Please try again.');
