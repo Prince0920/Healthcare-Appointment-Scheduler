@@ -25,7 +25,13 @@ router.post(
   adminController.changeAccountStatus
 );
 
-// router.post('/changeAccountStatus', (req, res) => {
+router.post(
+  '/addSpecialityArea',
+  authMiddleware,
+  adminController.addSpecialityTypeCtrl
+);
+
+// router.post('/addSpecialityArea', (req, res) => {
 //   res.send('yes reached till here');
 // });
 

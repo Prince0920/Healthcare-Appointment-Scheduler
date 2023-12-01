@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Layouts from '../../../components/Layouts';
 import SubmitButton from '../../../components/buttons/SubmitButton';
+import { SERVER_BASE_URL } from '../../../config/config.local';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 const SpecialityArea = () => {
-
-    const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [specialityArea, setSpecialityArea] = useState({
     name: '',
@@ -22,9 +24,29 @@ const SpecialityArea = () => {
     setSpecialityArea({ ...specialityArea, [name]: value });
   };
 
-  const handleSpeciSubmit = (e) => {
+  const handleSpeciSubmit = async (e) => {
     e.preventDefault();
-    alert();
+    const collectData = { specialityArea: specialityArea };
+
+    try {
+      setIsSubmitting(true);
+      let addApiUrl = SERVER_BASE_URL + '/api/v1/admin/addSpecialityArea';
+      const res = await axios.post(addApiUrl, JSON.stringify(collectData), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
+        },
+      });
+      if (res.data.success) {
+        setIsSubmitting(false);
+        toast.success(res.data.message);
+        setSpecialityArea({ name: '' });
+      } else {
+        console.log('Something went wrong');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -53,8 +75,8 @@ const SpecialityArea = () => {
         </section>
       </div>
 
-       {/* {/ show speciality subcategoyr  /} */}
-       <div
+      {/* {/ show speciality subcategoyr  /} */}
+      <div
         className={`modal ${showModal ? 'show fade' : ''}`}
         tabIndex="-1"
         role="dialog"
@@ -80,7 +102,6 @@ const SpecialityArea = () => {
             <div className="modal-body">
               <div className="modal-body">
                 <form>
-                  
                   <div className="form-group">
                     <label htmlFor="recipient-name" className="col-form-label">
                       Speciality:
