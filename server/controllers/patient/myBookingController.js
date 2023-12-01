@@ -12,10 +12,10 @@ const getAllBookingsController = async (req, res) => {
     const userData = await User.findOne({ _id: userId });
 
     // Find all appointments associated with the patientProfileId and populate the doctorProfileId
-    const appointment_data = await DoctorAppointment.find({ patientProfileId: userId }).populate(
-      'doctorProfileId'
-    );
-
+    const appointment_data = await DoctorAppointment.find({ userId: userId })
+      .populate('doctorProfileId')
+      .populate('patientDetailId');
+ 
     // Map through the appointment data to create a new structure
     const resp = await Promise.all(
       appointment_data.map(async e => {
@@ -25,7 +25,7 @@ const getAllBookingsController = async (req, res) => {
         // Create a new structure for the response
         return {
           _id: e._id,
-          fullname: userData.fullname,
+          fullname: e.patientDetailId.patientName,
           doctorFullName: doctors_data.fullname,
           status: e.status,
           phone: e.doctorProfileId.phone,
