@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layouts from '../../../components/Layouts';
 import SubmitButton from '../../../components/buttons/SubmitButton';
 import { SERVER_BASE_URL } from '../../../config/config.local';
@@ -10,6 +10,7 @@ const SpecialityArea = () => {
   const [specialityArea, setSpecialityArea] = useState({
     name: '',
   });
+  const [allSpecialityarea, setAllSpecialityarea] = useState([]);
 
   const openPopUp = () => {
     setShowModal(true);
@@ -49,6 +50,33 @@ const SpecialityArea = () => {
     }
   };
 
+  const loadAllSpecArea = async () => {
+    try {
+      let GetSpecAreaApiUrl =
+        SERVER_BASE_URL + '/api/v1/admin/getSpecialityAreas';
+
+      const res = await axios.get(GetSpecAreaApiUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
+        },
+      });
+
+      if (res.data.success) {
+        console.log(res.data.data);
+        setAllSpecialityarea(res.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSpeAreaStatus = () => {};
+
+  useEffect(() => {
+    loadAllSpecArea();
+  }, []);
+
   return (
     <Layouts>
       <div className="content-wrapper">
@@ -65,8 +93,61 @@ const SpecialityArea = () => {
                       </button>
                     </div>
                   </div>
+
                   <div className="card-body">
-                    <p>Speciality Areas</p>
+                    <table
+                      id="example1"
+                      className="table table-bordered table-striped"
+                    >
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allSpecialityarea &&
+                          allSpecialityarea.map((record, i) => (
+                            <tr key={i}>
+                              <td scope="row">{i + 1}</td>
+                              <td>
+                                {record.name.charAt(0).toUpperCase() +
+                                  record.name.slice(1)}
+                              </td>
+
+                              <td>
+                                {record.status == 'pending' ? (
+                                  <button
+                                    className="btn btn-success"
+                                    onClick={() =>
+                                      handleSpeAreaStatus(record, 'approved')
+                                    }
+                                  >
+                                    Approve
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={() =>
+                                      handleSpeAreaStatus(record, 'pending')
+                                    }
+                                  >
+                                    Reject
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Action</th>
+                        </tr>
+                      </tfoot>
+                    </table>
                   </div>
                 </div>
               </div>

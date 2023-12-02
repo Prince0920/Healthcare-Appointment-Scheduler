@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const SpecialityAreaModel = require('../../../models/specialityarea');
+
 const SpecialityModel = require('../../../models/SpecialityModel');
 
 //add speciality type
@@ -38,7 +39,7 @@ const getSpecialityTypeCtrl = async (req, res) => {
       res.status(200).send({
         success: true,
         data: specialityAreas,
-        message: 'Records fetch successfully',
+        message: 'Specialities area  fetch successfully',
       });
     }
   } catch (error) {
@@ -46,6 +47,27 @@ const getSpecialityTypeCtrl = async (req, res) => {
     res.status(500).send({
       success: false,
       message: 'Error in fetch speciality Areas:' + error,
+      error: error,
+    });
+  }
+};
+
+//get all speciality
+const getSpecialityCtrl = async (req, res) => {
+  try {
+    const specialities = await SpecialityModel.find({});
+    if (specialities) {
+      res.status(200).send({
+        success: true,
+        data: specialities,
+        message: 'Records fetch successfully',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error in fetch speciality:' + error,
       error: error,
     });
   }
@@ -79,4 +101,5 @@ module.exports = {
   addSpecialityTypeCtrl,
   getSpecialityTypeCtrl,
   addSpecialityCtrl,
+  getSpecialityCtrl,
 };

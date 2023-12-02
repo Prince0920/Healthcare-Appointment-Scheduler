@@ -44,6 +44,12 @@ router.post(
   specialityController.addSpecialityCtrl
 );
 
+router.get(
+  '/getSpeciality',
+  authMiddleware,
+  specialityController.getSpecialityCtrl
+);
+
 // router.post('/addSpecialityArea', (req, res) => {
 //   res.send('yes reached till here');
 // });

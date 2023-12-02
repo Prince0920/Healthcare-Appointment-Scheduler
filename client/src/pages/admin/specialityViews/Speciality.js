@@ -12,7 +12,7 @@ const Speciality = () => {
     speciality_area: '',
     name: '',
   });
-
+  const [allSpecialityArea, setAllSpecialityArea] = useState([]);
   const [allSpeciality, setAllSpeciality] = useState([]);
 
   const getSpecialityAreas = async () => {
@@ -27,6 +27,26 @@ const Speciality = () => {
 
       if (res.data.success) {
         // console.log(res.data.data);
+        setAllSpecialityArea(res.data.data);
+      } else {
+        console.log('Something went wrong');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllSpeciality = async () => {
+    try {
+      const specAreaApiurl = SERVER_BASE_URL + '/api/v1/admin/getSpeciality';
+      const res = await axios.get(specAreaApiurl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (res.data.success) {
+        console.log(res.data.data);
         setAllSpeciality(res.data.data);
       } else {
         console.log('Something went wrong');
@@ -38,6 +58,7 @@ const Speciality = () => {
 
   useEffect(() => {
     getSpecialityAreas();
+    getAllSpeciality();
     // console.log('all speciality', allSpeciality);
   }, []);
 
@@ -58,18 +79,24 @@ const Speciality = () => {
   const handleSpeciSubmit = async (e) => {
     e.preventDefault();
     const collectData = { speciality: speciality };
+    setIsSubmitting(true);
     try {
       const specialityAddApiurl =
         SERVER_BASE_URL + '/api/v1/admin/SpecialityAdd';
 
-      res = await axios.post(specialityAddApiurl, JSON.stringify(collectData), {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'content-type': 'application/json',
-        },
-      });
+      const res = await axios.post(
+        specialityAddApiurl,
+        JSON.stringify(collectData),
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'content-type': 'application/json',
+          },
+        }
+      );
 
       if (res.data.success) {
+        setIsSubmitting(false);
         toast.success('Speciality added successfully');
         setSpeciality({
           speciality_area: '',
@@ -77,9 +104,12 @@ const Speciality = () => {
         });
       }
     } catch (error) {
+      setIsSubmitting(false);
       console.log(error);
     }
   };
+
+  const handleSpeStatus = () => {};
 
   return (
     <Layouts>
@@ -98,7 +128,64 @@ const Speciality = () => {
                     </div>
                   </div>
                   <div className="card-body">
-                    <p>Manage Specialities</p>
+                    <table
+                      id="example1"
+                      className="table table-bordered table-striped"
+                    >
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Speciality Area</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allSpeciality &&
+                          allSpeciality.map((record, i) => (
+                            <tr key={i}>
+                              <td scope="row">{i + 1}</td>
+                              <td>
+                                {record.name.charAt(0).toUpperCase() +
+                                  record.name.slice(1)}
+                              </td>
+                              <td>
+                                {record.name.charAt(0).toUpperCase() +
+                                  record.name.slice(1)}
+                              </td>
+                              <td>
+                                {record.status == 'pending' ? (
+                                  <button
+                                    className="btn btn-success"
+                                    onClick={() =>
+                                      handleSpeStatus(record, 'approved')
+                                    }
+                                  >
+                                    Approve
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={() =>
+                                      handleSpeStatus(record, 'pending')
+                                    }
+                                  >
+                                    Reject
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Speciality Area</th>
+                          <th>Action</th>
+                        </tr>
+                      </tfoot>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -144,9 +231,9 @@ const Speciality = () => {
                     value={speciality.speciality_area}
                   >
                     <option value="">Select Speciality Area</option>
-                    {allSpeciality.map((Speciality, i) => (
-                      <option key={i} value={Speciality._id}>
-                        {Speciality.name}
+                    {allSpecialityArea.map((SpecialityArea, i) => (
+                      <option key={i} value={SpecialityArea._id}>
+                        {SpecialityArea.name}
                       </option>
                     ))}
                   </select>
@@ -158,7 +245,7 @@ const Speciality = () => {
                   <input
                     className="form-control"
                     type="text"
-                    name="speciality"
+                    name="name"
                     value={speciality.name}
                     onChange={onchSpecialty}
                     required
