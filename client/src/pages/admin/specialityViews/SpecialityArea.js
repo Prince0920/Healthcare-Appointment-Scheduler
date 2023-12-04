@@ -71,7 +71,29 @@ const SpecialityArea = () => {
     }
   };
 
-  const handleSpeAreaStatus = () => {};
+  const handleSpeAreaStatus = async (record, status) => {
+    const sendData = { recordSpeAreaId: record._id, status: status };
+    const speAreaStatusApiUrl =
+      SERVER_BASE_URL + '/api/v1/admin/updatSpeciAreaStatus';
+    const res = await axios.post(
+      speAreaStatusApiUrl,
+      JSON.stringify(sendData),
+      {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token'),
+          'content-type': 'application/json',
+        },
+      }
+    );
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+      loadAllSpecArea();
+    } else {
+      console.log('Something went wrong');
+      toast.error(res.data.message);
+    }
+  };
 
   useEffect(() => {
     loadAllSpecArea();
@@ -117,23 +139,23 @@ const SpecialityArea = () => {
                               </td>
 
                               <td>
-                                {record.status == 'pending' ? (
+                                {record.status == 'inactive' ? (
                                   <button
                                     className="btn btn-success"
                                     onClick={() =>
-                                      handleSpeAreaStatus(record, 'approved')
+                                      handleSpeAreaStatus(record, 'active')
                                     }
                                   >
-                                    Approve
+                                    Active
                                   </button>
                                 ) : (
                                   <button
                                     className="btn btn-danger"
                                     onClick={() =>
-                                      handleSpeAreaStatus(record, 'pending')
+                                      handleSpeAreaStatus(record, 'inactive')
                                     }
                                   >
-                                    Reject
+                                    Inactive
                                   </button>
                                 )}
                               </td>

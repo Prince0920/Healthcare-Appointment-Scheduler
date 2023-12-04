@@ -50,8 +50,22 @@ router.get(
   specialityController.getSpecialityCtrl
 );
 
-// router.post('/addSpecialityArea', (req, res) => {
-//   res.send('yes reached till here');
-// });
+//update speciality area status -----------------------
+router.post(
+  '/updatSpeciAreaStatus',
+  authMiddleware,
+  specialityController.updateSpeAreaStaCtrl
+);
+
+//update speciality staus -------------------------------
+router.post(
+  '/updatSpeciStatus',
+  authMiddleware,
+  specialityController.updateSpeStaCtrl
+);
+
+router.post('/updatSpeciStatus', (req, res) => {
+  res.send('yes reached till here');
+});
 
 module.exports = router;

@@ -16,8 +16,5 @@ const SpecialityAreaSchema = new mongoose.Schema(
   }
 );
 
-const SpecialityAreaModel = mongoose.model(
-  'specialityarea',
-  SpecialityAreaSchema
-);
-module.exports = SpecialityAreaModel;
+const Specialityarea = mongoose.model('Specialityarea', SpecialityAreaSchema);
+module.exports = Specialityarea;

@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
-const SpecialityAreaModel = require('../models/specialityarea');
 
 const SpecialitySchema = new mongoose.Schema(
   {
-    specialityArea: {
+    specialityAreaId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'SpecialityAreaModel', // Use the model name, not the variable name
+      ref: 'Specialityarea', // Use the model name, not the variable name
     },
     name: {
       type: String,
       required: true,
+    },
+    status: {
+      type: String,
+      default: 'active',
     },
   },
   {

@@ -155,8 +155,16 @@ const DoctorAppointments = () => {
                           docAppointments.map((docAppointment, i) => (
                             <tr key={i}>
                               <td scope="row">{i + 1}</td>
-                              <td>{docAppointment.patientInfo.fullname}</td>
-                              <td>{docAppointment.patientInfo.email}</td>
+                              <td>
+                                {docAppointment.patientInfo
+                                  ? docAppointment.patientInfo.fullname
+                                  : ''}
+                              </td>
+                              <td>
+                                {docAppointment.patientInfo
+                                  ? docAppointment.patientInfo.email
+                                  : ''}
+                              </td>
                               <td>
                                 <Moment format="Do MMM, YYYY, h:mm: A">
                                   {docAppointment.date}
