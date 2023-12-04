@@ -6,6 +6,7 @@ import { Button, Table, Space, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import Spinner from '../../../components/Spinner';
 import { SERVER_BASE_URL } from '../../../config/config.local';
+import { toast } from 'react-toastify';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -81,7 +82,21 @@ const MyBookings = () => {
   ];
 
   const handleCancelAppointment = recordId => {
-    alert(recordId);
+    axios
+      .delete(SERVER_BASE_URL + '/api/v1/my-bookings?appointmentId=' + recordId, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then(res => {
+        if (res.status) {
+          toast.success(res.data.message);
+          getAllBookings();
+        }
+      })
+      .catch(e => {
+        console.log('Error: ', e);
+      });
   };
   return (
     <Layouts>
