@@ -15,7 +15,7 @@ const getAllBookingsController = async (req, res) => {
     const appointment_data = await DoctorAppointment.find({ userId: userId })
       .populate('doctorProfileId')
       .populate('patientDetailId');
- 
+
     // Map through the appointment data to create a new structure
     const resp = await Promise.all(
       appointment_data.map(async e => {
@@ -29,10 +29,12 @@ const getAllBookingsController = async (req, res) => {
           doctorFullName: doctors_data.fullname,
           status: e.status,
           phone: e.doctorProfileId.phone,
+          appointmentDate: e.appointmentDate,
+          reasonOfAppointment: e?.reasonOfAppointment,
+          message: e?.message,
         };
       })
     );
-
     // Send the response
     return res.status(201).json({
       success: true,
@@ -54,7 +56,7 @@ const removeAppointmentController = async (req, res) => {
     const { appointmentId } = req.query;
 
     // Check if appointmentId and status are provided
-    if (!appointmentId ) {
+    if (!appointmentId) {
       return res.status(400).json({
         success: false,
         message: 'Appointment ID and status are required.',
@@ -91,4 +93,3 @@ const removeAppointmentController = async (req, res) => {
 };
 
 module.exports = { getAllBookingsController, removeAppointmentController };
-

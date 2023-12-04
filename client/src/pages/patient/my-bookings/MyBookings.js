@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Button, Table, Space, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import Spinner from '../../../components/Spinner';
+import moment from 'moment'; // Import moment library
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import { toast } from 'react-toastify';
 
@@ -50,9 +51,19 @@ const MyBookings = () => {
       key: 'phone',
     },
     {
+      title: 'Appointment Date',
+      key: 'appointmentDate',
+      render: (text, record) => moment(record.appointmentDate).format('YYYY-MM-DD'), // Format the date
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+    },
+    {
+      title: 'Doctor Response',
+      key: 'message',
+      render: (text, record) => <p>{record.message ? record.message : '-'}</p>,
     },
     {
       title: 'Action',
