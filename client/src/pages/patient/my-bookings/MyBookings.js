@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Layouts from '../../../components/Layouts';
 import ContentHeader from '../../../components/ContentHeader';
 import axios from 'axios';
-import { Button, Table } from 'antd';
+import { Button, Table, Space, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import Spinner from '../../../components/Spinner';
 import { SERVER_BASE_URL } from '../../../config/config.local';
 
@@ -52,24 +53,36 @@ const MyBookings = () => {
       dataIndex: 'status',
       key: 'status',
     },
-    // {
-    //   title: 'Action',
-    //   key: 'action',
-    //   render: (text, record) => (
-    //     <Button
-    //       type="danger"
-    //       style={{ background: 'red', color: 'white' }}
-    //       onClick={() => handleCancelAppointment(record._id)}
-    //     >
-    //       Cancel
-    //     </Button>
-    //   ),
-    // }
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space>
+          <Popconfirm
+            title='Are you sure you want to cancel?'
+            onConfirm={() => handleCancelAppointment(record._id)}
+            okText='Yes'
+            cancelText='No'
+            disabled={record.status !== 'scheduled'} // Disable the Popconfirm based on condition
+          >
+            <Button
+              type='danger'
+              style={{
+                background: record.status !== 'scheduled' ? '#f0f0f0' : 'red',
+                color: record.status !== 'scheduled' ? '#a9a9a9' : 'white',
+              }}
+              disabled={record.status !== 'scheduled'}
+              icon={<DeleteOutlined />}
+            />
+          </Popconfirm>
+        </Space>
+      ),
+    },
   ];
 
-  const handleCancelAppointment = (recordId)=>{
-    alert(recordId)
-  }
+  const handleCancelAppointment = recordId => {
+    alert(recordId);
+  };
   return (
     <Layouts>
       <div className='content-wrapper'>
