@@ -9,12 +9,14 @@ import { toast } from 'react-toastify';
 const DoctorAppointments = () => {
   const [docAppointments, setDocAppointments] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalAppInfo, setShowModalAppInfo] = useState(false);
   const [selectedAppoId, setSelectedAppoId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appoUpdateStInfo, setAppoUpdateStInfo] = useState({
     status: '',
     comment: '',
   });
+  const [currAppInfo, setCurrAppInfo] = useState('');
 
   const loadDoctorAppointments = async () => {
     try {
@@ -58,7 +60,7 @@ const DoctorAppointments = () => {
     setAppoUpdateStInfo({
       status: docAppointment.status,
       comment: docAppointment.message ? docAppointment.message : '',
-      patientName: docAppointment.patientInfo.fullname,
+      patientName: docAppointment.userId.fullname,
     });
   };
 
@@ -106,6 +108,17 @@ const DoctorAppointments = () => {
     setShowModal(false);
   };
 
+  //show appointment info on popup
+  const viewAppoInfo = (docAppointment) => {
+    setCurrAppInfo(docAppointment);
+    setShowModalAppInfo(true);
+    console.log(currAppInfo);
+  };
+
+  const handleCloseAppInfoModel = () => {
+    setShowModalAppInfo(false);
+  };
+
   return (
     <Layouts>
       <div className="content-wrapper">
@@ -144,9 +157,11 @@ const DoctorAppointments = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>E-mail</th>
-                          <th>Time</th>
+                          <th>App. Date/Time</th>
+                          <th>Apply Date/Time</th>
                           <th>Status</th>
-                          <th>Comment</th>
+                          <th>Dr. Comment</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -156,14 +171,19 @@ const DoctorAppointments = () => {
                             <tr key={i}>
                               <td scope="row">{i + 1}</td>
                               <td>
-                                {docAppointment.patientInfo
-                                  ? docAppointment.patientInfo.fullname
+                                {docAppointment.userId.fullname
+                                  ? docAppointment.userId.fullname
                                   : ''}
                               </td>
                               <td>
-                                {docAppointment.patientInfo
-                                  ? docAppointment.patientInfo.email
+                                {docAppointment.userId
+                                  ? docAppointment.userId.email
                                   : ''}
+                              </td>
+                              <td>
+                                <Moment format="Do MMM, YYYY, h:mm: A">
+                                  {docAppointment.appointmentDate}
+                                </Moment>
                               </td>
                               <td>
                                 <Moment format="Do MMM, YYYY, h:mm: A">
@@ -184,6 +204,13 @@ const DoctorAppointments = () => {
                                   docAppointment.status.slice(1)}
                               </td>
                               <td>{docAppointment.message}</td>
+                              <td>
+                                <button
+                                  onClick={() => viewAppoInfo(docAppointment)}
+                                >
+                                  <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                              </td>
                               <td>
                                 <button
                                   className="btn btn-primary"
@@ -209,9 +236,11 @@ const DoctorAppointments = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>E-mail</th>
-                          <th>Time</th>
+                          <th>Appt. Date/Time</th>
+                          <th>Apply Date/Time</th>
                           <th>Status</th>
-                          <th>Comment</th>
+                          <th>Dr.Comment</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -313,6 +342,85 @@ const DoctorAppointments = () => {
         </div>
       </div>
       {/* {/ Book Appointment Modal  /} */}
+
+      {/* {/ show Appointment info  /} */}
+      <div
+        className={`modal ${showModalAppInfo ? 'show fade' : ''}`}
+        tabIndex="-1"
+        role="dialog"
+        style={{
+          display: showModalAppInfo ? 'block' : 'none',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Patient appointment Info</h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={handleCloseAppInfoModel}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-body">
+                <div class="modal-body">
+                  <p>
+                    Patient Name:{'   '}
+                    <b>
+                      {currAppInfo?.patientDetailId?.patientName
+                        .charAt(0)
+                        .toUpperCase() +
+                        currAppInfo?.patientDetailId?.patientName.slice(1)}
+                    </b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Gender:{' '}
+                    <b>
+                      {currAppInfo?.patientDetailId?.gender
+                        .charAt(0)
+                        .toUpperCase() +
+                        currAppInfo?.patientDetailId?.gender.slice(1)}
+                    </b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Age: <b>{currAppInfo?.patientDetailId?.age}</b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Appo. Date:{' '}
+                    <b>
+                      {' '}
+                      <Moment format="Do MMM, YYYY, h:mm: A">
+                        {currAppInfo?.appointmentDate}
+                      </Moment>
+                    </b>
+                  </p>
+                  <p>Patient comments: {currAppInfo?.reasonOfAppointment}</p>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={handleCloseAppInfoModel}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* {/ show appointment Modal  /} */}
     </Layouts>
   );
 };
