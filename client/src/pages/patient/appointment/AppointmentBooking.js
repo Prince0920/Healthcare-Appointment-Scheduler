@@ -7,6 +7,7 @@ import { SERVER_BASE_URL } from '../../../config/config.local';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Spinner from '../../../components/Spinner';
+import Select from 'react-select';
 
 const AppointmentBooking = () => {
   const [doctorData, setDoctorData] = useState([]);
@@ -129,7 +130,7 @@ const AppointmentBooking = () => {
         },
       });
       if (patientDetaiRresponse.data.success == true) {
-        console.log("Started appointment")
+        console.log('Started appointment');
         const appData = {
           doctorProfileId: provider.doctorProfileId,
           patientDetailId: patientDetaiRresponse.data.data._id,
@@ -159,13 +160,17 @@ const AppointmentBooking = () => {
     }
   };
 
-  const handleSearchChange = e => {
-    const { name, value } = e.target;
+  const handleSearchChange = (name, value) => {
     setSearchCriteria(prevSearchCriteria => ({
       ...prevSearchCriteria,
       [name]: value,
     }));
   };
+  const medicalSpecialtyOptions = medicalSpec.map(spec => ({
+    value: spec.name,
+    label: spec.name,
+  }));
+
   return (
     <Layouts>
       <div className='content-wrapper'>
@@ -185,29 +190,30 @@ const AppointmentBooking = () => {
                 <div className='d-flex justify-content-between align-items-center mb-3'>
                   <h3 className='mb-0'>Results</h3>
                   <div className='col-3'>
-                    {/* <label>Medical Specialty</label> */}
-                    <select
+                    <Select
                       name='medicalSpecialty'
-                      value={searchCriteria.medicalSpecialty}
-                      onChange={handleSearchChange}
-                      className='form-control'>
-                      <option
-                        value=''
-                        disabled>
-                        Select Medical Specialty
-                      </option>
-                      {medicalSpec.map(spec => (
-                        <option
-                          key={spec._id}
-                          value={spec.name}>
-                          {spec.name}
-                        </option>
-                      ))}
-                    </select>
+                      value={
+                        searchCriteria.medicalSpecialty
+                          ? {
+                              value: searchCriteria.medicalSpecialty,
+                              label: searchCriteria.medicalSpecialty,
+                            }
+                          : null
+                      }
+                      onChange={selectedOption =>
+                        handleSearchChange(
+                          'medicalSpecialty',
+                          selectedOption ? selectedOption.value : ''
+                        )
+                      }
+                      options={medicalSpecialtyOptions}
+                      placeholder='Select Medical Specialty'
+                      isSearchable
+                    />
                   </div>
                 </div>
                 {isLoading ? (
-                  <Spinner/>
+                  <Spinner />
                 ) : (
                   <FilterResult
                     searchResults={searchResults}
