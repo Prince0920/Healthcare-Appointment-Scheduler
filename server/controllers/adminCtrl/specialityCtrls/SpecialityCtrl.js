@@ -78,7 +78,6 @@ const getSpecialityCtrl = async (req, res) => {
       'specialityAreaId'
     );
 
-    console.log('specialities', specialities);
     if (specialities) {
       res.status(200).send({
         success: true,
@@ -100,14 +99,14 @@ const getSpecialityCtrl = async (req, res) => {
 const addUpdateSpecialityCtrl = async (req, res) => {
   try {
     currSpeId = req.body.currSpeId;
-    const specilityName = eq.body.speciality.name;
+    const specilityName = req.body.speciality.name;
+    const currSpeAreaId = req.body.currSpeId;
 
     if (currSpeId != '') {
       const specialInfo = await SpecialityModel.findOne({
         _id: currSpeAreaId,
       });
-      //console.log(specialityTypeName);
-      // console.log(specialAreaInfo);
+
       specialInfo.specialityAreaId = req.body.speciality.speciality_area;
       specialInfo.name = specilityName;
       await specialInfo.save();
@@ -166,8 +165,7 @@ const updateSpeAreaStaCtrl = async (req, res) => {
 //update speciality area staus
 const updateSpeStaCtrl = async (req, res) => {
   const { recordSpeId, status } = req.body;
-  console.log('recordSpeId ', recordSpeId);
-  console.log('Speciality area status ', req.body.status);
+
   try {
     const specialAreaDetail = await SpecialityModel.findOne({
       _id: recordSpeId,

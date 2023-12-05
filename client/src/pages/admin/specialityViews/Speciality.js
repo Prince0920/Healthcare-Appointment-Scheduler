@@ -102,10 +102,13 @@ const Speciality = () => {
       if (res.data.success) {
         setIsSubmitting(false);
         toast.success('Speciality added successfully');
-        setSpeciality({
-          speciality_area: '',
-          name: '',
-        });
+
+        if (currSpeId == '') {
+          setSpeciality({
+            speciality_area: '',
+            name: '',
+          });
+        }
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -140,12 +143,15 @@ const Speciality = () => {
 
   //view update popup
   const viewEditSpec = (record) => {
+    console.log('record', record);
     setShowModal(true);
     setCurrSpeId(record._id);
 
     setSpeciality({
       name: record.name,
+      speciality_area: record.specialityAreaId._id,
     });
+    // console.log('speciality_area', record.specialityAreaId._id);
   };
 
   return (
