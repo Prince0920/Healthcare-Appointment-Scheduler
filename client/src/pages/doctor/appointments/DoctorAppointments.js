@@ -218,7 +218,7 @@ const DoctorAppointments = () => {
                                     handleAppointmentStatus(docAppointment)
                                   }
                                 >
-                                  Update Status
+                                  Update
                                 </button>
                               </td>
                             </tr>
