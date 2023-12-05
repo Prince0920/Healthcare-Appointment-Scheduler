@@ -6,6 +6,7 @@ import FilterResult from './FilterResult';
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Spinner from '../../../components/Spinner';
 
 const AppointmentBooking = () => {
   const [doctorData, setDoctorData] = useState([]);
@@ -206,7 +207,7 @@ const AppointmentBooking = () => {
                   </div>
                 </div>
                 {isLoading ? (
-                  <p>Loading results...</p>
+                  <Spinner/>
                 ) : (
                   <FilterResult
                     searchResults={searchResults}
