@@ -27,9 +27,9 @@ router.post(
 );
 
 router.post(
-  '/addSpecialityArea',
+  '/addUpdateSpecialityArea',
   authMiddleware,
-  specialityController.addSpecialityTypeCtrl
+  specialityController.addUpdateSpecialityTypeCtrl
 );
 
 router.get(
@@ -39,9 +39,9 @@ router.get(
 );
 
 router.post(
-  '/SpecialityAdd',
+  '/SpecialityAddUpdate',
   authMiddleware,
-  specialityController.addSpecialityCtrl
+  specialityController.addUpdateSpecialityCtrl
 );
 
 router.get(

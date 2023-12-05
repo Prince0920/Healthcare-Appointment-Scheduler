@@ -5,21 +5,37 @@ const SpecialityAreaModel = require('../../../models/specialityarea');
 const SpecialityModel = require('../../../models/SpecialityModel');
 
 //add speciality type
-const addSpecialityTypeCtrl = async (req, res) => {
+const addUpdateSpecialityTypeCtrl = async (req, res) => {
   const specialityTypeName = req.body.specialityArea.name;
+  const currSpeAreaId = req.body.currSpeAreaId;
   try {
     // console.log(specialityTypeName);
     if (specialityTypeName) {
-      const newSpecialityArea = new SpecialityAreaModel({
-        name: specialityTypeName,
-      });
-      // console.log('New Speciality Area Object:', newSpecialityArea);
+      if (currSpeAreaId != '') {
+        const specialAreaInfo = await SpecialityAreaModel.findOne({
+          _id: currSpeAreaId,
+        });
+        //console.log(specialityTypeName);
+        // console.log(specialAreaInfo);
+        specialAreaInfo.name = specialityTypeName;
+        await specialAreaInfo.save();
 
-      await newSpecialityArea.save();
-      res.status(200).send({
-        success: true,
-        message: 'Speciality Area added successfully',
-      });
+        res.status(200).send({
+          success: true,
+          message: 'Name updated successfully',
+        });
+      } else {
+        const newSpecialityArea = new SpecialityAreaModel({
+          name: specialityTypeName,
+        });
+        // console.log('New Speciality Area Object:', newSpecialityArea);
+
+        await newSpecialityArea.save();
+        res.status(200).send({
+          success: true,
+          message: 'Added successfully',
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -81,19 +97,38 @@ const getSpecialityCtrl = async (req, res) => {
 };
 
 //add speciality
-const addSpecialityCtrl = async (req, res) => {
+const addUpdateSpecialityCtrl = async (req, res) => {
   try {
-    const newSpeciality = new SpecialityModel({
-      specialityAreaId: req.body.speciality.speciality_area,
-      name: req.body.speciality.name,
-    });
+    currSpeId = req.body.currSpeId;
+    const specilityName = eq.body.speciality.name;
 
-    await newSpeciality.save();
+    if (currSpeId != '') {
+      const specialInfo = await SpecialityModel.findOne({
+        _id: currSpeAreaId,
+      });
+      //console.log(specialityTypeName);
+      // console.log(specialAreaInfo);
+      specialInfo.specialityAreaId = req.body.speciality.speciality_area;
+      specialInfo.name = specilityName;
+      await specialInfo.save();
 
-    res.status(200).send({
-      success: true,
-      message: 'Speciality  added successfully.',
-    });
+      res.status(200).send({
+        success: true,
+        message: 'Name updated successfully',
+      });
+    } else {
+      const newSpeciality = new SpecialityModel({
+        specialityAreaId: req.body.speciality.speciality_area,
+        name: specilityName,
+      });
+
+      await newSpeciality.save();
+
+      res.status(200).send({
+        success: true,
+        message: 'Speciality  added successfully.',
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -154,9 +189,9 @@ const updateSpeStaCtrl = async (req, res) => {
 };
 
 module.exports = {
-  addSpecialityTypeCtrl,
+  addUpdateSpecialityTypeCtrl,
   getSpecialityTypeCtrl,
-  addSpecialityCtrl,
+  addUpdateSpecialityCtrl,
   getSpecialityCtrl,
   updateSpeAreaStaCtrl,
   updateSpeStaCtrl,

@@ -14,6 +14,7 @@ const Speciality = () => {
   });
   const [allSpecialityArea, setAllSpecialityArea] = useState([]);
   const [allSpeciality, setAllSpeciality] = useState([]);
+  const [currSpeId, setCurrSpeId] = useState('');
 
   const getSpecialityAreas = async () => {
     try {
@@ -78,11 +79,14 @@ const Speciality = () => {
 
   const handleSpeciSubmit = async (e) => {
     e.preventDefault();
-    const collectData = { speciality: speciality };
+    const collectData = {
+      speciality: speciality,
+      currSpeId: currSpeId,
+    };
     setIsSubmitting(true);
     try {
       const specialityAddApiurl =
-        SERVER_BASE_URL + '/api/v1/admin/SpecialityAdd';
+        SERVER_BASE_URL + '/api/v1/admin/SpecialityAddUpdate';
 
       const res = await axios.post(
         specialityAddApiurl,
@@ -134,6 +138,16 @@ const Speciality = () => {
     }
   };
 
+  //view update popup
+  const viewEditSpec = (record) => {
+    setShowModal(true);
+    setCurrSpeId(record._id);
+
+    setSpeciality({
+      name: record.name,
+    });
+  };
+
   return (
     <Layouts>
       <div className="content-wrapper">
@@ -160,6 +174,7 @@ const Speciality = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>Speciality Area</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -177,6 +192,11 @@ const Speciality = () => {
                                   .charAt(0)
                                   .toUpperCase() +
                                   record.specialityAreaId.name.slice(1)}
+                              </td>
+                              <td>
+                                <button onClick={() => viewEditSpec(record)}>
+                                  <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
                               </td>
                               <td>
                                 {record.status == 'pending' ? (
@@ -207,6 +227,7 @@ const Speciality = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>Speciality Area</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>

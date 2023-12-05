@@ -11,6 +11,7 @@ const SpecialityArea = () => {
     name: '',
   });
   const [allSpecialityarea, setAllSpecialityarea] = useState([]);
+  const [currSpeAreaId, setCurrSpeAreaId] = useState('');
 
   const openPopUp = () => {
     setShowModal(true);
@@ -27,11 +28,14 @@ const SpecialityArea = () => {
 
   const handleSpeciSubmit = async (e) => {
     e.preventDefault();
-    const collectData = { specialityArea: specialityArea };
+    const collectData = {
+      specialityArea: specialityArea,
+      currSpeAreaId: currSpeAreaId,
+    };
 
     try {
       setIsSubmitting(true);
-      let addApiUrl = SERVER_BASE_URL + '/api/v1/admin/addSpecialityArea';
+      let addApiUrl = SERVER_BASE_URL + '/api/v1/admin/addUpdateSpecialityArea';
       const res = await axios.post(addApiUrl, JSON.stringify(collectData), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -41,7 +45,11 @@ const SpecialityArea = () => {
       if (res.data.success) {
         setIsSubmitting(false);
         toast.success(res.data.message);
-        setSpecialityArea({ name: '' });
+        if (currSpeAreaId == '') {
+          setSpecialityArea({ name: '' });
+        }
+        loadAllSpecArea();
+        setCurrSpeAreaId('');
       } else {
         console.log('Something went wrong');
       }
@@ -95,6 +103,13 @@ const SpecialityArea = () => {
     }
   };
 
+  //view edit speciality area
+  const viewEditSpecArea = (record) => {
+    setShowModal(true);
+    setSpecialityArea({ name: record.name });
+    setCurrSpeAreaId(record._id);
+  };
+
   useEffect(() => {
     loadAllSpecArea();
   }, []);
@@ -125,6 +140,7 @@ const SpecialityArea = () => {
                         <tr>
                           <th>#</th>
                           <th>Name</th>
+                          <th>view</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -137,7 +153,13 @@ const SpecialityArea = () => {
                                 {record.name.charAt(0).toUpperCase() +
                                   record.name.slice(1)}
                               </td>
-
+                              <td>
+                                <button
+                                  onClick={() => viewEditSpecArea(record)}
+                                >
+                                  <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                              </td>
                               <td>
                                 {record.status == 'inactive' ? (
                                   <button
@@ -166,6 +188,7 @@ const SpecialityArea = () => {
                         <tr>
                           <th>#</th>
                           <th>Name</th>
+                          <th>view</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -191,7 +214,7 @@ const SpecialityArea = () => {
         <div className="modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Add speciality area</h5>
+              <h5 className="modal-title">Add/update speciality area</h5>
               <button
                 type="button"
                 className="close"
@@ -207,7 +230,7 @@ const SpecialityArea = () => {
                 <form>
                   <div className="form-group">
                     <label htmlFor="recipient-name" className="col-form-label">
-                      Speciality area:
+                      Speciality area name:
                     </label>
                     <input
                       className="form-control"
