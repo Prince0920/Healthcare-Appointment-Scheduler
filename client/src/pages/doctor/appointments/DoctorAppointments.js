@@ -17,10 +17,12 @@ const DoctorAppointments = () => {
     comment: '',
   });
   const [currAppInfo, setCurrAppInfo] = useState('');
+  const [filterStatus,setFilterStatus] = useState('');
 
   const loadDoctorAppointments = async () => {
+    console.log(filterStatus);
     try {
-      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/doctor/doctorAppointments';
+      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/doctor/doctorAppointments?filterStatus='+filterStatus+'';
       const res = await axios.get(fetchApiUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -42,12 +44,12 @@ const DoctorAppointments = () => {
   useEffect(() => {
     // This will be called whenever docAppointments is updated
     // console.log('record length', docAppointments.length);
-  }, [docAppointments]); // Adding docAppointments as a dependency
+  }, [docAppointments,filterStatus]); // Adding docAppointments as a dependency
 
   useEffect(() => {
     // Load doctor appointments on component mount
     loadDoctorAppointments();
-  }, []); // Empty dependency array to run only once on mount
+  }, [filterStatus]); // Empty dependency array to run only once on mount
 
   const handleAppointmentStatus = (docAppointment) => {
     setAppoUpdateStInfo({
@@ -119,6 +121,11 @@ const DoctorAppointments = () => {
     setShowModalAppInfo(false);
   };
 
+  //filter by status
+  const filterByStatus = (status)=>{
+         setFilterStatus(status);
+  }
+
   return (
     <Layouts>
       <div className="content-wrapper">
@@ -146,6 +153,19 @@ const DoctorAppointments = () => {
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">All Appointments</h3>
+                    <div style={{float:'right'}}>
+                    <div class="dropdown">
+  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Filter by status
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" onClick={()=>filterByStatus('scheduled')} >Scheduled</a>
+    <a class="dropdown-item" onClick={()=>filterByStatus('approved')} >Approved</a>
+    <a class="dropdown-item" onClick={()=>filterByStatus('rejected')} >Rejected</a>
+  </div>
+</div>
+                    </div>
                   </div>
                   <div className="card-body">
                     <table
