@@ -13,42 +13,57 @@ const getDoctorAppointments = async (req, res) => {
     if (doctorProfile) {
       const docProfileId = doctorProfile._id;
       // console.log('doctor profile id is ' + docProfileId);
-      const alldocAppointmets = await doctorAppoinmentModel.find({
-        doctorProfileId: docProfileId,
-      });
-      const appointmentsWithInfo = [];
+      // const alldocAppointmets = await doctorAppoinmentModel
+      //   .find({
+      //     doctorProfileId: docProfileId,
+      //   })
+      //   .populate('patientDetailId');
+
+      const alldocAppointmets = await doctorAppoinmentModel
+        .find({
+          doctorProfileId: docProfileId,
+        })
+        .populate({
+          path: 'patientDetailId',
+          populate: {
+            path: 'userId',
+            model: 'User',
+          },
+        });
+
+      // const appointmentsWithInfo = [];
 
       if (alldocAppointmets) {
         // console.log('testt');
 
         // Use Promise.all to await all asynchronous operations in the map
-        const appointmentsWithInfo = await Promise.all(
-          alldocAppointmets.map(async (alldocAppointmet) => {
-            const patientProfileId = alldocAppointmet.patientProfileId;
+        // const appointmentsWithInfo = await Promise.all(
+        //   alldocAppointmets.map(async (alldocAppointmet) => {
+        //     const patientProfileId = alldocAppointmet.patientProfileId;
 
-            // Use await to wait for the userModel.findOne to complete
-            const patientInfo = await userModel.findOne({
-              _id: patientProfileId,
-            });
-            //console.log(patientInfo);
-            // Add patientInfo to the alldocAppointmet object
-            // alldocAppointmet.patientInfo = patientInfo;
-            let tempObj = {
-              ...alldocAppointmet.toObject(),
-              patientInfo: patientInfo,
-            };
-            // console.log('alllllll', tempObj);
+        //     // Use await to wait for the userModel.findOne to complete
+        //     const patientInfo = await userModel.findOne({
+        //       _id: patientProfileId,
+        //     });
+        //     //console.log(patientInfo);
+        //     // Add patientInfo to the alldocAppointmet object
+        //     // alldocAppointmet.patientInfo = patientInfo;
+        //     let tempObj = {
+        //       ...alldocAppointmet.toObject(),
+        //       patientInfo: patientInfo,
+        //     };
+        //     // console.log('alllllll', tempObj);
 
-            return tempObj;
-          })
-        );
+        //     return tempObj;
+        //   })
+        // );
 
-        // console.log('alldocAppointmets', appointmentsWithInfo);
+        console.log('alldocAppointmets', alldocAppointmets);
         //console.log('doctor data ' + alldocAppointmets);
-        if (appointmentsWithInfo) {
+        if (alldocAppointmets) {
           res.status(200).send({
             success: true,
-            data: appointmentsWithInfo,
+            data: alldocAppointmets,
             message: 'All appointments fetched',
           });
         } else {

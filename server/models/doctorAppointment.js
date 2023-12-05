@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
 const doctorAppointmentSchema = new mongoose.Schema({
-  patientProfileId: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'PatientProfile',
+    ref: 'User', // Reference to the user who owns this profile
+    required: true,
+  },
+  patientDetailId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PatientDetail',
     required: true,
   },
   doctorProfileId: {
@@ -11,7 +16,7 @@ const doctorAppointmentSchema = new mongoose.Schema({
     ref: 'DoctorProfile',
     required: true,
   },
-  date: {
+  appointmentDate: {
     type: Date,
     required: true,
   },
@@ -19,8 +24,10 @@ const doctorAppointmentSchema = new mongoose.Schema({
     type: String, // You can use enum to represent different appointment statuses (e.g., 'scheduled', 'completed', 'cancelled')
     default: 'scheduled',
   },
-
   message: {
+    type: String,
+  },
+  reasonOfAppointment: {
     type: String,
   },
   // Add other relevant fields for the appointment
