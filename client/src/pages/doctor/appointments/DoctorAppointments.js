@@ -146,6 +146,37 @@ const DoctorAppointments = () => {
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">All Appointments</h3>
+                    <div style={{ float: 'right' }}>
+                      <div class="dropdown">
+                        <a
+                          class="btn btn-secondary dropdown-toggle"
+                          href="#"
+                          role="button"
+                          id="dropdownMenuLink"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          Filter By Status
+                        </a>
+
+                        <div
+                          class="dropdown-menu"
+                          aria-labelledby="dropdownMenuLink"
+                        >
+                          <a class="dropdown-item" href="#">
+                            Scheduled
+                          </a>
+                          <a class="dropdown-item" href="#">
+                            Approved
+                          </a>
+
+                          <a class="dropdown-item" href="#">
+                            Rejected
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="card-body">
                     <table
