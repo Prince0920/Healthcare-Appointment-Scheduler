@@ -85,19 +85,11 @@ function App() {
           />
           <Route
             path='/login'
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
+            element={<Login />}
           />
           <Route
             path='/register'
-            element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            }
+            element={<Register />}
           />
           <Route
             path='/about-us'
