@@ -149,13 +149,13 @@ const FilterResult = ({
                 </p>
                 <p>
                   <strong>Location:</strong>{' '}
-                  {selectedProvider.address.landmark +
+                  {selectedProvider?.address?.landmark +
                     ', ' +
-                    selectedProvider.address.street +
+                    selectedProvider?.address?.street +
                     ', ' +
-                    selectedProvider.address.city +
+                    selectedProvider?.address?.city +
                     ', ' +
-                    selectedProvider.address.state}
+                    selectedProvider?.address?.state}
                 </p>
                 <p>
                   <strong>About:</strong> {selectedProvider?.about}

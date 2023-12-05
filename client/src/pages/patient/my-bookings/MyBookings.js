@@ -170,29 +170,29 @@ const MyBookings = () => {
             </div>
             <div className='modal-body'>
               <p>
-                <strong>Patient Name:</strong> {selectedAppointment.fullname}
+                <strong>Patient Name:</strong> {selectedAppointment?.fullname}
               </p>
               <p>
-                <strong>Doctor Name:</strong> {selectedAppointment.doctorFullName}
+                <strong>Doctor Name:</strong> {selectedAppointment?.doctorFullName}
               </p>
               <p>
-                <strong>Status:</strong> {selectedAppointment.status}
+                <strong>Status:</strong> {selectedAppointment?.status}
               </p>
               <p>
                 <strong>Doctor Contact No.: </strong>
-                {selectedAppointment.phone}
+                {selectedAppointment?.phone}
               </p>
               <p>
                 <strong>Appointment Date: </strong>
-                {selectedAppointment.appointmentDate}
+                {selectedAppointment?.appointmentDate}
               </p>
               <p>
                 <strong>Reason Of Appointment: </strong>
-                {selectedAppointment.reasonOfAppointment || '-'}
+                {selectedAppointment?.reasonOfAppointment || '-'}
               </p>
               <p>
                 <strong>Doctor Message: </strong>
-                {selectedAppointment.message || '-'}
+                {selectedAppointment?.message || '-'}
               </p>
             </div>
             <div className='modal-footer'>
