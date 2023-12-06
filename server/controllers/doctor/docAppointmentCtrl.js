@@ -5,6 +5,8 @@ const PatientProfile = require('../../models/patientProfile');
 const PatientDetail = require('../../models/patientDetail');
 const getDoctorAppointments = async (req, res) => {
   const { userId } = req.body;
+  const {filterStatus} =  req.query;
+ // console.log('filterstatus',filterStatus)
   try {
     // get user doctor profile id by user id
 
@@ -14,14 +16,15 @@ const getDoctorAppointments = async (req, res) => {
     if (doctorProfile) {
       const docProfileId = doctorProfile._id;
       // console.log('doctor profile id is ' + docProfileId);
-      const alldocAppointmets = await doctorAppoinmentModel
+
+           const alldocAppointmets = await doctorAppoinmentModel
         .find({
-          doctorProfileId: docProfileId,
+          doctorProfileId: docProfileId,status:filterStatus
         })
         .populate('patientDetailId')
         .populate('userId');
       // const appointmentsWithInfo = [];
-      console.log('alldocAppointmets', alldocAppointmets);
+      //console.log('alldocAppointmets', alldocAppointmets);
       if (alldocAppointmets) {
         // console.log('testt');
 
