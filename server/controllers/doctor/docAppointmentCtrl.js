@@ -5,69 +5,44 @@ const PatientProfile = require('../../models/patientProfile');
 const PatientDetail = require('../../models/patientDetail');
 const getDoctorAppointments = async (req, res) => {
   const { userId } = req.body;
-  const {filterStatus} =  req.query;
- // console.log('filterstatus',filterStatus)
+  const { filterStatus } = req.query;
+
+  console.log('filterstatus', filterStatus);
   try {
     // get user doctor profile id by user id
-
     const doctorProfile = await doctorProfileModel.findOne({ userId: userId });
 
-    //console.log('doctor profile  ' + doctorProfile);
     if (doctorProfile) {
       const docProfileId = doctorProfile._id;
-      // console.log('doctor profile id is ' + docProfileId);
 
-           const alldocAppointmets = await doctorAppoinmentModel
-        .find({
-          doctorProfileId: docProfileId,status:filterStatus
-        })
+      let query = { doctorProfileId: docProfileId };
+
+      // Add status condition only if filterStatus is not blank
+      if (filterStatus !== undefined && filterStatus !== '') {
+        query.status = filterStatus;
+      }
+
+      const alldocAppointments = await doctorAppoinmentModel
+        .find(query)
         .populate('patientDetailId')
         .populate('userId');
-      // const appointmentsWithInfo = [];
-      //console.log('alldocAppointmets', alldocAppointmets);
-      if (alldocAppointmets) {
-        // console.log('testt');
 
-        // Use Promise.all to await all asynchronous operations in the map
-        // const appointmentsWithInfo = await Promise.all(
-        //   alldocAppointmets.map(async (alldocAppointmet) => {
-        //     const patientProfileId = alldocAppointmet.patientProfileId;
-
-        //     // Use await to wait for the userModel.findOne to complete
-        //     const patientInfo = await userModel.findOne({
-        //       _id: patientProfileId,
-        //     });
-        //     //console.log(patientInfo);
-        //     // Add patientInfo to the alldocAppointmet object
-        //     // alldocAppointmet.patientInfo = patientInfo;
-        //     let tempObj = {
-        //       ...alldocAppointmet.toObject(),
-        //       patientInfo: patientInfo,
-        //     };
-        //     // console.log('alllllll', tempObj);
-
-        //     return tempObj;
-        //   })
-        // );
-
-        //console.log('doctor data ' + alldocAppointmets);
-        if (alldocAppointmets) {
-          res.status(200).send({
-            success: true,
-            data: alldocAppointmets,
-            message: 'All appointments fetched',
-          });
-        } else {
-          res.status(200).send({
-            success: true,
-            message: 'No record available',
-          });
-        }
+      if (alldocAppointments && alldocAppointments.length > 0) {
+        res.status(200).send({
+          success: true,
+          data: alldocAppointments,
+          message: 'All appointments fetched',
+        });
+      } else {
+        res.status(200).send({
+          success: true,
+          message: 'No records available',
+        });
       }
     } else {
       res.status(200).send({
         success: true,
-        message: 'something went wrong ',
+        message: 'Something went wrong',
       });
     }
   } catch (error) {
@@ -117,6 +92,28 @@ const docUpdateAppoStatusCtrl = async (req, res) => {
       message: `Appointment fetch error ${error}`,
     });
   }
+};
+
+const ifuseloop = () => {
+  // Use Promise.all to await all asynchronous operations in the map
+  // const appointmentsWithInfo = await Promise.all(
+  //   alldocAppointmets.map(async (alldocAppointmet) => {
+  //     const patientProfileId = alldocAppointmet.patientProfileId;
+  //     // Use await to wait for the userModel.findOne to complete
+  //     const patientInfo = await userModel.findOne({
+  //       _id: patientProfileId,
+  //     });
+  //     //console.log(patientInfo);
+  //     // Add patientInfo to the alldocAppointmet object
+  //     // alldocAppointmet.patientInfo = patientInfo;
+  //     let tempObj = {
+  //       ...alldocAppointmet.toObject(),
+  //       patientInfo: patientInfo,
+  //     };
+  //     // console.log('alllllll', tempObj);
+  //     return tempObj;
+  //   })
+  // );
 };
 
 module.exports = { getDoctorAppointments, docUpdateAppoStatusCtrl };

@@ -45,10 +45,10 @@ const DoctorAppointments = () => {
     }
   };
 
-  useEffect(() => {
-    // This will be called whenever docAppointments is updated
-    // console.log('record length', docAppointments.length);
-  }, [docAppointments, filterStatus]); // Adding docAppointments as a dependency
+  // useEffect(() => {
+  //   // This will be called whenever docAppointments is updated
+  //   // console.log('record length', docAppointments.length);
+  // }, [docAppointments, filterStatus]); // Adding docAppointments as a dependency
 
   useEffect(() => {
     // Load doctor appointments on component mount
@@ -216,7 +216,7 @@ const DoctorAppointments = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {docAppointments.length > 0 ? (
+                        {docAppointments && docAppointments.length > 0 ? (
                           docAppointments.map((docAppointment, i) => (
                             <tr key={i}>
                               <td scope="row">{i + 1}</td>
