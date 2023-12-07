@@ -8,7 +8,6 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import './assets/css/style.css';
-import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import { UseSelector, useSelector } from 'react-redux/es/hooks/useSelector';
 import Spinner from './components/Spinner';
@@ -22,6 +21,9 @@ import AdminProfile from './pages/admin/AdminProfile';
 import AllUsers from './pages/admin/AllUsers';
 import DoctorAppointments from './pages/doctor/appointments/DoctorAppointments';
 import MyBookings from './pages/patient/my-bookings/MyBookings';
+import ProtectedRoute from './components/ProtectedRoute';
+import Speciality from './pages/admin/specialityViews/Speciality';
+import SpecialityArea from './pages/admin/specialityViews/SpecialityArea';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -30,107 +32,125 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/"
+            path='/'
             element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<Dashboard />}
+                allowedRoles={['admin', 'patient', 'doctor', 'admin']}
+              />
+            }
+          />
+          <Route
+            path='/hospital/profile'
+            element={
+              <ProtectedRoute
+                element={<HospitalProfile />}
+                allowedRoles={['hospital']}
+              />
+            }
+          />
+          <Route
+            path='/patient/profile'
+            element={
+              <ProtectedRoute
+                element={<PatientProfile />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+          <Route
+            path='/doctor/profile'
+            element={
+              <ProtectedRoute
+                element={<Doctor />}
+                allowedRoles={['doctor']}
+              />
+            }
+          />
+          <Route
+            path='/appointment-booking'
+            element={
+              <ProtectedRoute
+                element={<AppointmentBooking />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+          <Route
+            path='/bookings'
+            element={
+              <ProtectedRoute
+                element={<MyBookings />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+          <Route
+            path='/login'
+            element={<Login />}
+          />
+          <Route
+            path='/register'
+            element={<Register />}
+          />
+          <Route
+            path='/about-us'
+            element={<AboutUs />}
+          />
+          <Route
+            path='/contact'
+            element={<ContactUs />}
+          />
+          <Route
+            path='/admin/profile'
+            element={
+              <ProtectedRoute
+                element={<AdminProfile />}
+                allowedRoles={['admin']}
+              />
+            }
+          />
+          <Route
+            path='/admin/manage-speciality-area'
+            element={
+              <ProtectedRoute
+                element={<SpecialityArea />}
+                allowedRoles={['admin']}
+              />
             }
           />
 
           <Route
-            path="/hospital/profile"
+            path='/admin/manage-speciality'
             element={
-              <ProtectedRoute>
-                <HospitalProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/patient/profile"
-            element={
-              <ProtectedRoute>
-                <PatientProfile />
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<Speciality />}
+                allowedRoles={['admin']}
+              />
             }
           />
 
           <Route
-            path="/doctor/profile"
+            path='/admin/all-users'
             element={
-              <ProtectedRoute>
-                <Doctor />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/appointment-booking"
-            element={
-              <ProtectedRoute>
-                <AppointmentBooking />
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<AllUsers />}
+                allowedRoles={['admin']}
+              />
             }
           />
           <Route
-            path="/bookings"
+            path='/doctor/appointments'
             element={
-              <ProtectedRoute>
-                <MyBookings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            }
-          />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route
-            path="/admin/profile"
-            element={
-              <ProtectedRoute>
-                <AdminProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/all-users"
-            element={
-              <ProtectedRoute>
-                <AllUsers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/doctor/appointments"
-            element={
-              <ProtectedRoute>
-                <DoctorAppointments />
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<DoctorAppointments />}
+                allowedRoles={['doctor']}
+              />
             }
           />
         </Routes>
       </BrowserRouter>
     </>
-    // <div className="wrapper">
-    //   <Header />
-    //   <Leftsidebar />
-    //   <DashboardUser />
-    //   <Footer />
-    // </div>
   );
 }
 

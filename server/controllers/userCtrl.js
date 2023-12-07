@@ -53,7 +53,7 @@ const loginController = async (req, res) => {
         .status(200)
         .send({ message: "Invlid email or password", success: false });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, usertype: user.usertype }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 

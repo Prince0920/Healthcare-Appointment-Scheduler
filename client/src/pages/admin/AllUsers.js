@@ -45,7 +45,7 @@ const AllUsers = () => {
       );
 
       if (res.data.success) {
-       // console.log(res.data.data);
+        // console.log(res.data.data);
         toast.success(res.data.message);
         getAllUsers();
       }
@@ -100,7 +100,7 @@ const AllUsers = () => {
                       <tbody>
                         {allUsers &&
                           allUsers.map((record, i) => (
-                            <tr>
+                            <tr key={i}>
                               <td scope="row">{i + 1}</td>
                               <td>
                                 {record.fullname.charAt(0).toUpperCase() +

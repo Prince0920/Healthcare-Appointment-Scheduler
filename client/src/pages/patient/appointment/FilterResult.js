@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 
-const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
-  const [selectedProvider, setSelectedProvider] = useState(null);
+const FilterResult = ({
+  doctorData,
+  hospitalData,
+  handleBookAppointment,
+  selectedProvider,
+  setSelectedProvider,
+  handleViewBookAppointmentModel,
+}) => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState('');
-
-  const handleDateChange = e => {
-    const selectedDate = e.target.value;
-    setSelectedDate(selectedDate);
-  };
 
   const handleViewDetails = provider => {
     setSelectedProvider(provider);
@@ -19,6 +18,7 @@ const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
   const handleCloseDetailsModal = () => {
     setShowDetailsModal(false);
   };
+
   console.log('Doctor Data', doctorData);
   return (
     <>
@@ -76,22 +76,23 @@ const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
                   </p>
                   {/* Add View Button  */}
                   <div className='row mb-3'>
-                    <div className='col-6'>
+                    {/* <div className='col-6'>
                       <input
                         type='date'
                         onChange={handleDateChange}
                         className='form-control'
                       />
-                    </div>
-                    <div className='col-6'>
+                    </div> */}
+                    <div className='col-12'>
                       {/* Book Appointment Button  */}
                       <button
                         className='btn btn-success btn-block'
                         style={{ background: '#4CAF50', color: 'white' }}
                         onClick={() => {
-                          handleBookAppointment(provider, selectedDate);
+                          setSelectedProvider(provider);
+                          handleViewBookAppointmentModel();
                         }}>
-                        Book Now
+                        Schedule Appointment
                       </button>
                     </div>
                   </div>
@@ -104,6 +105,7 @@ const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
           <div>No data found..</div>
         )}
       </div>
+
       {/* Details Modal  */}
       <div
         className={`modal ${showDetailsModal ? 'show fade' : ''}`}
@@ -147,13 +149,13 @@ const FilterResult = ({ doctorData, hospitalData, handleBookAppointment }) => {
                 </p>
                 <p>
                   <strong>Location:</strong>{' '}
-                  {selectedProvider.address.landmark +
+                  {selectedProvider?.address?.landmark +
                     ', ' +
-                    selectedProvider.address.street +
+                    selectedProvider?.address?.street +
                     ', ' +
-                    selectedProvider.address.city +
+                    selectedProvider?.address?.city +
                     ', ' +
-                    selectedProvider.address.state}
+                    selectedProvider?.address?.state}
                 </p>
                 <p>
                   <strong>About:</strong> {selectedProvider?.about}

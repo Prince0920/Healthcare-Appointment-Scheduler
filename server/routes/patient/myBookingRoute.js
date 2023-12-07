@@ -8,4 +8,7 @@ const authMiddleware = require('../../config/middlewares/authMiddleware');
 //get all
 router.get('/', authMiddleware, myBookingsController.getAllBookingsController);
 
+//get all
+router.delete('/', authMiddleware, myBookingsController.removeAppointmentController);
+
 module.exports = router;
