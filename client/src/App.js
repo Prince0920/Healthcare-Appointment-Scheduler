@@ -110,24 +110,26 @@ function App() {
               />
             }
           />
-            <Route
-            path="/admin/manage-speciality-area"
+          <Route
+            path='/admin/manage-speciality-area'
             element={
-              <ProtectedRoute>
-                <SpecialityArea/>
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<SpecialityArea />}
+                allowedRoles={['admin']}
+              />
             }
           />
 
           <Route
-            path="/admin/manage-speciality"
+            path='/admin/manage-speciality'
             element={
-              <ProtectedRoute>
-                <Speciality />
-              </ProtectedRoute>
+              <ProtectedRoute
+                element={<Speciality />}
+                allowedRoles={['admin']}
+              />
             }
           />
-            
+
           <Route
             path='/admin/all-users'
             element={
