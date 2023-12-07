@@ -9,16 +9,27 @@ import { toast } from 'react-toastify';
 const DoctorAppointments = () => {
   const [docAppointments, setDocAppointments] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalAppInfo, setShowModalAppInfo] = useState(false);
   const [selectedAppoId, setSelectedAppoId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appoUpdateStInfo, setAppoUpdateStInfo] = useState({
     status: '',
     comment: '',
   });
+  const [currAppInfo, setCurrAppInfo] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [search, setSearch] = useState('');
+  const [filterByText, setFilterByText] = useState('Status');
 
   const loadDoctorAppointments = async () => {
     try {
-      let fetchApiUrl = SERVER_BASE_URL + '/api/v1/doctor/doctorAppointments';
+      let fetchApiUrl =
+        SERVER_BASE_URL +
+        '/api/v1/doctor/doctorAppointments?filterStatus=' +
+        filterStatus +
+        '&search=' +
+        search +
+        '';
       const res = await axios.get(fetchApiUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -37,15 +48,15 @@ const DoctorAppointments = () => {
     }
   };
 
-  useEffect(() => {
-    // This will be called whenever docAppointments is updated
-    // console.log('record length', docAppointments.length);
-  }, [docAppointments]); // Adding docAppointments as a dependency
+  // useEffect(() => {
+  //   // This will be called whenever docAppointments is updated
+  //   // console.log('record length', docAppointments.length);
+  // }, [docAppointments, filterStatus]); // Adding docAppointments as a dependency
 
   useEffect(() => {
     // Load doctor appointments on component mount
     loadDoctorAppointments();
-  }, []); // Empty dependency array to run only once on mount
+  }, [filterStatus, search]); // Empty dependency array to run only once on mount
 
   const handleAppointmentStatus = (docAppointment) => {
     setAppoUpdateStInfo({
@@ -58,7 +69,7 @@ const DoctorAppointments = () => {
     setAppoUpdateStInfo({
       status: docAppointment.status,
       comment: docAppointment.message ? docAppointment.message : '',
-      patientName: docAppointment.patientInfo.fullname,
+      patientName: docAppointment.userId.fullname,
     });
   };
 
@@ -106,6 +117,27 @@ const DoctorAppointments = () => {
     setShowModal(false);
   };
 
+  //show appointment info on popup
+  const viewAppoInfo = (docAppointment) => {
+    setCurrAppInfo(docAppointment);
+    setShowModalAppInfo(true);
+    //console.log(currAppInfo);
+  };
+
+  const handleCloseAppInfoModel = () => {
+    setShowModalAppInfo(false);
+  };
+
+  //filter by status
+  const filterByStatus = (status) => {
+    setFilterStatus(status);
+    setFilterByText(status);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <Layouts>
       <div className="content-wrapper">
@@ -133,6 +165,84 @@ const DoctorAppointments = () => {
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">All Appointments</h3>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                      }}
+                    >
+                      {/* <div
+                        className="input-group"
+                        style={{
+                          marginRight: '10px',
+                          display: 'flex',
+                          width: '250px',
+                        }}
+                      >
+                        <div
+                          className="form-outline"
+                          data-mdb-input-init
+                          style={{ flex: '1' }}
+                        >
+                          <input
+                            type="search"
+                            id="form1"
+                            className="form-control"
+                            style={{ width: '100%' }}
+                            value={search}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          data-mdb-ripple-init
+                          style={{ marginLeft: '-1px', height: '38px' }} // Adjust the height as needed
+                        >
+                          <i className="fas fa-search" />
+                        </button>
+                      </div> */}
+
+                      <div className="dropdown">
+                        <a
+                          className="btn btn-secondary dropdown-toggle"
+                          href="#"
+                          role="button"
+                          id="dropdownMenuLink"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                          style={{ marginLeft: '10px' }}
+                        >
+                          Filter by <b>{filterByText}</b>
+                        </a>
+
+                        <div
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuLink"
+                        >
+                          <a
+                            className="dropdown-item"
+                            onClick={() => filterByStatus('scheduled')}
+                          >
+                            Scheduled
+                          </a>
+                          <a
+                            className="dropdown-item"
+                            onClick={() => filterByStatus('approved')}
+                          >
+                            Approved
+                          </a>
+                          <a
+                            className="dropdown-item"
+                            onClick={() => filterByStatus('rejected')}
+                          >
+                            Rejected
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="card-body">
                     <table
@@ -144,19 +254,32 @@ const DoctorAppointments = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>E-mail</th>
-                          <th>Time</th>
+                          <th>App. Date/Time</th>
+                          <th>Apply Date/Time</th>
                           <th>Status</th>
-                          <th>Comment</th>
+                          <th>Dr. Comment</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {docAppointments.length > 0 ? (
+                        {docAppointments && docAppointments.length > 0 ? (
                           docAppointments.map((docAppointment, i) => (
                             <tr key={i}>
                               <td scope="row">{i + 1}</td>
-                              <td>{docAppointment.patientInfo.fullname}</td>
-                              <td>{docAppointment.patientInfo.email}</td>
+                              <td>
+                                {docAppointment?.patientDetailId?.patientName}
+                              </td>
+                              <td>
+                                {docAppointment.userId
+                                  ? docAppointment.userId.email
+                                  : ''}
+                              </td>
+                              <td>
+                                <Moment format="Do MMM, YYYY, h:mm: A">
+                                  {docAppointment.appointmentDate}
+                                </Moment>
+                              </td>
                               <td>
                                 <Moment format="Do MMM, YYYY, h:mm: A">
                                   {docAppointment.date}
@@ -178,12 +301,19 @@ const DoctorAppointments = () => {
                               <td>{docAppointment.message}</td>
                               <td>
                                 <button
+                                  onClick={() => viewAppoInfo(docAppointment)}
+                                >
+                                  <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                              </td>
+                              <td>
+                                <button
                                   className="btn btn-primary"
                                   onClick={() =>
                                     handleAppointmentStatus(docAppointment)
                                   }
                                 >
-                                  Update Status
+                                  Update
                                 </button>
                               </td>
                             </tr>
@@ -201,9 +331,11 @@ const DoctorAppointments = () => {
                           <th>#</th>
                           <th>Name</th>
                           <th>E-mail</th>
-                          <th>Time</th>
+                          <th>Appt. Date/Time</th>
+                          <th>Apply Date/Time</th>
                           <th>Status</th>
-                          <th>Comment</th>
+                          <th>Dr.Comment</th>
+                          <th>View</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -305,6 +437,85 @@ const DoctorAppointments = () => {
         </div>
       </div>
       {/* {/ Book Appointment Modal  /} */}
+
+      {/* {/ show Appointment info  /} */}
+      <div
+        className={`modal ${showModalAppInfo ? 'show fade' : ''}`}
+        tabIndex="-1"
+        role="dialog"
+        style={{
+          display: showModalAppInfo ? 'block' : 'none',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Patient appointment Info</h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={handleCloseAppInfoModel}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-body">
+                <div class="modal-body">
+                  <p>
+                    Patient Name:{'   '}
+                    <b>
+                      {currAppInfo?.patientDetailId?.patientName
+                        .charAt(0)
+                        .toUpperCase() +
+                        currAppInfo?.patientDetailId?.patientName.slice(1)}
+                    </b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Gender:{' '}
+                    <b>
+                      {currAppInfo?.patientDetailId?.gender
+                        .charAt(0)
+                        .toUpperCase() +
+                        currAppInfo?.patientDetailId?.gender.slice(1)}
+                    </b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Age: <b>{currAppInfo?.patientDetailId?.age}</b>
+                  </p>
+                  <hr></hr>
+                  <p>
+                    Appo. Date:{' '}
+                    <b>
+                      {' '}
+                      <Moment format="Do MMM, YYYY, h:mm: A">
+                        {currAppInfo?.appointmentDate}
+                      </Moment>
+                    </b>
+                  </p>
+                  <p>Patient comments: {currAppInfo?.reasonOfAppointment}</p>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={handleCloseAppInfoModel}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* {/ show appointment Modal  /} */}
     </Layouts>
   );
 };

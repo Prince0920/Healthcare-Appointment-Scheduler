@@ -1,6 +1,7 @@
 const userModel = require('../../models/userModels');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+const SpecialityAreaModel = require('../../models/specialityarea');
 
 //get admin profile info
 const getadminProfileInfo = async (req, res) => {

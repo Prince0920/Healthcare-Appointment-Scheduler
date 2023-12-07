@@ -22,6 +22,8 @@ import AllUsers from './pages/admin/AllUsers';
 import DoctorAppointments from './pages/doctor/appointments/DoctorAppointments';
 import MyBookings from './pages/patient/my-bookings/MyBookings';
 import ProtectedRoute from './components/ProtectedRoute';
+import Speciality from './pages/admin/specialityViews/Speciality';
+import SpecialityArea from './pages/admin/specialityViews/SpecialityArea';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -108,6 +110,24 @@ function App() {
               />
             }
           />
+            <Route
+            path="/admin/manage-speciality-area"
+            element={
+              <ProtectedRoute>
+                <SpecialityArea/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/manage-speciality"
+            element={
+              <ProtectedRoute>
+                <Speciality />
+              </ProtectedRoute>
+            }
+          />
+            
           <Route
             path='/admin/all-users'
             element={
