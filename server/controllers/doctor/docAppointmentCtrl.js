@@ -5,12 +5,15 @@ const PatientProfile = require('../../models/patientProfile');
 const PatientDetail = require('../../models/patientDetail');
 const getDoctorAppointments = async (req, res) => {
   const { userId } = req.body;
-  const { filterStatus } = req.query;
+  const { filterStatus, search } = req.query;
 
-  console.log('filterstatus', filterStatus);
+  //console.log('filterstatus', filterStatus);
+  //console.log('search', search);
   try {
     // get user doctor profile id by user id
     const doctorProfile = await doctorProfileModel.findOne({ userId: userId });
+
+    const query = {};
 
     if (doctorProfile) {
       const docProfileId = doctorProfile._id;
@@ -21,6 +24,16 @@ const getDoctorAppointments = async (req, res) => {
       if (filterStatus !== undefined && filterStatus !== '') {
         query.status = filterStatus;
       }
+      if (search) {
+        console.log('search for', search);
+        query.$or = [
+          {
+            'patientDetailId.patientName': { $regex: new RegExp(search, 'i') },
+          },
+        ];
+      }
+
+      // console.log('Final Query:', query);
 
       const alldocAppointments = await doctorAppoinmentModel
         .find(query)

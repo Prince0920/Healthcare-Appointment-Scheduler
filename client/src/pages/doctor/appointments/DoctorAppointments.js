@@ -18,14 +18,17 @@ const DoctorAppointments = () => {
   });
   const [currAppInfo, setCurrAppInfo] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [search, setSearch] = useState('');
+  const [filterByText, setFilterByText] = useState('Status');
 
   const loadDoctorAppointments = async () => {
-    console.log(filterStatus);
     try {
       let fetchApiUrl =
         SERVER_BASE_URL +
         '/api/v1/doctor/doctorAppointments?filterStatus=' +
         filterStatus +
+        '&search=' +
+        search +
         '';
       const res = await axios.get(fetchApiUrl, {
         headers: {
@@ -53,7 +56,7 @@ const DoctorAppointments = () => {
   useEffect(() => {
     // Load doctor appointments on component mount
     loadDoctorAppointments();
-  }, [filterStatus]); // Empty dependency array to run only once on mount
+  }, [filterStatus, search]); // Empty dependency array to run only once on mount
 
   const handleAppointmentStatus = (docAppointment) => {
     setAppoUpdateStInfo({
@@ -118,7 +121,7 @@ const DoctorAppointments = () => {
   const viewAppoInfo = (docAppointment) => {
     setCurrAppInfo(docAppointment);
     setShowModalAppInfo(true);
-    console.log(currAppInfo);
+    //console.log(currAppInfo);
   };
 
   const handleCloseAppInfoModel = () => {
@@ -128,6 +131,11 @@ const DoctorAppointments = () => {
   //filter by status
   const filterByStatus = (status) => {
     setFilterStatus(status);
+    setFilterByText(status);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -157,38 +165,77 @@ const DoctorAppointments = () => {
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">All Appointments</h3>
-                    <div style={{ float: 'right' }}>
-                      <div class="dropdown">
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                      }}
+                    >
+                      {/* <div
+                        className="input-group"
+                        style={{
+                          marginRight: '10px',
+                          display: 'flex',
+                          width: '250px',
+                        }}
+                      >
+                        <div
+                          className="form-outline"
+                          data-mdb-input-init
+                          style={{ flex: '1' }}
+                        >
+                          <input
+                            type="search"
+                            id="form1"
+                            className="form-control"
+                            style={{ width: '100%' }}
+                            value={search}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          data-mdb-ripple-init
+                          style={{ marginLeft: '-1px', height: '38px' }} // Adjust the height as needed
+                        >
+                          <i className="fas fa-search" />
+                        </button>
+                      </div> */}
+
+                      <div className="dropdown">
                         <a
-                          class="btn btn-secondary dropdown-toggle"
+                          className="btn btn-secondary dropdown-toggle"
                           href="#"
                           role="button"
                           id="dropdownMenuLink"
                           data-toggle="dropdown"
                           aria-haspopup="true"
                           aria-expanded="false"
+                          style={{ marginLeft: '10px' }}
                         >
-                          Filter by status
+                          Filter by <b>{filterByText}</b>
                         </a>
 
                         <div
-                          class="dropdown-menu"
+                          className="dropdown-menu"
                           aria-labelledby="dropdownMenuLink"
                         >
                           <a
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => filterByStatus('scheduled')}
                           >
                             Scheduled
                           </a>
                           <a
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => filterByStatus('approved')}
                           >
                             Approved
                           </a>
                           <a
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => filterByStatus('rejected')}
                           >
                             Rejected
@@ -221,9 +268,7 @@ const DoctorAppointments = () => {
                             <tr key={i}>
                               <td scope="row">{i + 1}</td>
                               <td>
-                                {docAppointment.userId.fullname
-                                  ? docAppointment.userId.fullname
-                                  : ''}
+                                {docAppointment?.patientDetailId?.patientName}
                               </td>
                               <td>
                                 {docAppointment.userId
