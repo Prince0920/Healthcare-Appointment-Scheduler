@@ -1,3 +1,4 @@
+const SpecialityModel = require('../../models/SpecialityModel');
 const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
@@ -6,7 +7,8 @@ const userModel = require('../../models/userModels');
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
-    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } = req.body;
+    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } =
+      req.body;
     const data = await DoctorAppointment({
       userId,
       patientDetailId,
@@ -33,9 +35,12 @@ const bookAppointmentWithDoctor = async (req, res) => {
 
 const searchDoctor = async (req, res) => {
   try {
+    let specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
     let doctorData = await DoctorProfile.find({
-      medicalSpecialty: req.body.medicalSpecialty,
-    }).populate('userId');
+      specilityId: specilityData?._id,
+    })
+      .populate('userId')
+      .populate('specilityId');
 
     if (!doctorData) {
       return res.status(404).json({
@@ -45,7 +50,7 @@ const searchDoctor = async (req, res) => {
     }
     const formattedDoctorData = doctorData.map(doctor => {
       const { userId } = doctor;
-
+      const { specilityId } = doctor;
       return {
         doctorProfileId: doctor._id,
         fullName: userId.fullname,
@@ -56,7 +61,7 @@ const searchDoctor = async (req, res) => {
         education: doctor.education,
         phone: doctor.phone,
         experience: doctor.experience,
-        medicalSpecialty: doctor.medicalSpecialty,
+        medicalSpecialty: specilityId.name,
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,

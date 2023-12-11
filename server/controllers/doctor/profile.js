@@ -2,6 +2,7 @@ const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
+const SpecialityModel = require('../../models/SpecialityModel');
 const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
 
 // Doctor Profile create
@@ -26,12 +27,20 @@ const createDoctorProfileController = async (req, res) => {
     // Check if the user's profile already exists
     let doctorData = await DoctorProfile.findOne({ userId });
     console.log('doctorData', doctorData);
+    let specData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
+
     if (!doctorData) {
       // If the profile doesn't exist, create a new one
-      doctorData = new DoctorProfile(req.body);
+      doctorData = new DoctorProfile({
+        ...req.body,
+        specilityId: specData._id,
+      });
     } else {
       // If the profile exists, update it with the new data
-      doctorData.set(req.body);
+      doctorData.set({
+        ...req.body,
+        specilityId: specData._id,
+      });
     }
 
     await doctorData.save();
@@ -56,7 +65,7 @@ const uploadProfilePitcher = async (req, res) => {
     if (req.file) {
       myCloud = await uploadImageToCloudnary(req.file?.path);
     }
-    console.log("myCloud::::", myCloud)
+    console.log('myCloud::::', myCloud);
     res.send({ success: true });
   } catch (error) {
     console.log('Error in uploading profile pitcher', error);
@@ -77,7 +86,7 @@ const getDoctorProfileController = async (req, res) => {
       });
     }
 
-    const doctorData = await DoctorProfile.findOne({ userId });
+    let doctorData = await DoctorProfile.findOne({ userId }).populate('specilityId');
 
     if (!doctorData) {
       return res.status(404).json({
@@ -87,7 +96,20 @@ const getDoctorProfileController = async (req, res) => {
     }
 
     let response = {
-      ...doctorData.toObject(),
+      address: doctorData.address,
+      _id: doctorData._id,
+      userId: doctorData.userId,
+      gender: doctorData.gender,
+      dateOfBirth: doctorData.dateOfBirth,
+      phone: doctorData.phone,
+      education: doctorData.education,
+      experience: doctorData.experience,
+      medicalSpecialty: doctorData?.specilityId?.name,
+      certifications: doctorData.certifications,
+      workingHours: doctorData.workingHours,
+      about: doctorData.about,
+      reviews: doctorData.reviews,
+      telemedicine: doctorData.telemedicine,
       fullName: userData.fullname,
     };
     return res.status(200).json({
@@ -107,16 +129,17 @@ const getDoctorProfileController = async (req, res) => {
 // Get all doctors
 const getAllDoctorController = async (req, res) => {
   try {
-    let doctorData = await DoctorProfile.find({}).populate('userId');
+    let doctorData = await DoctorProfile.find({}).populate('userId').populate('specilityId');
     if (!doctorData) {
       return res.status(404).json({
         success: false,
         message: 'Patient profile not found.',
       });
     }
+
     const formattedDoctorData = doctorData.map(doctor => {
       const { userId } = doctor;
-
+      const { specilityId } = doctor;
       return {
         doctorProfileId: doctor._id,
         fullName: userId.fullname,
@@ -127,7 +150,7 @@ const getAllDoctorController = async (req, res) => {
         education: doctor.education,
         phone: doctor.phone,
         experience: doctor.experience,
-        medicalSpecialty: doctor.medicalSpecialty,
+        medicalSpecialty: specilityId.name,
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,

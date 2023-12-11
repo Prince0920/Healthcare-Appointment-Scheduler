@@ -35,6 +35,10 @@ const doctorProfileSchema = new mongoose.Schema({
     required: true,
   },
 
+  specilityId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Speciality', // Reference to the user who owns this profile
+  },
   certifications: [String], // Array of certifications
   workingHours: [],
 
