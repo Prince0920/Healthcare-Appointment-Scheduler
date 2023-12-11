@@ -2,6 +2,7 @@ const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
+const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
 
 // Doctor Profile create
 const createDoctorProfileController = async (req, res) => {
@@ -46,6 +47,19 @@ const createDoctorProfileController = async (req, res) => {
       message: 'Failed to create/update patient profile.',
       error: error.message,
     });
+  }
+};
+
+const uploadProfilePitcher = async (req, res) => {
+  try {
+    let myCloud;
+    if (req.file) {
+      myCloud = await uploadImageToCloudnary(req.file?.path);
+    }
+    console.log("myCloud::::", myCloud)
+    res.send({ success: true });
+  } catch (error) {
+    console.log('Error in uploading profile pitcher', error);
   }
 };
 
@@ -137,5 +151,6 @@ const getAllDoctorController = async (req, res) => {
 module.exports = {
   createDoctorProfileController,
   getDoctorProfileController,
-  getAllDoctorController
+  getAllDoctorController,
+  uploadProfilePitcher,
 };
