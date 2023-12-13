@@ -1,8 +1,42 @@
 import React from 'react';
+import SingleImageUpload from '../../components/forms/SingleImageUpload';
+import { SERVER_BASE_URL } from '../../config/config.local';
+import axios from 'axios';
 
 const BasicDetail = ({ doctorData, handleInputChange, basicDataErrors }) => {
+  const handleUploadButtonClick = async data => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', data);
+
+      // Make the API call
+      const response = await axios.post(
+        SERVER_BASE_URL + '/api/v1/doctor/profile-pitcher',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      console.log('API Response:', response);
+
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
+
   return (
     <div>
+      <div className='form-group row text-center'>
+        <div className='col-12'>
+          <SingleImageUpload handleUploadButtonClick={handleUploadButtonClick} />
+        </div>
+      </div>
       <div className='form-group row'>
         <div className='col-md-6'>
           <label>Fullname</label>
