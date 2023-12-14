@@ -40,7 +40,6 @@ const MyBookings = () => {
   }, []);
 
   const handleUploadPdf = async (data, patientDetailId) => {
-    alert('handleUploadPdf');
     try {
       const formData = new FormData();
       formData.append('avatar', data);
@@ -57,9 +56,9 @@ const MyBookings = () => {
           },
         }
       );
-
       if (response.data.success) {
-        toast.success('Profile Image saved success!!');
+        getAllBookings();
+        toast.success('Medical report saved success!!');
       } else {
         toast.success('Please try again..');
       }

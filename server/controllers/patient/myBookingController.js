@@ -98,13 +98,10 @@ const removeAppointmentController = async (req, res) => {
 const uploadMedicalReportController = async (req, res) => {
   try {
     const patientDetailId = req.body.patientDetailId;
-    console.log('patientDetailId::::::::::::::::::', patientDetailId);
     let myCloud;
     if (req.file) {
       myCloud = await uploadImageToCloudnary(req.file?.path);
     }
-
-    console.log('myCloud::::::::::::::::::', myCloud);
 
     const saved_pdf_url = myCloud?.secure_url;
 
@@ -114,8 +111,6 @@ const uploadMedicalReportController = async (req, res) => {
         medicalReport: saved_pdf_url,
       }
     );
-
-    console.log('patientDetail::::::::::::::::::', patientDetail);
 
     if (!patientDetail) {
       return res.status(404).json({
