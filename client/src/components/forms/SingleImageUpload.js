@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-const SingleImageUpload = ({ handleUploadButtonClick }) => {
+const SingleImageUpload = ({ handleUploadButtonClick , imageUrl}) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFileChange = ({ file, fileList }) => {
@@ -28,6 +28,17 @@ const SingleImageUpload = ({ handleUploadButtonClick }) => {
       message.error('Please upload only image files (JPG, JPEG, PNG).');
     }
   };
+  useEffect(() => {
+    // If imageUrl is provided, fetch the image and set it as selectedImage
+    if (imageUrl) {
+      fetch(imageUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          setSelectedImage(new File([blob], 'image.jpg', { type: 'image/jpeg' }));
+        })
+        .catch((error) => console.error('Error fetching image:', error));
+    }
+  }, [imageUrl]);
 
   return (
     <>

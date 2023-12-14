@@ -136,6 +136,7 @@ const getDoctorProfileController = async (req, res) => {
       reviews: doctorData.reviews,
       telemedicine: doctorData.telemedicine,
       fullName: userData.fullname,
+      profileImage: doctorData.profileImage
     };
     return res.status(200).json({
       success: true,
@@ -179,6 +180,7 @@ const getAllDoctorController = async (req, res) => {
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,
+        profileImage: doctor.profileImage
       };
     });
 

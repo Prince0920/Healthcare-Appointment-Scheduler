@@ -2,6 +2,7 @@ import React from 'react';
 import SingleImageUpload from '../../components/forms/SingleImageUpload';
 import { SERVER_BASE_URL } from '../../config/config.local';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const BasicDetail = ({ doctorData, handleInputChange, basicDataErrors }) => {
   const handleUploadButtonClick = async data => {
@@ -21,20 +22,25 @@ const BasicDetail = ({ doctorData, handleInputChange, basicDataErrors }) => {
         }
       );
 
-      console.log('API Response:', response);
-
+      if (response.data.success) {
+        toast.success('Profile Image saved success!!');
+      } else {
+        toast.success('Please try again..');
+      }
       // Handle the API response as needed
     } catch (error) {
       console.error('API Error:', error);
       // Handle API error
     }
   };
-
   return (
     <div>
       <div className='form-group row text-center'>
         <div className='col-12'>
-          <SingleImageUpload handleUploadButtonClick={handleUploadButtonClick} />
+          <SingleImageUpload
+            handleUploadButtonClick={handleUploadButtonClick}
+            imageUrl={doctorData?.profileImage}
+          />
         </div>
       </div>
       <div className='form-group row'>

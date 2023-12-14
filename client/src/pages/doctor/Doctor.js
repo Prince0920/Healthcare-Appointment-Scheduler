@@ -244,6 +244,7 @@ export const Doctor = () => {
           gender: doctorProfile.gender,
           dateOfBirth: dateOfBirth,
           phone: doctorProfile.phone,
+          profileImage: doctorProfile.profileImage
         });
         setAddress(doctorProfile.address);
         setAdditionalDetails({
