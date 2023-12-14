@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Upload, message } from 'antd';
 import { FilePdfOutlined, UploadOutlined } from '@ant-design/icons';
 
-const PDFUpload = () => {
+const PDFUpload = ({patientDetail, handleUploadPdf}) => {
   const [selectedPdf, setSelectedPdf] = useState(null);
-
+  console.log("patientDetailpatientDetail", patientDetail)
   const handleFileChange = info => {
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
@@ -20,6 +20,7 @@ const PDFUpload = () => {
       // Update the state with the latest PDF file
       if (latestFile) {
         setSelectedPdf(latestFile.originFileObj);
+        handleUploadPdf(latestFile.originFileObj, patientDetail._id)
       } else {
         setSelectedPdf(null);
       }
@@ -38,13 +39,13 @@ const PDFUpload = () => {
       onChange={handleFileChange}>
       {selectedPdf ? (
         <div>
-          <FilePdfOutlined style={{ fontSize: '64px', color: '#ff0000' }} />
-          <div style={{ marginTop: 8 }}>{selectedPdf.name}</div>
+          <FilePdfOutlined style={{ fontSize: '32px', color: '#ff0000' }} />
+          {/* <div style={{ marginTop: 8 }}>{selectedPdf.name}</div> */}
         </div>
       ) : (
         <div>
           <UploadOutlined />
-          <div style={{ marginTop: 8 }}>Upload PDF</div>
+          {/* <div style={{ marginTop: 8 }}>Upload PDF</div> */}
         </div>
       )}
     </Upload>

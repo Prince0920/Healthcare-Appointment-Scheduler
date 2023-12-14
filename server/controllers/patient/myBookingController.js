@@ -2,6 +2,8 @@ const e = require('express');
 const DoctorAppointment = require('../../models/doctorAppointment');
 const PatientProfile = require('../../models/patientProfile');
 const User = require('../../models/userModels');
+const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
+const PatientDetail = require('../../models/patientDetail');
 
 const getAllBookingsController = async (req, res) => {
   try {
@@ -32,6 +34,7 @@ const getAllBookingsController = async (req, res) => {
           appointmentDate: e.appointmentDate,
           reasonOfAppointment: e?.reasonOfAppointment,
           message: e?.message,
+          medicalReport: e.medicalReport
         };
       })
     );
@@ -92,4 +95,43 @@ const removeAppointmentController = async (req, res) => {
   }
 };
 
-module.exports = { getAllBookingsController, removeAppointmentController };
+const uploadMedicalReportController = async (req, res) => {
+  try {
+    const patientDetailId = req.body.patientDetailId;
+    console.log('patientDetailId::::::::::::::::::', patientDetailId);
+    let myCloud;
+    if (req.file) {
+      myCloud = await uploadImageToCloudnary(req.file?.path);
+    }
+
+    console.log('myCloud::::::::::::::::::', myCloud);
+
+    const saved_pdf_url = myCloud?.secure_url;
+
+    let patientDetail = await DoctorAppointment.findOneAndUpdate(
+      { _id: patientDetailId },
+      {
+        medicalReport: saved_pdf_url,
+      }
+    );
+
+    console.log('patientDetail::::::::::::::::::', patientDetail);
+
+    if (!patientDetail) {
+      return res.status(404).json({
+        success: false,
+        message: 'Patient Detail not found.',
+      });
+    }
+
+    res.send({ success: true });
+  } catch (error) {
+    console.log('Error in uploading medical report', error);
+  }
+};
+
+module.exports = {
+  getAllBookingsController,
+  removeAppointmentController,
+  uploadMedicalReportController,
+};

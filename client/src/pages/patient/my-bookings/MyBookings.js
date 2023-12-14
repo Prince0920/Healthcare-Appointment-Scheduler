@@ -8,6 +8,9 @@ import Spinner from '../../../components/Spinner';
 import moment from 'moment'; // Import moment library
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import { toast } from 'react-toastify';
+import PdfUpload from '../../../components/forms/PdfUpload';
+import { FilePdfOutlined } from '@ant-design/icons';
+import Link from 'antd/es/typography/Link';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -36,6 +39,37 @@ const MyBookings = () => {
     getAllBookings();
   }, []);
 
+  const handleUploadPdf = async (data, patientDetailId) => {
+    alert('handleUploadPdf');
+    try {
+      const formData = new FormData();
+      formData.append('avatar', data);
+      formData.append('patientDetailId', patientDetailId);
+
+      // Make the API call
+      const response = await axios.put(
+        SERVER_BASE_URL + '/api/v1/my-bookings/medical-report',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success('Profile Image saved success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
+
   const columns = [
     {
       title: 'Patient Name',
@@ -46,11 +80,6 @@ const MyBookings = () => {
       title: 'Doctor Name',
       dataIndex: 'doctorFullName',
       key: 'doctorFullName',
-    },
-    {
-      title: 'Doctor Contact No.',
-      dataIndex: 'phone',
-      key: 'phone',
     },
     {
       title: 'Appointment Date',
@@ -67,6 +96,32 @@ const MyBookings = () => {
       key: 'message',
       render: (text, record) => <p>{record.message ? record.message : '-'}</p>,
     },
+    // {
+    //   title: 'Upload Reports',
+    //   key: 'reports',
+    //   render: (text, record) => {
+    //     return (
+    //       <>
+    //         <PdfUpload
+    //           patientDetail={record}
+    //           handleUploadPdf={handleUploadPdf}
+    //         />
+    //         {record?.medicalReport && (
+    //           <a href={record?.medicalReport} target='_blank'>
+    //             <FilePdfOutlined
+    //               style={{
+    //                 fontSize: '32px',
+    //                 color: '#ff0000',
+    //                 marginLeft: '10%',
+    //                 cursor: 'pointer',
+    //               }}
+    //             />
+    //           </a>
+    //         )}
+    //       </>
+    //     );
+    //   },
+    // },
     {
       title: 'Action',
       key: 'action',

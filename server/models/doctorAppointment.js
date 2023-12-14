@@ -24,6 +24,9 @@ const doctorAppointmentSchema = new mongoose.Schema({
     type: String, // You can use enum to represent different appointment statuses (e.g., 'scheduled', 'completed', 'cancelled')
     default: 'scheduled',
   },
+  medicalReport: {
+    type: String
+  },
   message: {
     type: String,
   },
