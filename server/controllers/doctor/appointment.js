@@ -37,11 +37,13 @@ const searchDoctor = async (req, res) => {
   try {
     let specilityData = {};
 
+    // If user selected the specility then getting specility from SpecialityModel for find id for specility.
     if (req.body?.medicalSpecialty) {
       specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
     }
 
     let filter_cond_dp = {};
+    // If user does not select any value the fetch all entries.
     if (Object.keys(specilityData).length !== 0) {
       filter_cond_dp = {
         specilityId: specilityData?._id,
