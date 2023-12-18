@@ -15,4 +15,7 @@ router.delete('/', authMiddleware, myBookingsController.removeAppointmentControl
 // upload medical reports
 router.put('/medical-report', authMiddleware, upload.single('avatar'), myBookingsController.uploadMedicalReportController);
 
+// upload medical reports
+router.delete('/medical-report', authMiddleware, myBookingsController.removeMedicalReportController);
+
 module.exports = router;

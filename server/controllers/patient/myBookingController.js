@@ -34,7 +34,7 @@ const getAllBookingsController = async (req, res) => {
           appointmentDate: e.appointmentDate,
           reasonOfAppointment: e?.reasonOfAppointment,
           message: e?.message,
-          medicalReport: e.medicalReport
+          medicalReport: e.medicalReport,
         };
       })
     );
@@ -125,8 +125,32 @@ const uploadMedicalReportController = async (req, res) => {
   }
 };
 
+const removeMedicalReportController = async (req, res) => {
+  try {
+    const { doctorAppointmentId } = req.query;
+    let doctorAppointmentDetail = await DoctorAppointment.findOneAndUpdate(
+      { _id: doctorAppointmentId },
+      {
+        medicalReport: '',
+      }
+    );
+
+    if (!doctorAppointmentDetail) {
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor Appointment Detail not found.',
+      });
+    }
+
+    res.send({ success: true });
+  } catch (error) {
+    console.log('Error in deleting medical report', error);
+  }
+};
+
 module.exports = {
   getAllBookingsController,
   removeAppointmentController,
   uploadMedicalReportController,
+  removeMedicalReportController,
 };
