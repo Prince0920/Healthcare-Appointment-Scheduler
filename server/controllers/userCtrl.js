@@ -59,7 +59,7 @@ const loginController = async (req, res) => {
 
     return res
       .status(200)
-      .send({ message: "Login Successfull", success: true, token: token });
+      .send({ message: "Login Successfull", success: true, token: token , current_user: user});
   } catch (error) {
     console.log(error);
     res.status(200).send({
