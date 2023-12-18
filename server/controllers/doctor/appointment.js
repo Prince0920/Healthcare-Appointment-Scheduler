@@ -35,13 +35,21 @@ const bookAppointmentWithDoctor = async (req, res) => {
 
 const searchDoctor = async (req, res) => {
   try {
-    let specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
-    let doctorData = await DoctorProfile.find({
-      specilityId: specilityData?._id,
-    })
+    let specilityData = {};
+
+    if (req.body?.medicalSpecialty) {
+      specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
+    }
+
+    let filter_cond_dp = {};
+    if (Object.keys(specilityData).length !== 0) {
+      filter_cond_dp = {
+        specilityId: specilityData?._id,
+      };
+    }
+    let doctorData = await DoctorProfile.find(filter_cond_dp)
       .populate('userId')
       .populate('specilityId');
-
     if (!doctorData) {
       return res.status(404).json({
         success: false,
@@ -65,7 +73,7 @@ const searchDoctor = async (req, res) => {
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,
-        profileImage: doctor.profileImage
+        profileImage: doctor.profileImage,
       };
     });
 
