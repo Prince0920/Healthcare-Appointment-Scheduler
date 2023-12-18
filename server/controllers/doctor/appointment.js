@@ -65,6 +65,7 @@ const searchDoctor = async (req, res) => {
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,
+        profileImage: doctor.profileImage
       };
     });
 
