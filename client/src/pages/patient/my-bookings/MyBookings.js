@@ -38,36 +38,45 @@ const MyBookings = () => {
   }, []);
 
   const makePaymentStripe = async (recordId) => {
-    alert(recordId);
-    const stripePromise = loadStripe(
+    //alert(recordId);
+    const stripePromise = await loadStripe(
       'pk_test_51EMqvWCQpJWQbtl10VO5FITrm88QyBtlMEvZ8tyWENUujEKk6extINVGBaQRhXbtz1lnbFwYIx1ADuCilI8lKg8n00p8CyMOrd'
     );
 
-    const collectIteams = {
-      id:1,
-      price:10
-    }
+    const items = [
+      {
+        id: 1,
+        quantity: 10,
+        price: 100,
+        name: 'visit doctor',
+      },
+    ];
 
     try {
-
       let ApiUrl = SERVER_BASE_URL + '/api/v1/payment/patient-pay-stripe';
-      const res = await axios.post(ApiUrl, JSON.stringify(collectIteams), {
+      const res = await axios.post(ApiUrl, JSON.stringify(items), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'application/json',
         },
       });
 
-      console.log(res);
+      // console.log(res);
 
-      
+      if (res.data.success) {
+        // console.log(res.data.url);
+        //window.location = res.data.url;
+        const result = stripePromise.redirectToCheckout({
+          sessionId: res.data.sessionId,
+        });
+
+        if (result.error) {
+          console.log(result.error);
+        }
+      }
     } catch (error) {
-
       console.log(error);
-      
     }
-
-
   };
 
   const columns = [

@@ -47,7 +47,7 @@ app.use('/api/v1/medical-speciality', medicalSpecialtyRoute);
 app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/my-bookings', MyBookingRoute);
 app.use('/api/v1/patient', PatientDetailRoute);
-app.use('/api/v1/payment',StripePaymentRoute);
+app.use('/api/v1/payment', StripePaymentRoute);
 
 //port
 const port = process.env.PORT || 8080;
