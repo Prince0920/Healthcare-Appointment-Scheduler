@@ -42,6 +42,32 @@ const MyBookings = () => {
     const stripePromise = loadStripe(
       'pk_test_51EMqvWCQpJWQbtl10VO5FITrm88QyBtlMEvZ8tyWENUujEKk6extINVGBaQRhXbtz1lnbFwYIx1ADuCilI8lKg8n00p8CyMOrd'
     );
+
+    const collectIteams = {
+      id:1,
+      price:10
+    }
+
+    try {
+
+      let ApiUrl = SERVER_BASE_URL + '/api/v1/payment/patient-pay-stripe';
+      const res = await axios.post(ApiUrl, JSON.stringify(collectIteams), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
+        },
+      });
+
+      console.log(res);
+
+      
+    } catch (error) {
+
+      console.log(error);
+      
+    }
+
+
   };
 
   const columns = [
