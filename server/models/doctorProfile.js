@@ -7,6 +7,9 @@ const doctorProfileSchema = new mongoose.Schema({
     ref: 'User', // Reference to the user who owns this profile
     required: true,
   },
+  profileImage: {
+    type: String,
+  },
 
   // basic details
   gender: String,
@@ -14,7 +17,6 @@ const doctorProfileSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
-
 
   // Address
   address: {
@@ -26,15 +28,14 @@ const doctorProfileSchema = new mongoose.Schema({
     country: String,
   },
 
-//   education and experience
+  //   education and experience
   education: String,
   experience: String,
 
-  medicalSpecialty: {
-    type: String,
-    required: true,
+  specilityId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Speciality', // Reference to the user who owns this profile
   },
-
   certifications: [String], // Array of certifications
   workingHours: [],
 

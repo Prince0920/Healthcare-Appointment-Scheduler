@@ -10,6 +10,9 @@ const patientProfileSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  profileImage: {
+    type: String,
+  },
   gender: {
     type: String,
     enum: ['Male', 'Female', 'Other'],

@@ -124,6 +124,7 @@ export const PatientProfile = () => {
           gender: profileData.gender,
           contactNumber: profileData.contactNumber,
           fullName: profileData.fullName,
+          profileImage: profileData.profileImage
         });
 
         setAddress({

@@ -1,10 +1,11 @@
+const SpecialityModel = require('../models/SpecialityModel');
 const MedicalSpecialty = require('../models/medicalSpecialty');
 
 // Getting all medical specialties
 const getAllMedicalSpecialties = async (req, res) => {
   try {
     // Retrieve all medical specialties from the database
-    const medicalSpecialties = await MedicalSpecialty.find();
+    const medicalSpecialties = await SpecialityModel.find();
 
     return res.status(200).json({
       success: true,

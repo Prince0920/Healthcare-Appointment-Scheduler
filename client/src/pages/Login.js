@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { SERVER_BASE_URL } from '../config/config';
 import Spinner from '../components/Spinner';
+import { SERVER_BASE_URL } from '../config/config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -53,6 +52,7 @@ const Login = () => {
           setLoading(false);
           toast.success(res.data.message);
           localStorage.setItem('token', res.data.token);
+          localStorage.setItem('current_user', JSON.stringify(res.data.current_user))
           navigate('/');
         }
         if (!res.data.success) {

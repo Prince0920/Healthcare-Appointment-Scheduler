@@ -1,9 +1,50 @@
 import React from 'react';
 import InputText from '../../components/forms/InputText';
+import SingleImageUpload from '../../components/forms/SingleImageUpload';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { SERVER_BASE_URL } from '../../config/config.local';
 
 const PersonalDetails = ({ formData, errors, handleFormChange }) => {
+  const handleUploadButtonClick = async data => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', data);
+
+      // Make the API call
+      const response = await axios.post(
+        SERVER_BASE_URL + '/api/v1/patient/profile-pitcher',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success('Profile Image saved success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
+
   return (
     <>
+      <div className='form-group row text-center'>
+        <div className='col-12'>
+          <SingleImageUpload
+            handleUploadButtonClick={handleUploadButtonClick}
+            imageUrl={formData?.profileImage}
+          />
+        </div>
+      </div>
       <div className='form-group'>
         <div className='row'>
           <div className='col'>

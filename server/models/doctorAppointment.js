@@ -24,6 +24,13 @@ const doctorAppointmentSchema = new mongoose.Schema({
     type: String, // You can use enum to represent different appointment statuses (e.g., 'scheduled', 'completed', 'cancelled')
     default: 'scheduled',
   },
+  paymentStatus: {
+    type: String, // You can use enum to represent different statuses (e.g., 'Successful', 'Failed', 'Refunded')
+    default: 'pending',
+  },
+  medicalReport: {
+    type: String,
+  },
   message: {
     type: String,
   },
@@ -33,6 +40,9 @@ const doctorAppointmentSchema = new mongoose.Schema({
   // Add other relevant fields for the appointment
 });
 
-const DoctorAppointment = mongoose.model('DoctorAppointment', doctorAppointmentSchema);
+const DoctorAppointment = mongoose.model(
+  'DoctorAppointment',
+  doctorAppointmentSchema
+);
 
 module.exports = DoctorAppointment;

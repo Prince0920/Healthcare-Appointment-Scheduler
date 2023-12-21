@@ -87,34 +87,6 @@ const AppointmentBooking = () => {
     getAllMedicalSpec();
   }, []);
 
-  const getAllProviders = async () => {
-    setIsloading(true);
-    try {
-      const doctorData = await axios.get(API_URL + '/api/v1/doctor', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      // const hospitalData = await axios.get(API_URL + '/api/v1/hospital', {
-      //   headers: {
-      //     Authorization: `Bearer ${localStorage.getItem('token')}`,
-      //   },
-      // });
-      setIsloading(false);
-      setDoctorData(doctorData.data.data);
-      // setHospitalData(hospitalData.data.data);
-    } catch (error) {
-      setIsloading(false);
-      toast.error('Something went wrong!!');
-      console.log('error: ', error);
-    }
-  };
-
-  useEffect(() => {
-    getAllProviders();
-  }, []);
-
   const handleBookAppointment = async (provider, appointmentData) => {
     // console.log('appointmentDataappointmentDataappointmentData', appointmentData);
     //

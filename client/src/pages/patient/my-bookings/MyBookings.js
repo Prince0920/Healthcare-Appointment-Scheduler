@@ -8,6 +8,10 @@ import Spinner from '../../../components/Spinner';
 import moment from 'moment'; // Import moment library
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import { toast } from 'react-toastify';
+import { loadStripe } from '@stripe/stripe-js';
+import PdfUpload from '../../../components/forms/PdfUpload';
+import { FilePdfOutlined } from '@ant-design/icons';
+import Link from 'antd/es/typography/Link';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -23,11 +27,11 @@ const MyBookings = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .then(bookings_data => {
+      .then((bookings_data) => {
         setBookings(bookings_data.data.data);
         setIsLoading(false);
       })
-      .catch(e => {
+      .catch((e) => {
         setIsLoading(false);
       });
   };
@@ -36,6 +40,95 @@ const MyBookings = () => {
     getAllBookings();
   }, []);
 
+  const makePaymentStripe = async (recordId) => {
+    //alert(recordId);
+    const stripePromise = await loadStripe(
+      'pk_test_51EMqvWCQpJWQbtl10VO5FITrm88QyBtlMEvZ8tyWENUujEKk6extINVGBaQRhXbtz1lnbFwYIx1ADuCilI8lKg8n00p8CyMOrd'
+    );
+
+    const items = {
+      recordId: recordId,
+    };
+    try {
+      let ApiUrl = SERVER_BASE_URL + '/api/v1/payment/patient-pay-stripe';
+      const res = await axios.post(ApiUrl, JSON.stringify(items), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
+        },
+      });
+
+      if (res.data.success) {
+        // console.log(res.data.url);
+        //window.location = res.data.url;
+        const result = stripePromise.redirectToCheckout({
+          sessionId: res.data.sessionId,
+        });
+
+        if (result.error) {
+          console.log(result.error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUploadPdf = async (data, patientDetailId) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', data);
+      formData.append('patientDetailId', patientDetailId);
+
+      // Make the API call
+      const response = await axios.put(
+        SERVER_BASE_URL + '/api/v1/my-bookings/medical-report',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        getAllBookings();
+        toast.success('Medical report saved success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
+
+  const handleDeletePdf = async (doctorAppointmentId) => {
+    try {
+      // Make the API call
+      const response = await axios.delete(
+        SERVER_BASE_URL +
+          '/api/v1/my-bookings/medical-report?doctorAppointmentId=' +
+          doctorAppointmentId,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        getAllBookings();
+        toast.success('Medical report delete success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
   const columns = [
     {
       title: 'Patient Name',
@@ -48,14 +141,26 @@ const MyBookings = () => {
       key: 'doctorFullName',
     },
     {
-      title: 'Doctor Contact No.',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
       title: 'Appointment Date',
       key: 'appointmentDate',
-      render: (text, record) => moment(record.appointmentDate).format('YYYY-MM-DD'), // Format the date
+      render: (text, record) =>
+        moment(record.appointmentDate).format('YYYY-MM-DD'), // Format the date
+    },
+    {
+      title: 'Payment',
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus',
+      render: (text, record) => {
+        if (record?.paymentStatus && record.paymentStatus == 'completed') {
+          return <p style={{ color: 'green', fontSize: 20 }}>Completed</p>;
+        } else {
+          return (
+            <button onClick={() => makePaymentStripe(record._id)}>
+              {'Make Payment'}
+            </button>
+          );
+        }
+      },
     },
     {
       title: 'Status',
@@ -68,24 +173,67 @@ const MyBookings = () => {
       render: (text, record) => <p>{record.message ? record.message : '-'}</p>,
     },
     {
+      title: 'Upload Reports',
+      key: 'reports',
+      render: (text, record) => {
+        return (
+          <Space>
+            <PdfUpload
+              patientDetail={record}
+              handleUploadPdf={handleUploadPdf}
+            />
+            {record?.medicalReport && (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <a href={record?.medicalReport} target="_blank">
+                  <FilePdfOutlined
+                    style={{
+                      fontSize: '25px',
+                      color: '#ff0000',
+                      marginRight: '10%',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </a>
+
+                <Popconfirm
+                  title="Are you sure you want to delete?"
+                  onConfirm={() => handleDeletePdf(record._id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <DeleteOutlined
+                    style={{
+                      fontSize: '15px',
+                      color: '#1890ff', // or any other color
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Popconfirm>
+              </div>
+            )}
+          </Space>
+        );
+      },
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <Space>
           <Button
-            type='primary'
+            type="primary"
             icon={<EyeOutlined />}
             onClick={() => handleViewAppointment(record)}
           />
           <Popconfirm
-            title='Are you sure you want to cancel?'
+            title="Are you sure you want to cancel?"
             onConfirm={() => handleCancelAppointment(record._id)}
-            okText='Yes'
-            cancelText='No'
+            okText="Yes"
+            cancelText="No"
             disabled={record.status !== 'scheduled'} // Disable the Popconfirm based on condition
           >
             <Button
-              type='danger'
+              type="danger"
               style={{
                 background: record.status !== 'scheduled' ? '#f0f0f0' : 'red',
                 color: record.status !== 'scheduled' ? '#a9a9a9' : 'white',
@@ -99,38 +247,38 @@ const MyBookings = () => {
     },
   ];
 
-  const handleViewAppointment = record => {
+  const handleViewAppointment = (record) => {
     // alert(recordId);
     console.log('record', record);
     setIsDetailModelVisible(true);
     setSelectedAppointment(record);
   };
-  const handleCancelAppointment = recordId => {
+  const handleCancelAppointment = (recordId) => {
     axios
-      .delete(SERVER_BASE_URL + '/api/v1/my-bookings?appointmentId=' + recordId, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      })
-      .then(res => {
+      .delete(
+        SERVER_BASE_URL + '/api/v1/my-bookings?appointmentId=' + recordId,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      )
+      .then((res) => {
         if (res.status) {
           toast.success(res.data.message);
           getAllBookings();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log('Error: ', e);
       });
   };
   return (
     <Layouts>
-      <div className='content-wrapper'>
-        <ContentHeader
-          heading='Appointments'
-          bredCumName='Appointments'
-        />
-        <section className='content'>
-          <div className='container-fluid'>
+      <div className="content-wrapper">
+        <ContentHeader heading="Appointments" bredCumName="Appointments" />
+        <section className="content">
+          <div className="container-fluid">
             {isLoading ? (
               <Spinner />
             ) : (
@@ -147,33 +295,34 @@ const MyBookings = () => {
       {/* Book Appointment Modal  */}
       <div
         className={`modal ${isDetailModelVisible ? 'show fade' : ''}`}
-        tabIndex='-1'
-        role='dialog'
+        tabIndex="-1"
+        role="dialog"
         style={{
           display: isDetailModelVisible ? 'block' : 'none',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        }}>
-        <div
-          className='modal-dialog modal-dialog-centered'
-          role='document'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <h5 className='modal-title'>Appointment Details</h5>
+        }}
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Appointment Details</h5>
               <button
-                type='button'
-                className='close'
-                data-dismiss='modal'
-                aria-label='Close'
-                onClick={() => setIsDetailModelVisible(false)}>
-                <span aria-hidden='true'>&times;</span>
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={() => setIsDetailModelVisible(false)}
+              >
+                <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className='modal-body'>
+            <div className="modal-body">
               <p>
                 <strong>Patient Name:</strong> {selectedAppointment?.fullname}
               </p>
               <p>
-                <strong>Doctor Name:</strong> {selectedAppointment?.doctorFullName}
+                <strong>Doctor Name:</strong>{' '}
+                {selectedAppointment?.doctorFullName}
               </p>
               <p>
                 <strong>Status:</strong> {selectedAppointment?.status}
@@ -195,12 +344,13 @@ const MyBookings = () => {
                 {selectedAppointment?.message || '-'}
               </p>
             </div>
-            <div className='modal-footer'>
+            <div className="modal-footer">
               <button
-                type='button'
-                className='btn btn-secondary'
-                data-dismiss='modal'
-                onClick={() => setIsDetailModelVisible(false)}>
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={() => setIsDetailModelVisible(false)}
+              >
                 Close
               </button>
             </div>
