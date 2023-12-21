@@ -43,15 +43,9 @@ const MyBookings = () => {
       'pk_test_51EMqvWCQpJWQbtl10VO5FITrm88QyBtlMEvZ8tyWENUujEKk6extINVGBaQRhXbtz1lnbFwYIx1ADuCilI8lKg8n00p8CyMOrd'
     );
 
-    const items = [
-      {
-        id: 1,
-        quantity: 10,
-        price: 100,
-        name: 'visit doctor',
-      },
-    ];
-
+    const items = {
+      recordId: recordId,
+    };
     try {
       let ApiUrl = SERVER_BASE_URL + '/api/v1/payment/patient-pay-stripe';
       const res = await axios.post(ApiUrl, JSON.stringify(items), {
@@ -60,8 +54,6 @@ const MyBookings = () => {
           'content-type': 'application/json',
         },
       });
-
-      // console.log(res);
 
       if (res.data.success) {
         // console.log(res.data.url);
@@ -103,12 +95,19 @@ const MyBookings = () => {
     },
     {
       title: 'Payment',
-      key: 'pyament',
-      render: (text, record) => (
-        <button onClick={() => makePaymentStripe(record._id)}>
-          {'Make Payment'}
-        </button>
-      ),
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus',
+      render: (text, record) => {
+        if (record?.paymentStatus && record.paymentStatus == 'completed') {
+          return <p style={{ color: 'green', fontSize: 20 }}>Completed</p>;
+        } else {
+          return (
+            <button onClick={() => makePaymentStripe(record._id)}>
+              {'Make Payment'}
+            </button>
+          );
+        }
+      },
     },
     {
       title: 'Status',

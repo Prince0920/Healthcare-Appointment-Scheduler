@@ -25,6 +25,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Speciality from './pages/admin/specialityViews/Speciality';
 import SpecialityArea from './pages/admin/specialityViews/SpecialityArea';
 import BookingStripePaySuccess from './pages/patient/booking-payment/BookingStripePaySuccess';
+import BookingStripePayCancel from './pages/patient/booking-payment/BookingStripePayCancel';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -33,16 +34,22 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path='/'
+            path="/"
             element={
               <ProtectedRoute
                 element={<Dashboard />}
-                allowedRoles={['admin', 'patient', 'doctor', 'admin', 'hospital']}
+                allowedRoles={[
+                  'admin',
+                  'patient',
+                  'doctor',
+                  'admin',
+                  'hospital',
+                ]}
               />
             }
           />
           <Route
-            path='/hospital/profile'
+            path="/hospital/profile"
             element={
               <ProtectedRoute
                 element={<HospitalProfile />}
@@ -51,7 +58,7 @@ function App() {
             }
           />
           <Route
-            path='/patient/profile'
+            path="/patient/profile"
             element={
               <ProtectedRoute
                 element={<PatientProfile />}
@@ -60,25 +67,32 @@ function App() {
             }
           />
           <Route
-            path='/patient/booking/payment-success'
+            path="/patient/booking/payment-success"
             element={
               <ProtectedRoute
-                element={<BookingStripePaySuccess/>}
+                element={<BookingStripePaySuccess />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+
+          <Route
+            path="/patient/booking/payment-cancel"
+            element={
+              <ProtectedRoute
+                element={<BookingStripePayCancel />}
                 allowedRoles={['patient']}
               />
             }
           />
           <Route
-            path='/doctor/profile'
+            path="/doctor/profile"
             element={
-              <ProtectedRoute
-                element={<Doctor />}
-                allowedRoles={['doctor']}
-              />
+              <ProtectedRoute element={<Doctor />} allowedRoles={['doctor']} />
             }
           />
           <Route
-            path='/appointment-booking'
+            path="/appointment-booking"
             element={
               <ProtectedRoute
                 element={<AppointmentBooking />}
@@ -87,7 +101,7 @@ function App() {
             }
           />
           <Route
-            path='/bookings'
+            path="/bookings"
             element={
               <ProtectedRoute
                 element={<MyBookings />}
@@ -95,24 +109,12 @@ function App() {
               />
             }
           />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route
-            path='/login'
-            element={<Login />}
-          />
-          <Route
-            path='/register'
-            element={<Register />}
-          />
-          <Route
-            path='/about-us'
-            element={<AboutUs />}
-          />
-          <Route
-            path='/contact'
-            element={<ContactUs />}
-          />
-          <Route
-            path='/admin/profile'
+            path="/admin/profile"
             element={
               <ProtectedRoute
                 element={<AdminProfile />}
@@ -121,7 +123,7 @@ function App() {
             }
           />
           <Route
-            path='/admin/manage-speciality-area'
+            path="/admin/manage-speciality-area"
             element={
               <ProtectedRoute
                 element={<SpecialityArea />}
@@ -131,7 +133,7 @@ function App() {
           />
 
           <Route
-            path='/admin/manage-speciality'
+            path="/admin/manage-speciality"
             element={
               <ProtectedRoute
                 element={<Speciality />}
@@ -141,16 +143,13 @@ function App() {
           />
 
           <Route
-            path='/admin/all-users'
+            path="/admin/all-users"
             element={
-              <ProtectedRoute
-                element={<AllUsers />}
-                allowedRoles={['admin']}
-              />
+              <ProtectedRoute element={<AllUsers />} allowedRoles={['admin']} />
             }
           />
           <Route
-            path='/doctor/appointments'
+            path="/doctor/appointments"
             element={
               <ProtectedRoute
                 element={<DoctorAppointments />}

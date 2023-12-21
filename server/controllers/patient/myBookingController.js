@@ -18,9 +18,11 @@ const getAllBookingsController = async (req, res) => {
 
     // Map through the appointment data to create a new structure
     const resp = await Promise.all(
-      appointment_data.map(async e => {
+      appointment_data.map(async (e) => {
         // Find doctor's data based on userId
-        const doctors_data = await User.findOne({ _id: e.doctorProfileId.userId });
+        const doctors_data = await User.findOne({
+          _id: e.doctorProfileId.userId,
+        });
 
         // Create a new structure for the response
         return {
@@ -31,6 +33,7 @@ const getAllBookingsController = async (req, res) => {
           phone: e.doctorProfileId.phone,
           appointmentDate: e.appointmentDate,
           reasonOfAppointment: e?.reasonOfAppointment,
+          paymentStatus: e?.paymentStatus,
           message: e?.message,
         };
       })
