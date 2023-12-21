@@ -9,6 +9,9 @@ import moment from 'moment'; // Import moment library
 import { SERVER_BASE_URL } from '../../../config/config.local';
 import { toast } from 'react-toastify';
 import { loadStripe } from '@stripe/stripe-js';
+import PdfUpload from '../../../components/forms/PdfUpload';
+import { FilePdfOutlined } from '@ant-design/icons';
+import Link from 'antd/es/typography/Link';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -71,6 +74,61 @@ const MyBookings = () => {
     }
   };
 
+  const handleUploadPdf = async (data, patientDetailId) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', data);
+      formData.append('patientDetailId', patientDetailId);
+
+      // Make the API call
+      const response = await axios.put(
+        SERVER_BASE_URL + '/api/v1/my-bookings/medical-report',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        getAllBookings();
+        toast.success('Medical report saved success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
+
+  const handleDeletePdf = async (doctorAppointmentId) => {
+    try {
+      // Make the API call
+      const response = await axios.delete(
+        SERVER_BASE_URL +
+          '/api/v1/my-bookings/medical-report?doctorAppointmentId=' +
+          doctorAppointmentId,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        getAllBookings();
+        toast.success('Medical report delete success!!');
+      } else {
+        toast.success('Please try again..');
+      }
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('API Error:', error);
+      // Handle API error
+    }
+  };
   const columns = [
     {
       title: 'Patient Name',
@@ -81,11 +139,6 @@ const MyBookings = () => {
       title: 'Doctor Name',
       dataIndex: 'doctorFullName',
       key: 'doctorFullName',
-    },
-    {
-      title: 'Doctor Contact No.',
-      dataIndex: 'phone',
-      key: 'phone',
     },
     {
       title: 'Appointment Date',
@@ -118,6 +171,49 @@ const MyBookings = () => {
       title: 'Doctor Response',
       key: 'message',
       render: (text, record) => <p>{record.message ? record.message : '-'}</p>,
+    },
+    {
+      title: 'Upload Reports',
+      key: 'reports',
+      render: (text, record) => {
+        return (
+          <Space>
+            <PdfUpload
+              patientDetail={record}
+              handleUploadPdf={handleUploadPdf}
+            />
+            {record?.medicalReport && (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <a href={record?.medicalReport} target="_blank">
+                  <FilePdfOutlined
+                    style={{
+                      fontSize: '25px',
+                      color: '#ff0000',
+                      marginRight: '10%',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </a>
+
+                <Popconfirm
+                  title="Are you sure you want to delete?"
+                  onConfirm={() => handleDeletePdf(record._id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <DeleteOutlined
+                    style={{
+                      fontSize: '15px',
+                      color: '#1890ff', // or any other color
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Popconfirm>
+              </div>
+            )}
+          </Space>
+        );
+      },
     },
     {
       title: 'Action',

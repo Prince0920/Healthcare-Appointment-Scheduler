@@ -1,5 +1,6 @@
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
+const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
 
 // Patient Profile create
 const createPatientProfileController = async (req, res) => {
@@ -70,8 +71,8 @@ const getPatientProfileController = async (req, res) => {
 
     let response = {
       ...profileData.toObject(),
-      fullName: userData.fullname
-    }
+      fullName: userData.fullname,
+    };
     return res.status(200).json({
       success: true,
       data: response,
@@ -86,4 +87,42 @@ const getPatientProfileController = async (req, res) => {
   }
 };
 
-module.exports = { createPatientProfileController, getPatientProfileController };
+const uploadProfilePitcher = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    console.log('uploadProfilePitcher', userId);
+    // Check if user's data is already exists
+    let userData = await userModel.findOne({ _id: userId });
+    if (!userData) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+    let myCloud;
+    if (req.file) {
+      myCloud = await uploadImageToCloudnary(req.file?.path);
+    }
+    const saved_image_url = myCloud.secure_url;
+
+    let patientProfile = await PatientProfile.findOneAndUpdate(
+      { userId: userData._id },
+      {
+        profileImage: saved_image_url,
+      }
+    );
+
+    if (!patientProfile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Patient Profile not found.',
+      });
+    }
+
+    res.send({ success: true });
+  } catch (error) {
+    console.log('Error in uploading profile pitcher', error);
+  }
+};
+
+module.exports = { createPatientProfileController, getPatientProfileController, uploadProfilePitcher };

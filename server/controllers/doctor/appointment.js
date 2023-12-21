@@ -1,3 +1,4 @@
+const SpecialityModel = require('../../models/SpecialityModel');
 const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
@@ -6,7 +7,8 @@ const userModel = require('../../models/userModels');
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
-    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } = req.body;
+    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } =
+      req.body;
     const data = await DoctorAppointment({
       userId,
       patientDetailId,
@@ -33,10 +35,23 @@ const bookAppointmentWithDoctor = async (req, res) => {
 
 const searchDoctor = async (req, res) => {
   try {
-    let doctorData = await DoctorProfile.find({
-      medicalSpecialty: req.body.medicalSpecialty,
-    }).populate('userId');
+    let specilityData = {};
 
+    // If user selected the specility then getting specility from SpecialityModel for find id for specility.
+    if (req.body?.medicalSpecialty) {
+      specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
+    }
+
+    let filter_cond_dp = {};
+    // If user does not select any value the fetch all entries.
+    if (Object.keys(specilityData).length !== 0) {
+      filter_cond_dp = {
+        specilityId: specilityData?._id,
+      };
+    }
+    let doctorData = await DoctorProfile.find(filter_cond_dp)
+      .populate('userId')
+      .populate('specilityId');
     if (!doctorData) {
       return res.status(404).json({
         success: false,
@@ -45,7 +60,7 @@ const searchDoctor = async (req, res) => {
     }
     const formattedDoctorData = doctorData.map(doctor => {
       const { userId } = doctor;
-
+      const { specilityId } = doctor;
       return {
         doctorProfileId: doctor._id,
         fullName: userId.fullname,
@@ -56,10 +71,11 @@ const searchDoctor = async (req, res) => {
         education: doctor.education,
         phone: doctor.phone,
         experience: doctor.experience,
-        medicalSpecialty: doctor.medicalSpecialty,
+        medicalSpecialty: specilityId.name,
         workingHours: doctor.workingHours,
         about: doctor.about,
         review: doctor.review,
+        profileImage: doctor.profileImage,
       };
     });
 

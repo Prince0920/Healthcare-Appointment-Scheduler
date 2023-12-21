@@ -13,6 +13,7 @@ module.exports = async (req, res, next) => {
         });
       } else {
         req.body.userId = response.id;
+        req.user = { userId: response.id }; // Set userId in req.user
         // console.log('User id is- '+response.id);
         next();
       }

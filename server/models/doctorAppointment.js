@@ -28,6 +28,9 @@ const doctorAppointmentSchema = new mongoose.Schema({
     type: String, // You can use enum to represent different statuses (e.g., 'Successful', 'Failed', 'Refunded')
     default: 'pending',
   },
+  medicalReport: {
+    type: String,
+  },
   message: {
     type: String,
   },
