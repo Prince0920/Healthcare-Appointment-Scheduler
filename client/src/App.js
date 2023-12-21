@@ -24,6 +24,7 @@ import MyBookings from './pages/patient/my-bookings/MyBookings';
 import ProtectedRoute from './components/ProtectedRoute';
 import Speciality from './pages/admin/specialityViews/Speciality';
 import SpecialityArea from './pages/admin/specialityViews/SpecialityArea';
+import BookingStripePaySuccess from './pages/patient/booking-payment/BookingStripePaySuccess';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -54,6 +55,15 @@ function App() {
             element={
               <ProtectedRoute
                 element={<PatientProfile />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+          <Route
+            path='/patient/booking/payment-success'
+            element={
+              <ProtectedRoute
+                element={<BookingStripePaySuccess/>}
                 allowedRoles={['patient']}
               />
             }

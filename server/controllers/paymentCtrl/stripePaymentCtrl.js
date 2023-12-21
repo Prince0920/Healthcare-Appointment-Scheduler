@@ -7,7 +7,7 @@ const patentPayBystripe = async (req, res) => {
     );
 
     const session = await stripe.checkout.sessions.create({
-      success_url: 'https://localhost:3101/success',
+      success_url: 'http://localhost:3101/patient/booking/payment-success',
       cancel_url: 'https://localhost:3101/cancel',
       payment_method_types: ['card'],
       mode: 'payment',
