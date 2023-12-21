@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const Leftsidebar = () => {
   const user = JSON.parse(localStorage.getItem('current_user'));
@@ -98,8 +98,8 @@ const Leftsidebar = () => {
   return (
     <div>
       <aside className='main-sidebar sidebar-dark-primary elevation-4'>
-        <a
-          href='index3.html'
+        <Link
+          to='/'
           className='brand-link'>
           <img
             src='https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png'
@@ -108,7 +108,7 @@ const Leftsidebar = () => {
             style={{ opacity: '.8' }}
           />
           <span className='brand-text font-weight-light'>HealthCare</span>
-        </a>
+        </Link>
         <div className='sidebar'>
           <nav className='mt-2'>{sidebarLinks}</nav>
         </div>
