@@ -38,6 +38,13 @@ const Leftsidebar = () => {
                 <i className='nav-icon fas fa-calendar-alt' />
                 <p>My Bookings</p>
               </NavLink>
+
+              <NavLink
+                to='/patient/review'
+                className='nav-link'>
+                <i className='nav-icon fas fa-star' /> {/* Updated icon */}
+                <p>Review</p>
+              </NavLink>
             </>
           )}
 

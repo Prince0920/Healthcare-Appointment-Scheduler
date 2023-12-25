@@ -26,6 +26,7 @@ import Speciality from './pages/admin/specialityViews/Speciality';
 import SpecialityArea from './pages/admin/specialityViews/SpecialityArea';
 import BookingStripePaySuccess from './pages/patient/booking-payment/BookingStripePaySuccess';
 import BookingStripePayCancel from './pages/patient/booking-payment/BookingStripePayCancel';
+import Review from './pages/patient/review/Review';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -81,6 +82,15 @@ function App() {
             element={
               <ProtectedRoute
                 element={<BookingStripePayCancel />}
+                allowedRoles={['patient']}
+              />
+            }
+          />
+          <Route
+            path="/patient/review"
+            element={
+              <ProtectedRoute
+                element={<Review />}
                 allowedRoles={['patient']}
               />
             }
