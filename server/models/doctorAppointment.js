@@ -37,12 +37,12 @@ const doctorAppointmentSchema = new mongoose.Schema({
   reasonOfAppointment: {
     type: String,
   },
-  // Add other relevant fields for the appointment
+  review: {
+    rating: Number,
+    feedback: String,
+  },
 });
 
-const DoctorAppointment = mongoose.model(
-  'DoctorAppointment',
-  doctorAppointmentSchema
-);
+const DoctorAppointment = mongoose.model('DoctorAppointment', doctorAppointmentSchema);
 
 module.exports = DoctorAppointment;
