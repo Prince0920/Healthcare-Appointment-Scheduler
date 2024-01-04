@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  profileImage:{
+    type: String,
+    require: true,
+    default: "",
+  },
   status: {
     type: String,
     require: true,

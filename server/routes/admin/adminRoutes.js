@@ -5,6 +5,7 @@ const router = express.Router();
 const authMiddleware = require('../../config/middlewares/authMiddleware');
 const adminController = require('../../controllers/adminCtrl/adminCtrl');
 const specialityController = require('../../controllers/adminCtrl/specialityCtrls/SpecialityCtrl');
+const { upload } = require('../../utils/multerUpload');
 
 //get admin profile info
 router.get(
@@ -67,5 +68,13 @@ router.post(
 router.post('/updatSpeciStatus', (req, res) => {
   res.send('yes reached till here');
 });
+
+//upload profile
+router.post(
+  '/profile-pitcher',
+  authMiddleware,
+  upload.single('avatar'),
+  adminController.uploadProfilePitcher
+);
 
 module.exports = router;
