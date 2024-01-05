@@ -256,6 +256,7 @@ const DoctorAppointments = () => {
                           <th>E-mail</th>
                           <th>App. Date/Time</th>
                           <th>Apply Date/Time</th>
+                          <th>Uploaded Reports</th>
                           <th>Status</th>
                           <th>Dr. Comment</th>
                           <th>View</th>
@@ -284,6 +285,21 @@ const DoctorAppointments = () => {
                                 <Moment format="Do MMM, YYYY, h:mm: A">
                                   {docAppointment.date}
                                 </Moment>
+                              </td>
+                              <td>
+                                {docAppointment.medicalReport ? (
+                                  <a
+                                    href={docAppointment.medicalReport}
+                                    target="_blank"
+                                  >
+                                    <i
+                                      className="fa fa-file"
+                                      style={{ fontSize: 26 }}
+                                    />
+                                  </a>
+                                ) : (
+                                  ''
+                                )}
                               </td>
                               <td
                                 style={{

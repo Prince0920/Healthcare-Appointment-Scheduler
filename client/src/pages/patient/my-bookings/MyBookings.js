@@ -6,7 +6,7 @@ import { Button, Table, Space, Popconfirm } from 'antd';
 import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment'; // Import moment library
-import { SERVER_BASE_URL } from '../../../config/config.local';
+import { SERVER_BASE_URL, STRIPE_TEST_KEY } from '../../../config/config.local';
 import { toast } from 'react-toastify';
 import { loadStripe } from '@stripe/stripe-js';
 import PdfUpload from '../../../components/forms/PdfUpload';
@@ -42,9 +42,7 @@ const MyBookings = () => {
 
   const makePaymentStripe = async (recordId) => {
     //alert(recordId);
-    const stripePromise = await loadStripe(
-      'pk_test_51EMqvWCQpJWQbtl10VO5FITrm88QyBtlMEvZ8tyWENUujEKk6extINVGBaQRhXbtz1lnbFwYIx1ADuCilI8lKg8n00p8CyMOrd'
-    );
+    const stripePromise = await loadStripe(STRIPE_TEST_KEY);
 
     const items = {
       recordId: recordId,
