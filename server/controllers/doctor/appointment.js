@@ -1,8 +1,10 @@
 const SpecialityModel = require('../../models/SpecialityModel');
 const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
+const PatientDetail = require('../../models/patientDetail');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
+const sendNotification = require('../../utils/sendNotification');
 
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
@@ -18,6 +20,22 @@ const bookAppointmentWithDoctor = async (req, res) => {
       status: 'scheduled',
     }).save();
 
+    // Sending Notification Starts
+
+    const senderDetail = await PatientDetail.findOne({
+      _id: patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `New appointment request from ${senderDetail.patientName}`
+    );
+    // Sending Notification End
     return res.status(201).json({
       success: true,
       data: data,

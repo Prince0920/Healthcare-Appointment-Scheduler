@@ -37,6 +37,7 @@ const ReviewByPatient = require('./routes/patient/reviewByPatientRoute');
 const PatientDetailRoute = require('./routes/patient/patientDetailRoute');
 const StripePaymentRoute = require('./routes/paymentGateway/stripePaymentRoute');
 const MyReviewRoute = require('./routes/doctor/myReview');
+const NotificationRoute = require('./routes/notificationRoute');
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/hospital', hospitalRoutes);
@@ -52,6 +53,7 @@ app.use('/api/v1/patient', PatientDetailRoute);
 app.use('/api/v1/payment', StripePaymentRoute);
 app.use('/api/v1/reviewByPatient', ReviewByPatient);
 app.use('/api/v1/doctor', MyReviewRoute);
+app.use('/api/v1/notifications', NotificationRoute);
 
 //port
 const port = process.env.PORT || 8080;
