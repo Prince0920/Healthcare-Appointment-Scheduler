@@ -38,6 +38,13 @@ const Leftsidebar = () => {
                 <i className='nav-icon fas fa-calendar-alt' />
                 <p>My Bookings</p>
               </NavLink>
+
+              <NavLink
+                to='/patient/review'
+                className='nav-link'>
+                <i className='nav-icon fas fa-star' /> {/* Updated icon */}
+                <p>Review</p>
+              </NavLink>
             </>
           )}
 
@@ -83,12 +90,21 @@ const Leftsidebar = () => {
           )}
 
           {user.usertype === 'doctor' && (
-            <NavLink
-              to='/doctor/appointments'
-              className='nav-link'>
-              <i className='nav-icon fas fa-calendar-check' />
-              <p>Appointments</p>
-            </NavLink>
+            <>
+              <NavLink
+                to='/doctor/appointments'
+                className='nav-link'>
+                <i className='nav-icon fas fa-calendar-check' />
+                <p>Appointments</p>
+              </NavLink>
+
+              <NavLink
+                to='/doctor/review'
+                className='nav-link'>
+                <i className='nav-icon fas fa-star' />
+                <p>Reviews</p>
+              </NavLink>
+            </>
           )}
         </li>
       </ul>

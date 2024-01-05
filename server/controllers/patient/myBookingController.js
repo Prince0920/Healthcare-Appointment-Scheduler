@@ -38,6 +38,7 @@ const getAllBookingsController = async (req, res) => {
           paymentStatus: e?.paymentStatus,
           message: e?.message,
           medicalReport: e.medicalReport,
+          review: e.review
         };
       })
     );
