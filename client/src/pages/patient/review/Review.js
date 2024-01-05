@@ -157,8 +157,8 @@ const DoctorList = () => {
     <Layouts>
       <div className='content-wrapper'>
         <ContentHeader
-          heading='Doctor List'
-          bredCumName='Doctor List'
+          heading='Review and Ratings'
+          bredCumName='Review and Ratings'
         />
         <section className='content'>
           <div className='container-fluid'>
