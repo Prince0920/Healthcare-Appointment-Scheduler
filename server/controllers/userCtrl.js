@@ -1,16 +1,6 @@
 const userModel = require('../models/userModels');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-
-// Create Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'depak2084@gmail.com',
-    pass: 'deepak@merry123',
-  },
-});
 
 //register callback
 const registerController = async (req, res) => {
@@ -22,19 +12,6 @@ const registerController = async (req, res) => {
         message: 'User already exists',
       });
     }
-
-    //test for sending mail
-
-    const mailOptions = {
-      from: 'depak2084@gmail.com',
-      to: 'deepaksharma8820@gmail.com',
-      subject: 'Registration Confirmation',
-      text: 'Thank you for registering with our application!',
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return false;
 
     const password = req.body.password;
     const salt = await bcrypt.genSalt(10);
@@ -84,12 +61,14 @@ const loginController = async (req, res) => {
       }
     );
 
-    return res.status(200).send({
-      message: 'Login Successfull',
-      success: true,
-      token: token,
-      current_user: user,
-    });
+    return res
+      .status(200)
+      .send({
+        message: 'Login Successfull',
+        success: true,
+        token: token,
+        current_user: user,
+      });
   } catch (error) {
     console.log(error);
     res.status(200).send({
