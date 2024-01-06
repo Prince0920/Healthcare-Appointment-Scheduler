@@ -1,6 +1,16 @@
-const userModel = require("../models/userModels");
-const bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
+const userModel = require('../models/userModels');
+const bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
+// Create Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'depak2084@gmail.com',
+    pass: 'deepak@merry123',
+  },
+});
 
 //register callback
 const registerController = async (req, res) => {
@@ -9,9 +19,22 @@ const registerController = async (req, res) => {
     if (existingUser) {
       return res.status(200).send({
         success: false,
-        message: "User already exists",
+        message: 'User already exists',
       });
     }
+
+    //test for sending mail
+
+    const mailOptions = {
+      from: 'depak2084@gmail.com',
+      to: 'deepaksharma8820@gmail.com',
+      subject: 'Registration Confirmation',
+      text: 'Thank you for registering with our application!',
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return false;
 
     const password = req.body.password;
     const salt = await bcrypt.genSalt(10);
@@ -24,7 +47,7 @@ const registerController = async (req, res) => {
 
     return res.send({
       success: true,
-      message: "Register successfully done!",
+      message: 'Register successfully done!',
     });
   } catch (error) {
     //console.log(error);
@@ -42,7 +65,7 @@ const loginController = async (req, res) => {
     if (!user) {
       return res.status(200).send({
         success: false,
-        message: "User does not exists",
+        message: 'User does not exists',
       });
     }
 
@@ -51,15 +74,22 @@ const loginController = async (req, res) => {
     if (!isMatch) {
       return res
         .status(200)
-        .send({ message: "Invlid email or password", success: false });
+        .send({ message: 'Invlid email or password', success: false });
     }
-    const token = jwt.sign({ id: user._id, usertype: user.usertype }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      { id: user._id, usertype: user.usertype },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      }
+    );
 
-    return res
-      .status(200)
-      .send({ message: "Login Successfull", success: true, token: token , current_user: user});
+    return res.status(200).send({
+      message: 'Login Successfull',
+      success: true,
+      token: token,
+      current_user: user,
+    });
   } catch (error) {
     console.log(error);
     res.status(200).send({
@@ -71,7 +101,7 @@ const loginController = async (req, res) => {
 
 //get user info
 const authController = async (req, res) => {
-  console.log("get user id", req.body.userId);
+  console.log('get user id', req.body.userId);
   // res.status(500).send({message:'hello',success:true});
   try {
     const user = await userModel.findOne({ _id: req.body.userId });
@@ -80,7 +110,7 @@ const authController = async (req, res) => {
     if (!user) {
       return res
         .status(200)
-        .send({ message: "User not found", success: false });
+        .send({ message: 'User not found', success: false });
     } else {
       res.status(200).send({
         success: true,
@@ -93,9 +123,9 @@ const authController = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("error", error);
-    res.status(500).send({ message: "auth error", success: false });
+    console.log('error', error);
+    res.status(500).send({ message: 'auth error', success: false });
   }
 };
 
-module.exports = { loginController, registerController ,authController};
+module.exports = { loginController, registerController, authController };
