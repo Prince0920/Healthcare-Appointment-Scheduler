@@ -4,6 +4,8 @@ const PatientProfile = require('../../models/patientProfile');
 const User = require('../../models/userModels');
 const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
 const PatientDetail = require('../../models/patientDetail');
+const sendNotification = require('../../utils/sendNotification');
+const DoctorProfile = require('../../models/doctorProfile');
 
 const getAllBookingsController = async (req, res) => {
   try {
@@ -20,7 +22,7 @@ const getAllBookingsController = async (req, res) => {
 
     // Map through the appointment data to create a new structure
     const resp = await Promise.all(
-      appointment_data.map(async (e) => {
+      appointment_data.map(async e => {
         // Find doctor's data based on userId
         const doctors_data = await User.findOne({
           _id: e.doctorProfileId.userId,
@@ -38,7 +40,7 @@ const getAllBookingsController = async (req, res) => {
           paymentStatus: e?.paymentStatus,
           message: e?.message,
           medicalReport: e.medicalReport,
-          review: e.review
+          review: e.review,
         };
       })
     );
@@ -82,6 +84,20 @@ const removeAppointmentController = async (req, res) => {
         message: 'Appointment not found with the given ID and status.',
       });
     }
+
+    const senderDetail = await PatientDetail.findOne({
+      _id: deletedAppointment.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: deletedAppointment.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} appointment cancelled.`
+    );
 
     // Send the response
     return res.status(200).json({

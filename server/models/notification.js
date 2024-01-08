@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-  receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
+  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
   message: String,
   severity: { type: String, enum: ['low', 'medium', 'high'], default: 'low' },
   timestamp: { type: Date, default: Date.now },
