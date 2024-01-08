@@ -14,18 +14,6 @@ const Header = () => {
     navigate('/login');
   };
 
-  const unreadNotifications = [
-    {
-      message: 'Appointment booked from Neha Agrawal',
-    },
-    {
-      message: 'Appointment booked from Akash Sharma',
-    },
-    {
-      message: 'Appointment booked from Prince Agrawal',
-    },
-  ];
-
   const [notificationsData, setNotificationsData] = useState([]);
   const getAllNotifications = async () => {
     // /api/v1/notifications
@@ -118,7 +106,7 @@ const Header = () => {
                     <div key={index}>
                       <a
                         href=''
-                        className='dropdown-item'>
+                        className='dropdown-item'  style={{marginTop: '7px' , marginBottom: '7px'}}>
                         <i class='fas fa-envelope mr-2'></i>
                         {truncateString(notification.message, 30)}
                       </a>
