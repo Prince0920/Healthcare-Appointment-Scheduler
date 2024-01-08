@@ -125,19 +125,32 @@ const uploadMedicalReportController = async (req, res) => {
 
     const saved_pdf_url = myCloud?.secure_url;
 
-    let patientDetail = await DoctorAppointment.findOneAndUpdate(
+    let appointmentDetail = await DoctorAppointment.findOneAndUpdate(
       { _id: patientDetailId },
       {
         medicalReport: saved_pdf_url,
       }
     );
 
-    if (!patientDetail) {
+    if (!appointmentDetail) {
       return res.status(404).json({
         success: false,
-        message: 'Patient Detail not found.',
+        message: 'Appointment Detail not found.',
       });
     }
+    const senderDetail = await PatientDetail.findOne({
+      _id: appointmentDetail.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: appointmentDetail.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} report uploaded.`
+    );
 
     res.send({ success: true });
   } catch (error) {
@@ -161,6 +174,20 @@ const removeMedicalReportController = async (req, res) => {
         message: 'Doctor Appointment Detail not found.',
       });
     }
+
+    const senderDetail = await PatientDetail.findOne({
+      _id: doctorAppointmentDetail.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: doctorAppointmentDetail.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} report removed.`
+    );
 
     res.send({ success: true });
   } catch (error) {
