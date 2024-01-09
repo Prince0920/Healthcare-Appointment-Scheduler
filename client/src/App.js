@@ -28,6 +28,7 @@ import BookingStripePaySuccess from './pages/patient/booking-payment/BookingStri
 import BookingStripePayCancel from './pages/patient/booking-payment/BookingStripePayCancel';
 import Review from './pages/patient/review/Review';
 import MyReview from './pages/doctor/review/MyReview';
+import Chat from './pages/chat/Chat';
 
 function App() {
   // const { loading } = useSelector(state => state.alerts);
@@ -40,6 +41,15 @@ function App() {
             element={
               <ProtectedRoute
                 element={<Dashboard />}
+                allowedRoles={['admin', 'patient', 'doctor', 'admin', 'hospital']}
+              />
+            }
+          />
+          <Route
+            path='/chat'
+            element={
+              <ProtectedRoute
+                element={<Chat />}
                 allowedRoles={['admin', 'patient', 'doctor', 'admin', 'hospital']}
               />
             }
