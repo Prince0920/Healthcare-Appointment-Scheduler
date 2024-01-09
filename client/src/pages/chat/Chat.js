@@ -1,7 +1,7 @@
 import React from 'react';
 import ChatFooter from './ChatFooter';
 import ChatHeader from './ChatHeader';
-import ChatContactsList from './ChatContactsList';
+import ChatContactsList from './ChatContactList/ChatContactsList';
 import ChatMessage from './ChatMessage';
 
 const Chat = () => {
