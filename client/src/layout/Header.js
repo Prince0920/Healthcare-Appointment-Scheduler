@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import truncateString from '../helper/truncateString';
 import axios from 'axios';
 import { SERVER_BASE_URL } from '../config/config.local';
+import socket from '../helper/socketSetup';
 const Header = () => {
   const user = JSON.parse(localStorage.getItem('current_user'));
 
@@ -29,6 +30,19 @@ const Header = () => {
   useEffect(() => {
     getAllNotifications();
   }, []);
+
+  useEffect(() => {
+    const handleNotification = () => {
+      getAllNotifications();
+      console.log('send notification................');
+    };
+    socket.on('send notification', handleNotification);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      socket.off('send notification', handleNotification);
+    };
+  }, []);
+  
   return (
     <div>
       <div className='preloader flex-column justify-content-center align-items-center'>
@@ -106,7 +120,8 @@ const Header = () => {
                     <div key={index}>
                       <a
                         href=''
-                        className='dropdown-item'  style={{marginTop: '7px' , marginBottom: '7px'}}>
+                        className='dropdown-item'
+                        style={{ marginTop: '7px', marginBottom: '7px' }}>
                         <i class='fas fa-envelope mr-2'></i>
                         {truncateString(notification.message, 30)}
                       </a>

@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ChatFooter from './ChatFooter';
 import ChatHeader from './ChatHeader';
 import ChatContactsList from './ChatContactList/ChatContactsList';
 import ChatMessage from './ChatMessage';
+import io from 'socket.io-client';
+import { SERVER_BASE_URL } from '../../config/config.local';
+var socket;
 
 const Chat = () => {
+  useEffect(() => {
+    socket = io(SERVER_BASE_URL);
+    socket.emit("setup", localStorage.getItem('current_user'))
+  }, []);
   return (
     <div className='card card-primary direct-chat direct-chat-primary'>
       <ChatHeader />
