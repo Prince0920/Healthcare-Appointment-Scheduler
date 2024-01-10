@@ -58,6 +58,27 @@ app.use('/api/v1/notifications', NotificationRoute);
 //port
 const port = process.env.PORT || 8080;
 //listen port
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`server is running ${process.env.DEV_MODE} mode on port ${port}`);
+});
+
+const io = require('socket.io')(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: 'http://localhost:3101',
+  },
+});
+
+io.on('connection', socket => {
+  console.log('Connected to socket.io...');
+  
+  socket.on('disconnect', ()=>{
+    console.log("Some left the room")
+  })
+
+  socket.on('new notification', ()=>{
+    console.log("I am in new notificatiopn")
+    socket.broadcast.emit('send notification')
+  })
+  
 });
