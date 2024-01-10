@@ -1,44 +1,16 @@
-const userModel = require('../models/userModels');
-const bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-
-const nodemailer = require("nodemailer");
-
+const userModel = require("../models/userModels");
+const bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+const { sendMail } = require("../utils/emailService");
 
 //register callback
 const registerController = async (req, res) => {
   try {
-
-    const transporter  = nodemailer.createTransport({
-      service: "gmail",
-      secure: false,
-      auth: {
-        user: "depak2084@gmail.com",
-        pass: "awyc zqzd wsmz zfyq",
-      }
-
-    })
-
-    let mailDetails = {
-      from: 'depak2084@gmail.com',
-      to: 'deepaksharma8820@gmail.com',
-      subject: 'Test mail',
-      text: 'This is my first send mail in MERN stack project'
-  };
-   
-  transporter.sendMail(mailDetails, function(err, data) {
-      if(err) {
-          console.log('Error Occurs');
-      } else {
-          console.log('Email sent successfully');
-      }
-  });
-
     const existingUser = await userModel.findOne({ email: req.body.email });
     if (existingUser) {
       return res.status(200).send({
         success: false,
-        message: 'User already exists',
+        message: "User already exists",
       });
     }
 
@@ -51,9 +23,14 @@ const registerController = async (req, res) => {
     const newUser = new userModel(req.body);
     await newUser.save();
 
+    //send registration mail
+    const mailTo = "deepaksharma8820@gmail.com";
+    const username = "Deepak";
+    await sendMail("registration", mailTo, username);
+
     return res.send({
       success: true,
-      message: 'Register successfully done!',
+      message: "Register successfully done!",
     });
   } catch (error) {
     //console.log(error);
@@ -71,7 +48,7 @@ const loginController = async (req, res) => {
     if (!user) {
       return res.status(200).send({
         success: false,
-        message: 'User does not exists',
+        message: "User does not exists",
       });
     }
 
@@ -80,24 +57,22 @@ const loginController = async (req, res) => {
     if (!isMatch) {
       return res
         .status(200)
-        .send({ message: 'Invlid email or password', success: false });
+        .send({ message: "Invlid email or password", success: false });
     }
     const token = jwt.sign(
       { id: user._id, usertype: user.usertype },
       process.env.JWT_SECRET,
       {
-        expiresIn: '1d',
+        expiresIn: "1d",
       }
     );
 
-    return res
-      .status(200)
-      .send({
-        message: 'Login Successfull',
-        success: true,
-        token: token,
-        current_user: user,
-      });
+    return res.status(200).send({
+      message: "Login Successfull",
+      success: true,
+      token: token,
+      current_user: user,
+    });
   } catch (error) {
     console.log(error);
     res.status(200).send({
@@ -109,7 +84,7 @@ const loginController = async (req, res) => {
 
 //get user info
 const authController = async (req, res) => {
-  console.log('get user id', req.body.userId);
+  console.log("get user id", req.body.userId);
   // res.status(500).send({message:'hello',success:true});
   try {
     const user = await userModel.findOne({ _id: req.body.userId });
@@ -118,7 +93,7 @@ const authController = async (req, res) => {
     if (!user) {
       return res
         .status(200)
-        .send({ message: 'User not found', success: false });
+        .send({ message: "User not found", success: false });
     } else {
       res.status(200).send({
         success: true,
@@ -131,8 +106,8 @@ const authController = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log('error', error);
-    res.status(500).send({ message: 'auth error', success: false });
+    console.log("error", error);
+    res.status(500).send({ message: "auth error", success: false });
   }
 };
 
