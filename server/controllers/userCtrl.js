@@ -2,9 +2,38 @@ const userModel = require('../models/userModels');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
+const nodemailer = require("nodemailer");
+
+
 //register callback
 const registerController = async (req, res) => {
   try {
+
+    const transporter  = nodemailer.createTransport({
+      service: "gmail",
+      secure: false,
+      auth: {
+        user: "depak2084@gmail.com",
+        pass: "awyc zqzd wsmz zfyq",
+      }
+
+    })
+
+    let mailDetails = {
+      from: 'depak2084@gmail.com',
+      to: 'deepaksharma8820@gmail.com',
+      subject: 'Test mail',
+      text: 'This is my first send mail in MERN stack project'
+  };
+   
+  transporter.sendMail(mailDetails, function(err, data) {
+      if(err) {
+          console.log('Error Occurs');
+      } else {
+          console.log('Email sent successfully');
+      }
+  });
+
     const existingUser = await userModel.findOne({ email: req.body.email });
     if (existingUser) {
       return res.status(200).send({
