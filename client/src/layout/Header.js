@@ -42,6 +42,27 @@ const Header = () => {
       socket.off('send notification', handleNotification);
     };
   }, []);
+
+  const handleNotificationRead = async notiData => {
+    try {
+      const readNotiResponse = await axios.put(
+        SERVER_BASE_URL + '/api/v1/notifications/read-notification',
+        {
+          notificationId: notiData.notificationId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (readNotiResponse.status === 200) {
+        getAllNotifications();
+      }
+    } catch (error) {
+      console.log('Error in handleNotificationRead: ', error);
+    }
+  };
   return (
     <div>
       <div className='preloader flex-column justify-content-center align-items-center'>
@@ -107,7 +128,13 @@ const Header = () => {
             </a>
             <div
               className='dropdown-menu dropdown-menu-lg dropdown-menu-right'
-              style={{ left: 'inherit', right: 0, width: '300px' }} // Adjust the width as needed
+              style={{
+                left: 'inherit',
+                right: 0,
+                width: '300px',
+                maxHeight: '500px',
+                overflowY: 'auto',
+              }} // Adjust the width as needed
             >
               <span className='dropdown-item dropdown-header'>
                 {notificationsData?.length} Notifications
@@ -117,13 +144,19 @@ const Header = () => {
                 notificationsData.map((notification, index) => {
                   return (
                     <div key={index}>
-                      <a
+                      <div
                         href=''
                         className='dropdown-item'
-                        style={{ marginTop: '7px', marginBottom: '7px' }}>
-                        <i class='fas fa-envelope mr-2'></i>
+                        style={{ marginTop: '7px', marginBottom: '7px', cursor: 'pointer' }}
+                        onClick={() => {
+                          handleNotificationRead(notification);
+                        }}>
+                        <i
+                          className={`fas ${
+                            notification.isRead ? 'fa-check-circle' : 'fa-circle'
+                          } text-danger mr-2`}></i>
                         {truncateString(notification.message, 30)}
-                      </a>
+                      </div>
                       <div className='dropdown-divider' />
                     </div>
                   );

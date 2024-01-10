@@ -6,11 +6,17 @@ const getAllNotifications = async (req, res) => {
     const userId = req.user.userId;
 
     // Retrieve notification details for the specified user
-    const notificationDetails = await Notification.find({ receiverId: userId });
+    const notificationDetails = await Notification.find({ receiverId: userId }).sort({
+      createdAt: -1,
+    });
 
     // Extract only the 'message' field from each notification for response
     const requiredResponse = notificationDetails.map(notification => {
-      return { message: notification.message };
+      return {
+        message: notification.message,
+        notificationId: notification._id,
+        isRead: notification.isRead,
+      };
     });
 
     // Log the requiredResponse for debugging purposes
@@ -35,4 +41,35 @@ const getAllNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getAllNotifications };
+const readNotification = async (req, res) => {
+  try {
+    const notificationId = req.body.notificationId;
+    console.log('notificationIdnotificationId', req.body);
+    const updateNotiResp = await Notification.findOneAndUpdate(
+      {
+        _id: notificationId,
+      },
+      {
+        isRead: true,
+      }
+    );
+
+    console.log('updateNotiResp', updateNotiResp);
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: 'Notifications read successfully.',
+    });
+  } catch (error) {
+    // Log the error for debugging purposes
+    console.error('Error read notifications:', error);
+
+    // Return an error response with details about the failure
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to read notifications.',
+      error: error.message,
+    });
+  }
+};
+module.exports = { getAllNotifications, readNotification };
