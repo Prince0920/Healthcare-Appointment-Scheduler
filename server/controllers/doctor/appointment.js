@@ -1,9 +1,11 @@
-const SpecialityModel = require('../../models/SpecialityModel');
-const DoctorAppointment = require('../../models/doctorAppointment');
-const DoctorProfile = require('../../models/doctorProfile');
-const PatientProfile = require('../../models/patientProfile');
-const userModel = require('../../models/userModels');
-const { sendMail } = require('../../utils/emailService');
+const SpecialityModel = require("../../models/SpecialityModel");
+const DoctorAppointment = require("../../models/doctorAppointment");
+const DoctorProfile = require("../../models/doctorProfile");
+const PatientProfile = require("../../models/patientProfile");
+const userModel = require("../../models/userModels");
+const { sendMail } = require("../../utils/emailService");
+const patientDetails = require("../../models/patientDetail");
+
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
@@ -14,33 +16,47 @@ const bookAppointmentWithDoctor = async (req, res) => {
       appointmentDate,
       reasonOfAppointment,
     } = req.body;
+
+    const getPatientInfo = await patientDetails.findOne({
+      _id: patientDetailId,
+    });
+    console.log("getPatientInof", getPatientInfo);
+    const patientName = getPatientInfo.patientName;
+    const age = getPatientInfo.age;
+    const gender = getPatientInfo.gender;
+    const mailTo = "deepaksharma8820@gmail.com";
+    //appoint mail info to the doctor
+    const mailInfo = {
+      mailFor: "mailToDocAppintment",
+      mailTo: mailTo,
+      patientName: patientName,
+      date: appointmentDate,
+      age: age,
+      gender: gender,
+    };
+    await sendMail(mailInfo);
+
+    return false;
+
     const data = await DoctorAppointment({
       userId,
       patientDetailId,
       doctorProfileId,
       appointmentDate,
       reasonOfAppointment,
-      status: 'scheduled',
+      status: "scheduled",
     }).save();
-
-    //appoint mail info to the doctor
-    // const mailInfo = {
-    //   mailFor: 'registration',
-    //   mailTo: mailTo,
-    //   username: username,
-    // };
-    // await sendMail(mailInfo);
 
     return res.status(201).json({
       success: true,
       data: data,
-      message: 'Appointment Successfully Booked With Doctor!',
+      message: "Appointment Successfully Booked With Doctor!",
     });
   } catch (error) {
-    console.error('Error creating/updating patient profile:', error);
+    console.error("Error creating/updating patient profile:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to create/update patient profile.',
+      message: "Failed to create/update patient profile.",
       error: error.message,
     });
   }
@@ -65,12 +81,12 @@ const searchDoctor = async (req, res) => {
       };
     }
     let doctorData = await DoctorProfile.find(filter_cond_dp)
-      .populate('userId')
-      .populate('specilityId');
+      .populate("userId")
+      .populate("specilityId");
     if (!doctorData) {
       return res.status(404).json({
         success: false,
-        message: 'Not avaliable.',
+        message: "Not avaliable.",
       });
     }
     const formattedDoctorData = doctorData.map((doctor) => {
@@ -99,10 +115,10 @@ const searchDoctor = async (req, res) => {
       data: formattedDoctorData,
     });
   } catch (error) {
-    console.error('Error getting :', error);
+    console.error("Error getting :", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to get doctors search result.',
+      message: "Failed to get doctors search result.",
       error: error.message,
     });
   }

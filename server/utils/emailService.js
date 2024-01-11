@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer');
-const nodeConstant = require('../config/nodeConstant');
-const emailTemplates = require('../utils/emailTemplates');
+const nodemailer = require("nodemailer");
+const nodeConstant = require("../config/nodeConstant");
+const emailTemplates = require("../utils/emailTemplates");
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   secure: false,
   auth: {
     user: nodeConstant.EMAIL_GMAIL_SERVICE,
@@ -16,21 +16,30 @@ const sendMail = async (mailInfo) => {
     mailFor = mailInfo.mailFor;
     mailTo = mailInfo.mailTo;
 
-    console.log('mailfor', mailFor);
+    console.log("mailfor", mailFor);
     let mailDetails;
-    if (mailFor === 'registration') {
+    if (mailFor === "registration") {
       mailDetails = {
         from: nodeConstant.EMAIL_FROM_GMAIL_SERVICE,
         to: mailTo,
-        subject: 'Registration on HealthCare',
+        subject: "Registration on HealthCare",
         html: emailTemplates.RegistrationMailContent(mailInfo),
       };
     }
 
+    if (mailFor === "mailToDocAppintment") {
+      mailDetails = {
+        from: nodeConstant.EMAIL_FROM_GMAIL_SERVICE,
+        to: mailTo,
+        subject: "Appointment Booking",
+        html: emailTemplates.BookAppoEmailToDoc(mailInfo),
+      };
+    }
+
     const result = await transporter.sendMail(mailDetails);
-    console.log('Email sent successfully:', result);
+    console.log("Email sent successfully:", result);
   } catch (error) {
-    console.log('Error sending email:', error);
+    console.log("Error sending email:", error);
   }
 };
 

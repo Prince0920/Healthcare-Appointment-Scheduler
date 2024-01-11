@@ -1,5 +1,5 @@
 const RegistrationMailContent = (mailInfo) => {
-  console.log('mailInfo', mailInfo);
+  //console.log("mailInfo", mailInfo);
 
   return `
       <!DOCTYPE html>
@@ -19,13 +19,15 @@ const RegistrationMailContent = (mailInfo) => {
         <tbody>
         <tr>
         <td style="max-width: 600px; height: 350px; padding-bottom: 10px; text-align: left; padding-top: 75px; padding-left: 20px; padding-right: 20px; width: 100%; background-color: #fcfcfc; margin-left: auto; margin-right: auto;" vAlign=top>
-        Dear, ${mailInfo.username ? mailInfo.username : ''}
+        Dear, ${mailInfo.username ? mailInfo.username : ""}
         <br/>
         <br/>
          Thank you for registarion on HealthCare.
         <br/>
         <br/>
         Your registration has been completes successfully , now you can login on site.
+      <br/>
+      <br/>
       <br/>
         Sincerely,
       <br/>
@@ -87,13 +89,21 @@ const BookAppoEmailToDoc = (mailInfo) => {
       <tbody>
       <tr>
       <td style="max-width: 600px; height: 350px; padding-bottom: 10px; text-align: left; padding-top: 75px; padding-left: 20px; padding-right: 20px; width: 100%; background-color: #fcfcfc; margin-left: auto; margin-right: auto;" vAlign=top>
-      Hi,Dr. ${mailInfo.username}
+      Hi,Dr
       <br/>
       <br/>
        A patient has been requested to book a appoitments with following details:
       <br/>
       <br/>
-      Name:
+      Patient Name: ${mailInfo.patientName}
+      <br>
+      Age: ${mailInfo.age}
+      <br>
+      Gender: ${mailInfo.gender}
+      <br>
+      Date:${mailInfo.date}
+    <br/>
+    <br/>
     <br/>
       Sincerely,
     <br/>
