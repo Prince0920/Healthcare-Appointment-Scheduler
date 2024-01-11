@@ -26,8 +26,12 @@ const registerController = async (req, res) => {
     //send registration mail
     const mailTo = 'deepaksharma8820@gmail.com';
     const username = req.body.fullname;
-    const mailInfo = { username: username };
-    await sendMail('registration', mailTo, mailInfo);
+    const mailInfo = {
+      mailFor: 'registration',
+      mailTo: mailTo,
+      username: username,
+    };
+    await sendMail(mailInfo);
 
     return res.send({
       success: true,

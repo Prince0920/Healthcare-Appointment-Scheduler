@@ -11,8 +11,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = async (mailFor, mailTo, mailInfo) => {
+const sendMail = async (mailInfo) => {
   try {
+    mailFor = mailInfo.mailFor;
+    mailTo = mailInfo.mailTo;
+
     console.log('mailfor', mailFor);
     let mailDetails;
     if (mailFor === 'registration') {
