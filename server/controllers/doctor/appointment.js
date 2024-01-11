@@ -3,12 +3,17 @@ const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
-
+const { sendMail } = require('../../utils/emailService');
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
-    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } =
-      req.body;
+    const {
+      userId,
+      patientDetailId,
+      doctorProfileId,
+      appointmentDate,
+      reasonOfAppointment,
+    } = req.body;
     const data = await DoctorAppointment({
       userId,
       patientDetailId,
@@ -17,6 +22,14 @@ const bookAppointmentWithDoctor = async (req, res) => {
       reasonOfAppointment,
       status: 'scheduled',
     }).save();
+
+    //appoint mail info to the doctor
+    // const mailInfo = {
+    //   mailFor: 'registration',
+    //   mailTo: mailTo,
+    //   username: username,
+    // };
+    // await sendMail(mailInfo);
 
     return res.status(201).json({
       success: true,
@@ -39,7 +52,9 @@ const searchDoctor = async (req, res) => {
 
     // If user selected the specility then getting specility from SpecialityModel for find id for specility.
     if (req.body?.medicalSpecialty) {
-      specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
+      specilityData = await SpecialityModel.findOne({
+        name: req.body.medicalSpecialty,
+      });
     }
 
     let filter_cond_dp = {};
@@ -58,7 +73,7 @@ const searchDoctor = async (req, res) => {
         message: 'Not avaliable.',
       });
     }
-    const formattedDoctorData = doctorData.map(doctor => {
+    const formattedDoctorData = doctorData.map((doctor) => {
       const { userId } = doctor;
       const { specilityId } = doctor;
       return {
