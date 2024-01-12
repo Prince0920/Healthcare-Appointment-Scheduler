@@ -37,6 +37,7 @@ const ReviewByPatient = require('./routes/patient/reviewByPatientRoute');
 const PatientDetailRoute = require('./routes/patient/patientDetailRoute');
 const StripePaymentRoute = require('./routes/paymentGateway/stripePaymentRoute');
 const MyReviewRoute = require('./routes/doctor/myReview');
+const NotificationRoute = require('./routes/notificationRoute');
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/hospital', hospitalRoutes);
@@ -52,10 +53,32 @@ app.use('/api/v1/patient', PatientDetailRoute);
 app.use('/api/v1/payment', StripePaymentRoute);
 app.use('/api/v1/reviewByPatient', ReviewByPatient);
 app.use('/api/v1/doctor', MyReviewRoute);
+app.use('/api/v1/notifications', NotificationRoute);
 
 //port
 const port = process.env.PORT || 8080;
 //listen port
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`server is running ${process.env.DEV_MODE} mode on port ${port}`);
+});
+
+const io = require('socket.io')(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: 'http://localhost:3101',
+  },
+});
+
+io.on('connection', socket => {
+  console.log('Connected to socket.io...');
+  
+  socket.on('disconnect', ()=>{
+    console.log("Some left the room")
+  })
+
+  socket.on('new notification', ()=>{
+    console.log("I am in new notificatiopn")
+    socket.broadcast.emit('send notification')
+  })
+  
 });

@@ -1,14 +1,24 @@
 const SpecialityModel = require('../../models/SpecialityModel');
 const DoctorAppointment = require('../../models/doctorAppointment');
 const DoctorProfile = require('../../models/doctorProfile');
+const PatientDetail = require('../../models/patientDetail');
 const PatientProfile = require('../../models/patientProfile');
 const userModel = require('../../models/userModels');
+const { sendMail } = require('../../utils/emailService');
+const patientDetails = require('../../models/patientDetail');
+const sendNotification = require('../../utils/sendNotification');
 
 // Doctor Appointment create
 const bookAppointmentWithDoctor = async (req, res) => {
   try {
-    const { userId, patientDetailId, doctorProfileId, appointmentDate, reasonOfAppointment } =
-      req.body;
+    const {
+      userId,
+      patientDetailId,
+      doctorProfileId,
+      appointmentDate,
+      reasonOfAppointment,
+    } = req.body;
+
     const data = await DoctorAppointment({
       userId,
       patientDetailId,
@@ -18,6 +28,42 @@ const bookAppointmentWithDoctor = async (req, res) => {
       status: 'scheduled',
     }).save();
 
+    const getPatientInfo = await patientDetails.findOne({
+      _id: patientDetailId,
+    });
+    console.log('getPatientInof', getPatientInfo);
+    const patientName = getPatientInfo.patientName;
+    const age = getPatientInfo.age;
+    const gender = getPatientInfo.gender;
+    const mailTo = 'deepaksharma8820@gmail.com';
+    //appoint mail info to the doctor
+    const mailInfo = {
+      mailFor: 'mailToDocAppintment',
+      mailTo: mailTo,
+      patientName: patientName,
+      date: appointmentDate,
+      age: age,
+      gender: gender,
+      reasonOfAppointment: reasonOfAppointment,
+    };
+    await sendMail(mailInfo);
+
+    // Sending Notification Starts
+
+    const senderDetail = await PatientDetail.findOne({
+      _id: patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `New appointment request from ${senderDetail.patientName}`
+    );
+    // Sending Notification End
     return res.status(201).json({
       success: true,
       data: data,
@@ -39,7 +85,9 @@ const searchDoctor = async (req, res) => {
 
     // If user selected the specility then getting specility from SpecialityModel for find id for specility.
     if (req.body?.medicalSpecialty) {
-      specilityData = await SpecialityModel.findOne({ name: req.body.medicalSpecialty });
+      specilityData = await SpecialityModel.findOne({
+        name: req.body.medicalSpecialty,
+      });
     }
 
     let filter_cond_dp = {};
@@ -58,7 +106,7 @@ const searchDoctor = async (req, res) => {
         message: 'Not avaliable.',
       });
     }
-    const formattedDoctorData = doctorData.map(doctor => {
+    const formattedDoctorData = doctorData.map((doctor) => {
       const { userId } = doctor;
       const { specilityId } = doctor;
       return {

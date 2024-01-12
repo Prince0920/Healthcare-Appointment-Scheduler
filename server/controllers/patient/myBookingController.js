@@ -4,6 +4,8 @@ const PatientProfile = require('../../models/patientProfile');
 const User = require('../../models/userModels');
 const uploadImageToCloudnary = require('../../utils/uploadImageToCloudnary');
 const PatientDetail = require('../../models/patientDetail');
+const sendNotification = require('../../utils/sendNotification');
+const DoctorProfile = require('../../models/doctorProfile');
 
 const getAllBookingsController = async (req, res) => {
   try {
@@ -20,7 +22,7 @@ const getAllBookingsController = async (req, res) => {
 
     // Map through the appointment data to create a new structure
     const resp = await Promise.all(
-      appointment_data.map(async (e) => {
+      appointment_data.map(async e => {
         // Find doctor's data based on userId
         const doctors_data = await User.findOne({
           _id: e.doctorProfileId.userId,
@@ -38,7 +40,7 @@ const getAllBookingsController = async (req, res) => {
           paymentStatus: e?.paymentStatus,
           message: e?.message,
           medicalReport: e.medicalReport,
-          review: e.review
+          review: e.review,
         };
       })
     );
@@ -83,6 +85,20 @@ const removeAppointmentController = async (req, res) => {
       });
     }
 
+    const senderDetail = await PatientDetail.findOne({
+      _id: deletedAppointment.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: deletedAppointment.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} appointment cancelled.`
+    );
+
     // Send the response
     return res.status(200).json({
       success: true,
@@ -109,19 +125,32 @@ const uploadMedicalReportController = async (req, res) => {
 
     const saved_pdf_url = myCloud?.secure_url;
 
-    let patientDetail = await DoctorAppointment.findOneAndUpdate(
+    let appointmentDetail = await DoctorAppointment.findOneAndUpdate(
       { _id: patientDetailId },
       {
         medicalReport: saved_pdf_url,
       }
     );
 
-    if (!patientDetail) {
+    if (!appointmentDetail) {
       return res.status(404).json({
         success: false,
-        message: 'Patient Detail not found.',
+        message: 'Appointment Detail not found.',
       });
     }
+    const senderDetail = await PatientDetail.findOne({
+      _id: appointmentDetail.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: appointmentDetail.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} report uploaded.`
+    );
 
     res.send({ success: true });
   } catch (error) {
@@ -145,6 +174,20 @@ const removeMedicalReportController = async (req, res) => {
         message: 'Doctor Appointment Detail not found.',
       });
     }
+
+    const senderDetail = await PatientDetail.findOne({
+      _id: doctorAppointmentDetail.patientDetailId,
+    });
+
+    const recevierDetail = await DoctorProfile.findOne({
+      _id: doctorAppointmentDetail.doctorProfileId,
+    });
+
+    sendNotification(
+      senderDetail.userId,
+      recevierDetail.userId,
+      `${senderDetail.patientName} report removed.`
+    );
 
     res.send({ success: true });
   } catch (error) {

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Spinner from '../../../components/Spinner';
 import Select from 'react-select';
+import socket from '../../../helper/socketSetup';
 
 const AppointmentBooking = () => {
   const [doctorData, setDoctorData] = useState([]);
@@ -122,6 +123,7 @@ const AppointmentBooking = () => {
         );
         if (appointmentResponse.data.success == true) {
           setShowBookAppointmentModel(false);
+          socket.emit('new notification');
           toast.success('Booking successfull!!');
         }
       }
