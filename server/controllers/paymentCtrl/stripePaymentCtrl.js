@@ -1,6 +1,7 @@
 const userModel = require('../../models/userModels');
 const doctorAppointmentModel = require('../../models/doctorAppointment');
 const nodeConstant = require('../../config/nodeConstant');
+const stripePaymentHelper = require('../../utils/stripePayHelper');
 
 const patentPayBystripe = async (req, res) => {
   const recordId = req.body.recordId;
@@ -8,7 +9,6 @@ const patentPayBystripe = async (req, res) => {
 
   try {
     const stripe = require('stripe')(nodeConstant.STRIPE_TEST_SECRET);
-
     const session = await stripe.checkout.sessions.create({
       success_url: `${nodeConstant.BASE_URL}/patient/booking/payment-success`,
       cancel_url: `${nodeConstant.BASE_URL}/patient/booking/payment-cancel`,

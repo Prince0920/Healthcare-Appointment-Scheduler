@@ -15,6 +15,8 @@ const StripePayHelper = async () => {
       },
     ],
   });
+
+  return session;
 };
 
 module.exports = { StripePayHelper };
