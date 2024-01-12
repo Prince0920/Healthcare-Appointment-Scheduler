@@ -12,6 +12,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import PdfUpload from '../../../components/forms/PdfUpload';
 import { FilePdfOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
+import socket from '../../../helper/socketSetup';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -264,6 +265,7 @@ const MyBookings = () => {
       .then((res) => {
         if (res.status) {
           toast.success(res.data.message);
+          socket.emit('new notification');
           getAllBookings();
         }
       })
