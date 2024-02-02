@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Layouts from "../../../components/Layouts";
-import ContentHeader from "../../../components/ContentHeader";
-import axios from "axios";
-import { Button, Table, Space, Popconfirm } from "antd";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import Spinner from "../../../components/Spinner";
-import moment from "moment"; // Import moment library
-import { SERVER_BASE_URL, STRIPE_TEST_KEY } from "../../../config/config.local";
-import { toast } from "react-toastify";
-import { loadStripe } from "@stripe/stripe-js";
-import PdfUpload from "../../../components/forms/PdfUpload";
-import { FilePdfOutlined } from "@ant-design/icons";
-import Link from "antd/es/typography/Link";
-import socket from "../../../helper/socketSetup";
+import React, { useEffect, useState } from 'react';
+import Layouts from '../../../components/Layouts';
+import ContentHeader from '../../../components/ContentHeader';
+import axios from 'axios';
+import { Button, Table, Space, Popconfirm } from 'antd';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import Spinner from '../../../components/Spinner';
+import moment from 'moment'; // Import moment library
+import { SERVER_BASE_URL, STRIPE_TEST_KEY } from '../../../config/config.local';
+import { toast } from 'react-toastify';
+import { loadStripe } from '@stripe/stripe-js';
+import PdfUpload from '../../../components/forms/PdfUpload';
+import { FilePdfOutlined } from '@ant-design/icons';
+import Link from 'antd/es/typography/Link';
+import socket from '../../../helper/socketSetup';
+
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -24,9 +26,9 @@ const MyBookings = () => {
   const getAllBookings = async () => {
     setIsLoading(true);
     axios
-      .get(SERVER_BASE_URL + "/api/v1/my-bookings", {
+      .get(SERVER_BASE_URL + '/api/v1/my-bookings', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .then((bookings_data) => {
@@ -42,9 +44,10 @@ const MyBookings = () => {
     getAllBookings();
   }, []);
 
-  const PyamentOptModel = () => {
+  const PyamentOptModel = (record) => {
     // alert();
     setIsPayOptModelVisible(true);
+    setSelectedAppointment(record);
   };
 
   const makePaymentStripe = async (recordId) => {
@@ -55,11 +58,11 @@ const MyBookings = () => {
       recordId: recordId,
     };
     try {
-      let ApiUrl = SERVER_BASE_URL + "/api/v1/payment/patient-pay-stripe";
+      let ApiUrl = SERVER_BASE_URL + '/api/v1/payment/patient-pay-stripe';
       const res = await axios.post(ApiUrl, JSON.stringify(items), {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "content-type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json',
         },
       });
 
@@ -82,29 +85,29 @@ const MyBookings = () => {
   const handleUploadPdf = async (data, patientDetailId) => {
     try {
       const formData = new FormData();
-      formData.append("avatar", data);
-      formData.append("patientDetailId", patientDetailId);
+      formData.append('avatar', data);
+      formData.append('patientDetailId', patientDetailId);
 
       // Make the API call
       const response = await axios.put(
-        SERVER_BASE_URL + "/api/v1/my-bookings/medical-report",
+        SERVER_BASE_URL + '/api/v1/my-bookings/medical-report',
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
       if (response.data.success) {
         getAllBookings();
-        toast.success("Medical report saved success!!");
+        toast.success('Medical report saved success!!');
       } else {
-        toast.success("Please try again..");
+        toast.success('Please try again..');
       }
       // Handle the API response as needed
     } catch (error) {
-      console.error("API Error:", error);
+      console.error('API Error:', error);
       // Handle API error
     }
   };
@@ -114,53 +117,98 @@ const MyBookings = () => {
       // Make the API call
       const response = await axios.delete(
         SERVER_BASE_URL +
-          "/api/v1/my-bookings/medical-report?doctorAppointmentId=" +
+          '/api/v1/my-bookings/medical-report?doctorAppointmentId=' +
           doctorAppointmentId,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
       if (response.data.success) {
         getAllBookings();
-        toast.success("Medical report delete success!!");
+        toast.success('Medical report delete success!!');
       } else {
-        toast.success("Please try again..");
+        toast.success('Please try again..');
       }
       // Handle the API response as needed
     } catch (error) {
-      console.error("API Error:", error);
+      console.error('API Error:', error);
       // Handle API error
     }
   };
+
+  // let ApiUrlCreatePaypalOrd = SERVER_BASE_URL + '/api/v1/payment/patient-pay-paypal';
+  // const res = await axios.post(ApiUrl, JSON.stringify(items), {
+  //   headers: {
+  //     Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //     'content-type': 'application/json',
+  //   },
+  // });
+
+  //Create paypal order
+  const createOrder = () => {
+    return fetch('/my-server/create-paypal-order', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      // use the "body" param to optionally pass additional order information
+      // like product ids and quantities
+      body: JSON.stringify({ selectedAppointment: selectedAppointment }),
+    })
+      .then((response) => response.json())
+      .then((order) => order.id);
+  };
+
+  //Paypal
+  const onApprove = async (data) => {
+    return fetch('/my-server/capture-paypal-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderID: data.orderID,
+      }),
+    })
+      .then((response) => response.json())
+      .then((orderData) => {
+        const name = orderData.payer.name.given_name;
+        alert(`Transaction completed by ${name}`);
+      });
+  };
+
   const columns = [
     {
-      title: "Patient Name",
-      dataIndex: "fullname",
-      key: "fullname",
+      title: 'Patient Name',
+      dataIndex: 'fullname',
+      key: 'fullname',
     },
     {
-      title: "Doctor Name",
-      dataIndex: "doctorFullName",
-      key: "doctorFullName",
+      title: 'Doctor Name',
+      dataIndex: 'doctorFullName',
+      key: 'doctorFullName',
     },
     {
-      title: "Appointment Date",
-      key: "appointmentDate",
+      title: 'Appointment Date',
+      key: 'appointmentDate',
       render: (text, record) =>
-        moment(record.appointmentDate).format("YYYY-MM-DD"), // Format the date
+        moment(record.appointmentDate).format('YYYY-MM-DD'), // Format the date
     },
     {
-      title: "Payment",
-      dataIndex: "paymentStatus",
-      key: "paymentStatus",
+      title: 'Payment',
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus',
       render: (text, record) => {
-        if (record?.paymentStatus && record.paymentStatus == "completed") {
-          return <p style={{ color: "green", fontSize: 20 }}>Completed</p>;
+        if (record?.paymentStatus && record.paymentStatus == 'completed') {
+          return <p style={{ color: 'green', fontSize: 20 }}>Completed</p>;
         } else {
           return (
-            <button onClick={PyamentOptModel}>Payment Options</button>
+            <button onClick={() => PyamentOptModel(record._id)}>
+              Payment Options
+            </button>
 
             // <button onClick={() => makePaymentStripe(record._id)}>
             //   {'Make Payment'}
@@ -170,18 +218,18 @@ const MyBookings = () => {
       },
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
-      title: "Doctor Response",
-      key: "message",
-      render: (text, record) => <p>{record.message ? record.message : "-"}</p>,
+      title: 'Doctor Response',
+      key: 'message',
+      render: (text, record) => <p>{record.message ? record.message : '-'}</p>,
     },
     {
-      title: "Upload Reports",
-      key: "reports",
+      title: 'Upload Reports',
+      key: 'reports',
       render: (text, record) => {
         return (
           <Space>
@@ -190,14 +238,14 @@ const MyBookings = () => {
               handleUploadPdf={handleUploadPdf}
             />
             {record?.medicalReport && (
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <a href={record?.medicalReport} target="_blank">
                   <FilePdfOutlined
                     style={{
-                      fontSize: "25px",
-                      color: "#ff0000",
-                      marginRight: "10%",
-                      cursor: "pointer",
+                      fontSize: '25px',
+                      color: '#ff0000',
+                      marginRight: '10%',
+                      cursor: 'pointer',
                     }}
                   />
                 </a>
@@ -210,9 +258,9 @@ const MyBookings = () => {
                 >
                   <DeleteOutlined
                     style={{
-                      fontSize: "15px",
-                      color: "#1890ff", // or any other color
-                      cursor: "pointer",
+                      fontSize: '15px',
+                      color: '#1890ff', // or any other color
+                      cursor: 'pointer',
                     }}
                   />
                 </Popconfirm>
@@ -223,8 +271,8 @@ const MyBookings = () => {
       },
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (text, record) => (
         <Space>
           <Button
@@ -237,15 +285,15 @@ const MyBookings = () => {
             onConfirm={() => handleCancelAppointment(record._id)}
             okText="Yes"
             cancelText="No"
-            disabled={record.status !== "scheduled"} // Disable the Popconfirm based on condition
+            disabled={record.status !== 'scheduled'} // Disable the Popconfirm based on condition
           >
             <Button
               type="danger"
               style={{
-                background: record.status !== "scheduled" ? "#f0f0f0" : "red",
-                color: record.status !== "scheduled" ? "#a9a9a9" : "white",
+                background: record.status !== 'scheduled' ? '#f0f0f0' : 'red',
+                color: record.status !== 'scheduled' ? '#a9a9a9' : 'white',
               }}
-              disabled={record.status !== "scheduled"}
+              disabled={record.status !== 'scheduled'}
               icon={<DeleteOutlined />}
             />
           </Popconfirm>
@@ -256,29 +304,29 @@ const MyBookings = () => {
 
   const handleViewAppointment = (record) => {
     // alert(recordId);
-    console.log("record", record);
+    console.log('record', record);
     setIsDetailModelVisible(true);
     setSelectedAppointment(record);
   };
   const handleCancelAppointment = (recordId) => {
     axios
       .delete(
-        SERVER_BASE_URL + "/api/v1/my-bookings?appointmentId=" + recordId,
+        SERVER_BASE_URL + '/api/v1/my-bookings?appointmentId=' + recordId,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       )
       .then((res) => {
         if (res.status) {
           toast.success(res.data.message);
-          socket.emit("new notification");
+          socket.emit('new notification');
           getAllBookings();
         }
       })
       .catch((e) => {
-        console.log("Error: ", e);
+        console.log('Error: ', e);
       });
   };
   return (
@@ -302,12 +350,12 @@ const MyBookings = () => {
 
       {/* Book Appointment Modal  */}
       <div
-        className={`modal ${isDetailModelVisible ? "show fade" : ""}`}
+        className={`modal ${isDetailModelVisible ? 'show fade' : ''}`}
         tabIndex="-1"
         role="dialog"
         style={{
-          display: isDetailModelVisible ? "block" : "none",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          display: isDetailModelVisible ? 'block' : 'none',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
         }}
       >
         <div className="modal-dialog modal-dialog-centered" role="document">
@@ -329,7 +377,7 @@ const MyBookings = () => {
                 <strong>Patient Name:</strong> {selectedAppointment?.fullname}
               </p>
               <p>
-                <strong>Doctor Name:</strong>{" "}
+                <strong>Doctor Name:</strong>{' '}
                 {selectedAppointment?.doctorFullName}
               </p>
               <p>
@@ -345,11 +393,11 @@ const MyBookings = () => {
               </p>
               <p>
                 <strong>Reason Of Appointment: </strong>
-                {selectedAppointment?.reasonOfAppointment || "-"}
+                {selectedAppointment?.reasonOfAppointment || '-'}
               </p>
               <p>
                 <strong>Doctor Message: </strong>
-                {selectedAppointment?.message || "-"}
+                {selectedAppointment?.message || '-'}
               </p>
             </div>
             <div className="modal-footer">
@@ -369,12 +417,12 @@ const MyBookings = () => {
       {/* Book Appointment Modal  */}
       {isPayOptModelVisible && (
         <div
-          className={`modal ${isPayOptModelVisible ? "show fade" : ""}`}
+          className={`modal ${isPayOptModelVisible ? 'show fade' : ''}`}
           tabIndex="-1"
           role="dialog"
           style={{
-            display: isPayOptModelVisible ? "block" : "none",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: isPayOptModelVisible ? 'block' : 'none',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}
         >
           <div className="modal-dialog modal-dialog-centered" role="document">
@@ -392,10 +440,21 @@ const MyBookings = () => {
                 </button>
               </div>
               <div className="modal-body">
-                <button onClick={() => makePaymentStripe(record._id)}>
-                  {"Pay by stripe"}
+                <button onClick={() => makePaymentStripe(selectedAppointment)}>
+                  Pay by stripe
                 </button>
-                <button>Pay By Paypal</button>
+                <div style={{ marginLeft: '10px' }}>
+                  <PayPalScriptProvider
+                    options={{
+                      clientId: '',
+                    }}
+                  >
+                    <PayPalButtons
+                      createOrder={createOrder}
+                      onApprove={onApprove}
+                    />
+                  </PayPalScriptProvider>
+                </div>
               </div>
               <div className="modal-footer">
                 <button
