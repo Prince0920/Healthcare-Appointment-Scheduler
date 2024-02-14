@@ -63,19 +63,29 @@ const patentPayByPaypal = async (req, res) => {
 
 const capturePaypalPayment = async (req, res) => {
   const orderID = req.body.orderID;
+  const selectedAppointment = req.body.selectedAppointment;
   const request = new paypal.orders.OrdersCaptureRequest(orderID);
   request.requestBody({});
   try {
     const capture = await client.execute(request);
     // console.log(`Response: ${JSON.stringify(capture)}`);
-    // console.log(`Capture: ${JSON.stringify(capture.result)}`);
+    console.log(`Capture: ${JSON.stringify(capture.result)}`);
     const result = capture.result;
+    const PayPaymentStatus = result.status;
+    console.log('Payment Status', PayPaymentStatus);
+    if (PayPaymentStatus === 'COMPLETED') {
+      const updateBookingPayStatus =
+        await doctorAppointmentModel.findByIdAndUpdate(selectedAppointment, {
+          $set: { paymentStatus: 'completed' },
+        });
+    }
+
     // const resJson = {
     //   result,
     // };
     // res.json(resJson);
     res.status(200).send({
-      response: capture.result,
+      response: result,
     });
     // return capture.result;
   } catch (err) {

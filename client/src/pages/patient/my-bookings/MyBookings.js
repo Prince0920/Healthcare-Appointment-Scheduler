@@ -185,6 +185,7 @@ const MyBookings = () => {
       },
       body: JSON.stringify({
         orderID: data.orderID,
+        selectedAppointment: selectedAppointment,
       }),
     })
       .then((response) => response.json())
@@ -194,9 +195,19 @@ const MyBookings = () => {
       .then((orderData) => {
         //console.log('received order dataaaaaas');
         //console.log(orderData);
-        console.log('payer Name', orderData.response.payer.name.given_name);
-        // const name = orderData.payer.name.given_name;
-        // alert(`Transaction completed by ${name}`);
+        //console.log('payer Name', orderData.response.payer.name.given_name);
+        setIsPayOptModelVisible(false);
+        if (orderData.response.status === 'COMPLETED') {
+          toast.success(
+            `Payment Status:${orderData.response.status}.Tnx id :${orderData.response.id}`
+          );
+
+          getAllBookings();
+          // alert(`Transaction completed by ${name}`);
+        } else {
+          getAllBookings();
+          toast.error('Something went wrong,please try again');
+        }
       });
   };
 
@@ -460,9 +471,29 @@ const MyBookings = () => {
                 </button>
               </div>
               <div className="modal-body">
-                <button onClick={() => makePaymentStripe(selectedAppointment)}>
+                <button
+                  onClick={() => makePaymentStripe(selectedAppointment)}
+                  style={{
+                    padding: '14px 172px',
+                    fontSize: '16px',
+                    backgroundColor: '#5e82b9',
+                    color: '#fff',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    border: 'none',
+                    margin: '2px 9px 26px 14px',
+                  }}
+                >
                   Pay by stripe
                 </button>
+                <span
+                  style={{
+                    margin: '16px 11px 13px 7px',
+                    padding: '15px 10px 13px 169px',
+                  }}
+                >
+                  ---- OR ---
+                </span>
                 <div style={{ marginLeft: '10px' }}>
                   <PayPalScriptProvider
                     options={{
