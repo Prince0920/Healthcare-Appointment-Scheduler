@@ -18,13 +18,6 @@ const patentPayByPaypal = async (req, res) => {
   // console.log("paypal request body", req.body);
   try {
     const cartData = req.body;
-
-    // Placeholder functions for items, totals, and shipping cost
-    // const items = getItemDetails(cartData); // Should be an array with objects.
-    // const priceTotal = calculateTotals(cartData); // Should be a number with 2 decimals
-    // const finalSum = updateWithShippingCost(cartData);
-    // const shippingFee = finalSum - priceTotal;
-
     // Create a request object for PayPal transaction
     let request = new paypal.orders.OrdersCreateRequest();
     request.prefer('return=representation');
